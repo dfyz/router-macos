@@ -10,5 +10,6 @@ class MapArea: Object {
 class Stage: Object {
     dynamic var competitionName = ""
     dynamic var stageNumber = 0
+    dynamic var binMapFileName = ""
     dynamic var mapArea: MapArea? = nil
 }

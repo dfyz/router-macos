@@ -50,5 +50,26 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         mainTableView.setDataSource(self)
         mainTableView.setDelegate(self)
     }
+
+    @IBAction func onCopyExistingStageClick(sender: AnyObject) {
+        let stageIndex = mainTableView.selectedRow
+        if stageIndex < 0 {
+            return
+        }
+        let original = allStages[stageIndex]
+        try! realm.write {
+            let copy = Stage()
+            copy.competitionName = original.competitionName
+            copy.stageNumber = original.stageNumber + 1
+            copy.binMapFileName = original.binMapFileName
+            copy.mapArea = original.mapArea
+            realm.add(copy)
+        }
+        reloadData()
+    }
+
+    private func reloadData() {
+        mainTableView.reloadData()
+    }
 }
 
