@@ -412,7 +412,7 @@ Gw
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <segue destination="cyo-Ko-y2o" kind="sheet" id="7rL-p7-npL"/>
+                                                    <segue destination="cyo-Ko-y2o" kind="sheet" identifier="AddStageSegue" id="7rL-p7-npL"/>
                                                 </connections>
                                             </button>
                                         </subviews>

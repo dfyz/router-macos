@@ -6,6 +6,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var osmFileTextField: NSTextField!
 
     let fileManager = NSFileManager.defaultManager()
+    var parentController: MainViewController!
 
     override func controlTextDidChange(obj: NSNotification) {
         osmFileTextField.textColor = isGoodOsmFile() ? NSColor.blackColor() : NSColor.redColor()
@@ -55,6 +56,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         }
 
         dismissController(self)
+        parentController.reloadData()
     }
 
     private func isGoodOsmFile() -> Bool {

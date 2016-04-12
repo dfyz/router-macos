@@ -51,6 +51,16 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         mainTableView.setDelegate(self)
     }
 
+    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+        if let dest = segue.destinationController as? AddStageViewController {
+            dest.parentController = self
+        }
+    }
+
+    func reloadData() {
+        mainTableView.reloadData()
+    }
+
     @IBAction func onCopyExistingStageClick(sender: AnyObject) {
         let stageIndex = mainTableView.selectedRow
         if stageIndex < 0 {
@@ -66,10 +76,6 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
             realm.add(copy)
         }
         reloadData()
-    }
-
-    private func reloadData() {
-        mainTableView.reloadData()
     }
 }
 
