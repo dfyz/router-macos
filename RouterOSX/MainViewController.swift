@@ -97,7 +97,6 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         alert.addButtonWithTitle("OK")
         alert.addButtonWithTitle("Cancel")
         alert.messageText = "Delete \(stage.competitionName)?"
-        alert.alertStyle = .WarningAlertStyle
 
         alert.beginSheetModalForWindow(view.window!) {
             (response) -> Void
