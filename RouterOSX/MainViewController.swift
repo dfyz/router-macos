@@ -45,7 +45,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         super.viewDidLoad()
 
         realm = try! Realm()
-        allStages = realm.objects(Stage)
+        allStages = realm.objects(Stage).sorted("competitionName")
 
         mainTableView.setDataSource(self)
         mainTableView.setDelegate(self)
@@ -61,12 +61,22 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         mainTableView.reloadData()
     }
 
-    @IBAction func onCopyExistingStageClick(sender: AnyObject) {
-        let stageIndex = mainTableView.selectedRow
-        if stageIndex < 0 {
+    @IBAction func onStageNameEdited(sender: NSTextField) {
+        guard let stage = getSelectedStage() else {
             return
         }
-        let original = allStages[stageIndex]
+
+        try! realm.write {
+            stage.competitionName = sender.stringValue
+        }
+        reloadData()
+    }
+
+    @IBAction func onCopyExistingStageClick(sender: AnyObject) {
+        guard let original = getSelectedStage() else {
+            return
+        }
+
         try! realm.write {
             let copy = Stage()
             copy.competitionName = original.competitionName
@@ -76,6 +86,37 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
             realm.add(copy)
         }
         reloadData()
+    }
+
+    @IBAction func onDeleteStageClick(sender: AnyObject) {
+        guard let stage = getSelectedStage() else {
+            return
+        }
+
+        let alert = NSAlert()
+        alert.addButtonWithTitle("OK")
+        alert.addButtonWithTitle("Cancel")
+        alert.messageText = "Delete \(stage.competitionName)?"
+        alert.alertStyle = .WarningAlertStyle
+
+        alert.beginSheetModalForWindow(view.window!) {
+            (response) -> Void
+            in
+            if response == NSAlertFirstButtonReturn {
+                try! self.realm.write {
+                    self.realm.delete(stage)
+                }
+                self.reloadData()
+            }
+        }
+    }
+
+    private func getSelectedStage() -> Stage? {
+        let stageIndex = mainTableView.selectedRow
+        if stageIndex < 0 {
+            return nil
+        }
+        return allStages[stageIndex]
     }
 }
 

@@ -258,22 +258,22 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z7j-I6-Gzn">
-                                <rect key="frame" x="0.0" y="10" width="682" height="260"/>
+                                <rect key="frame" x="0.0" y="10" width="681" height="260"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UAZ-3e-Zci">
-                                        <rect key="frame" x="0.0" y="29" width="682" height="231"/>
+                                        <rect key="frame" x="0.0" y="29" width="681" height="231"/>
                                         <clipView key="contentView" id="DhE-Ua-hRM">
-                                            <rect key="frame" x="1" y="0.0" width="680" height="230"/>
+                                            <rect key="frame" x="1" y="0.0" width="679" height="230"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Tw5-Wz-JnH" viewBased="YES" id="Dpb-qs-u2R">
-                                                    <rect key="frame" x="0.0" y="0.0" width="680" height="0.0"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="679" height="207"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="CompetitionNameColumn" width="285.1640625" minWidth="40" maxWidth="1000" id="o5D-Sr-k9S">
+                                                        <tableColumn identifier="CompetitionNameColumn" width="284.1640625" minWidth="40" maxWidth="1000" id="o5D-Sr-k9S">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Competition name">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -287,16 +287,19 @@ Gw
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView identifier="CompetitionNameCell" id="vJC-jX-wCl">
-                                                                    <rect key="frame" x="1" y="1" width="285" height="17"/>
+                                                                    <rect key="frame" x="1" y="1" width="284" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YGw-O5-ptf">
                                                                             <rect key="frame" x="1" y="0.0" width="97" height="17"/>
-                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Rq0-Ua-sTp">
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="Rq0-Ua-sTp">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
+                                                                            <connections>
+                                                                                <action selector="onStageNameEdited:" target="XfG-lQ-9wD" id="agh-L0-fpf"/>
+                                                                            </connections>
                                                                         </textField>
                                                                     </subviews>
                                                                     <connections>
@@ -319,7 +322,7 @@ Gw
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView identifier="StageNumberCell" id="cXj-aD-PD2">
-                                                                    <rect key="frame" x="289" y="1" width="76" height="17"/>
+                                                                    <rect key="frame" x="288" y="1" width="76" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="b4U-6e-zDA">
@@ -351,7 +354,7 @@ Gw
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView identifier="MapAreaCell" id="GzE-AG-mbC">
-                                                                    <rect key="frame" x="368" y="1" width="310" height="17"/>
+                                                                    <rect key="frame" x="367" y="1" width="310" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YeB-8c-u56">
@@ -388,15 +391,28 @@ Gw
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="Tw5-Wz-JnH">
-                                            <rect key="frame" x="0.0" y="0.0" width="680" height="23"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="679" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
                                     </scrollView>
                                     <stackView distribution="fillProportionally" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fs9-ZN-DdJ">
-                                        <rect key="frame" x="10" y="0.0" width="662" height="21"/>
+                                        <rect key="frame" x="10" y="0.0" width="661" height="21"/>
                                         <subviews>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pra-I7-Nl2">
+                                                <rect key="frame" x="-6" y="-7" width="47" height="32"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="35" id="t2L-E0-sR6"/>
+                                                </constraints>
+                                                <buttonCell key="cell" type="push" title="✖" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NtY-qw-nU9">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                    <connections>
+                                                        <action selector="onDeleteStageClick:" target="XfG-lQ-9wD" id="Nif-42-8ua"/>
+                                                    </connections>
+                                                </buttonCell>
+                                            </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pYk-PI-0eE">
-                                                <rect key="frame" x="-6" y="-7" width="413" height="32"/>
+                                                <rect key="frame" x="37" y="-7" width="386" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Copy existing stage" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kHz-UW-V8f">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -406,7 +422,7 @@ Gw
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YPT-Va-nq5">
-                                                <rect key="frame" x="403" y="-7" width="265" height="32"/>
+                                                <rect key="frame" x="419" y="-7" width="248" height="32"/>
                                                 <buttonCell key="cell" type="push" title="New stage" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BNJ-J6-gX5">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
@@ -419,8 +435,10 @@ Gw
                                         <visibilityPriorities>
                                             <integer value="1000"/>
                                             <integer value="1000"/>
+                                            <integer value="1000"/>
                                         </visibilityPriorities>
                                         <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
