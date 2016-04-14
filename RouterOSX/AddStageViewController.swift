@@ -79,12 +79,14 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             maybeBinMapFileName = try importer.doImport()
         } catch MapImportError.Error(let message) where importInProgress {
             dispatch_async(dispatch_get_main_queue()) {
+                self.setImportState(false)
                 let alert = NSAlert()
                 alert.addButtonWithTitle("OK")
                 alert.messageText = message
                 alert.runModal()
             }
         } catch {
+            fatalError("Should never have happened")
         }
 
         if !importInProgress {
