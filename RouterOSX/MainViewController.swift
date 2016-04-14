@@ -99,8 +99,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         alert.messageText = "Delete \(stage.competitionName)?"
 
         alert.beginSheetModalForWindow(view.window!) {
-            (response) -> Void
-            in
+            (response) -> Void in
             if response == NSAlertFirstButtonReturn {
                 try! self.realm.write {
                     self.realm.delete(stage)

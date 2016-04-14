@@ -12,7 +12,8 @@
 		4F273F181CBB00E1001F582E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F273F171CBB00E1001F582E /* Assets.xcassets */; };
 		4F273F1B1CBB00E1001F582E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4F273F191CBB00E1001F582E /* Main.storyboard */; };
 		4F8BDF851CBDA38400EAF4D7 /* AddStageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8BDF841CBDA38400EAF4D7 /* AddStageViewController.swift */; };
-		4FC1A0A91CBC3D3400986367 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC1A0A81CBC3D3400986367 /* Model.swift */; };
+		4F96B72E1CBEF7D60032196E /* ImportMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B72D1CBEF7D60032196E /* ImportMap.swift */; };
+		4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC1A0A81CBC3D3400986367 /* RealmModel.swift */; };
 		E01DB763ABD4DD6AB134FBA0 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */; };
 /* End PBXBuildFile section */
 
@@ -24,7 +25,8 @@
 		4F273F1A1CBB00E1001F582E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4F273F1C1CBB00E1001F582E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4F8BDF841CBDA38400EAF4D7 /* AddStageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddStageViewController.swift; sourceTree = "<group>"; };
-		4FC1A0A81CBC3D3400986367 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		4F96B72D1CBEF7D60032196E /* ImportMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportMap.swift; sourceTree = "<group>"; };
+		4FC1A0A81CBC3D3400986367 /* RealmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmModel.swift; sourceTree = "<group>"; };
 		79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RouterOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C752808568C12822F3054DB /* Pods-RouterOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.release.xcconfig"; sourceTree = "<group>"; };
 		C5AB874547DE761412B6AC97 /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
@@ -63,12 +65,13 @@
 		4F273F121CBB00E1001F582E /* RouterOSX */ = {
 			isa = PBXGroup;
 			children = (
+				4F96B72F1CBEF8BE0032196E /* Models */,
+				4F96B72C1CBEF7A60032196E /* Backend */,
 				4F8BDF861CBDA40B00EAF4D7 /* ViewControllers */,
 				4F273F131CBB00E1001F582E /* AppDelegate.swift */,
 				4F273F171CBB00E1001F582E /* Assets.xcassets */,
 				4F273F191CBB00E1001F582E /* Main.storyboard */,
 				4F273F1C1CBB00E1001F582E /* Info.plist */,
-				4FC1A0A81CBC3D3400986367 /* Model.swift */,
 			);
 			path = RouterOSX;
 			sourceTree = "<group>";
@@ -80,6 +83,22 @@
 				4F8BDF841CBDA38400EAF4D7 /* AddStageViewController.swift */,
 			);
 			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		4F96B72C1CBEF7A60032196E /* Backend */ = {
+			isa = PBXGroup;
+			children = (
+				4F96B72D1CBEF7D60032196E /* ImportMap.swift */,
+			);
+			name = Backend;
+			sourceTree = "<group>";
+		};
+		4F96B72F1CBEF8BE0032196E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4FC1A0A81CBC3D3400986367 /* RealmModel.swift */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 		502D152B27A93E832B167D86 /* Frameworks */ = {
@@ -220,8 +239,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4FC1A0A91CBC3D3400986367 /* Model.swift in Sources */,
+				4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */,
 				4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */,
+				4F96B72E1CBEF7D60032196E /* ImportMap.swift in Sources */,
 				4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */,
 				4F8BDF851CBDA38400EAF4D7 /* AddStageViewController.swift in Sources */,
 			);
