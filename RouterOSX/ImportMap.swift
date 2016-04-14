@@ -12,7 +12,14 @@ class MapImporter: NSObject, NSXMLParserDelegate {
 
     var input: NSInputStream!
     var fileSize: UInt64!
-    var nodeCount: uint = 0
+
+    var globalIdToNode = [UInt32: OsmNode]()
+    var globalIdToIndex = [UInt32: Int]()
+    var nodes = [OsmNode]()
+    var currentNodes = [UInt32]()
+
+    var inWay = false
+    var isHighway = false
 
     init(sourceMapFileName: String, callback: Double -> Bool) {
         self.sourceMapFileName = sourceMapFileName
@@ -20,11 +27,43 @@ class MapImporter: NSObject, NSXMLParserDelegate {
     }
 
     func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-        let bytesRead = (input.propertyForKey(NSStreamFileCurrentOffsetKey) as! NSNumber).doubleValue
-        let progress = bytesRead / Double(fileSize) * 100.0
-        if !self.callback(progress) {
-            parser.abortParsing()
+        updateProgress(parser)
+
+        switch elementName {
+        case "node":
+            let globalId = UInt32(attributeDict["id"]!)!
+            let (lat, lon) = (Double(attributeDict["lat"]!)!, Double(attributeDict["lon"]!)!)
+            globalIdToNode[globalId] = OsmNode(lat: lat, lon: lon, adj: [])
+        case "way":
+            inWay = true
+            isHighway = false
+        case "nd" where inWay:
+            let currentId = UInt32(attributeDict["ref"]!)!
+            currentNodes.append(currentId)
+        case "tag" where inWay && attributeDict["k"] == "highway":
+            isHighway = true
+        default:
+            break
         }
+    }
+
+    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        if isHighway && !currentNodes.isEmpty {
+            for i in 1..<currentNodes.count {
+                let maybePrevIndex = idToIndex(currentNodes[i - 1])
+                let maybeCurrentIndex = idToIndex(currentNodes[i])
+                if maybePrevIndex != nil && maybeCurrentIndex != nil {
+                    let prevIndex = maybePrevIndex!
+                    let currentIndex = maybeCurrentIndex!
+                    nodes[prevIndex].adj.append(UInt32(currentIndex))
+                    nodes[currentIndex].adj.append(UInt32(prevIndex))
+                }
+            }
+        }
+
+        inWay = false
+        isHighway = false
+        currentNodes.removeAll()
     }
 
     func doImport() throws -> String {
@@ -58,5 +97,25 @@ class MapImporter: NSObject, NSXMLParserDelegate {
         } catch _ {
             return nil
         }
+    }
+
+    private func updateProgress(parser: NSXMLParser) {
+        let bytesRead = (input.propertyForKey(NSStreamFileCurrentOffsetKey) as! NSNumber).doubleValue
+        let progress = bytesRead / Double(fileSize) * 100.0
+        if !self.callback(progress) {
+            parser.abortParsing()
+        }
+    }
+
+    private func idToIndex(id: UInt32) -> Int? {
+        var result = globalIdToIndex[id]
+        if result == nil {
+            if let node = globalIdToNode[id] {
+                result = nodes.count
+                globalIdToIndex[id] = result
+                nodes.append(node)
+            }
+        }
+        return result
     }
 }

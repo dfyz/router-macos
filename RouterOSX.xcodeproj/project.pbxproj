@@ -15,6 +15,11 @@
 		4F96B72E1CBEF7D60032196E /* ImportMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B72D1CBEF7D60032196E /* ImportMap.swift */; };
 		4F96B7311CC03F4B0032196E /* FlatBuffersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7301CC03F4B0032196E /* FlatBuffersModel.swift */; };
 		4F96B7331CC03F570032196E /* FlatBuffersModel.fbs in Resources */ = {isa = PBXBuildFile; fileRef = 4F96B7321CC03F570032196E /* FlatBuffersModel.fbs */; };
+		4F96B7471CC044360032196E /* FlatBufferReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7401CC044360032196E /* FlatBufferReader.swift */; };
+		4F96B7481CC044360032196E /* FlatBufferBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7411CC044360032196E /* FlatBufferBuilder.swift */; };
+		4F96B7491CC044360032196E /* FlatBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7421CC044360032196E /* FlatBuffers.swift */; };
+		4F96B74A1CC044360032196E /* LazyVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7441CC044360032196E /* LazyVector.swift */; };
+		4F96B74B1CC044360032196E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F96B7451CC044360032196E /* Info.plist */; };
 		4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC1A0A81CBC3D3400986367 /* RealmModel.swift */; };
 		E01DB763ABD4DD6AB134FBA0 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */; };
 /* End PBXBuildFile section */
@@ -30,6 +35,12 @@
 		4F96B72D1CBEF7D60032196E /* ImportMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportMap.swift; sourceTree = "<group>"; };
 		4F96B7301CC03F4B0032196E /* FlatBuffersModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBuffersModel.swift; sourceTree = "<group>"; };
 		4F96B7321CC03F570032196E /* FlatBuffersModel.fbs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FlatBuffersModel.fbs; sourceTree = "<group>"; };
+		4F96B7401CC044360032196E /* FlatBufferReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBufferReader.swift; sourceTree = "<group>"; };
+		4F96B7411CC044360032196E /* FlatBufferBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBufferBuilder.swift; sourceTree = "<group>"; };
+		4F96B7421CC044360032196E /* FlatBuffers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBuffers.swift; sourceTree = "<group>"; };
+		4F96B7431CC044360032196E /* FlatBuffersSwift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlatBuffersSwift.h; sourceTree = "<group>"; };
+		4F96B7441CC044360032196E /* LazyVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyVector.swift; sourceTree = "<group>"; };
+		4F96B7451CC044360032196E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4FC1A0A81CBC3D3400986367 /* RealmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmModel.swift; sourceTree = "<group>"; };
 		79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RouterOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C752808568C12822F3054DB /* Pods-RouterOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.release.xcconfig"; sourceTree = "<group>"; };
@@ -69,6 +80,7 @@
 		4F273F121CBB00E1001F582E /* RouterOSX */ = {
 			isa = PBXGroup;
 			children = (
+				4F96B7461CC044360032196E /* FlatBuffersSwift */,
 				4F96B72F1CBEF8BE0032196E /* Models */,
 				4F96B72C1CBEF7A60032196E /* Backend */,
 				4F8BDF861CBDA40B00EAF4D7 /* ViewControllers */,
@@ -105,6 +117,20 @@
 				4FC1A0A81CBC3D3400986367 /* RealmModel.swift */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		4F96B7461CC044360032196E /* FlatBuffersSwift */ = {
+			isa = PBXGroup;
+			children = (
+				4F96B7401CC044360032196E /* FlatBufferReader.swift */,
+				4F96B7411CC044360032196E /* FlatBufferBuilder.swift */,
+				4F96B7421CC044360032196E /* FlatBuffers.swift */,
+				4F96B7431CC044360032196E /* FlatBuffersSwift.h */,
+				4F96B7441CC044360032196E /* LazyVector.swift */,
+				4F96B7451CC044360032196E /* Info.plist */,
+			);
+			name = FlatBuffersSwift;
+			path = ../FlatBuffersSwift/FlatBuffersSwift;
 			sourceTree = "<group>";
 		};
 		502D152B27A93E832B167D86 /* Frameworks */ = {
@@ -185,6 +211,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F96B74B1CC044360032196E /* Info.plist in Resources */,
 				4F273F181CBB00E1001F582E /* Assets.xcassets in Resources */,
 				4F96B7331CC03F570032196E /* FlatBuffersModel.fbs in Resources */,
 				4F273F1B1CBB00E1001F582E /* Main.storyboard in Resources */,
@@ -247,10 +274,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */,
+				4F96B7491CC044360032196E /* FlatBuffers.swift in Sources */,
+				4F96B74A1CC044360032196E /* LazyVector.swift in Sources */,
 				4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */,
+				4F96B7481CC044360032196E /* FlatBufferBuilder.swift in Sources */,
 				4F96B7311CC03F4B0032196E /* FlatBuffersModel.swift in Sources */,
 				4F96B72E1CBEF7D60032196E /* ImportMap.swift in Sources */,
 				4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */,
+				4F96B7471CC044360032196E /* FlatBufferReader.swift in Sources */,
 				4F8BDF851CBDA38400EAF4D7 /* AddStageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

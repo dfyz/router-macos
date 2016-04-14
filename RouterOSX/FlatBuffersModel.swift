@@ -1,16 +1,11 @@
-
 // generated with FlatBuffersSchemaEditor https://github.com/mzaks/FlatBuffersSchemaEditor
 
-import FlatBuffersSwift
-
 public final class OsmNode {
-	public var id : UInt32 = 0
 	public var lat : Float64 = 0
 	public var lon : Float64 = 0
-	public var adj : [UInt64] = []
+	public var adj : [UInt32] = []
 	public init(){}
-	public init(id: UInt32, lat: Float64, lon: Float64, adj: [UInt64]){
-		self.id = id
+	public init(lat: Float64, lon: Float64, adj: [UInt32]){
 		self.lat = lat
 		self.lon = lon
 		self.adj = adj
@@ -22,10 +17,9 @@ public extension OsmNode {
 			return nil
 		}
 		let _result = OsmNode()
-		_result.id = reader.get(objectOffset, propertyIndex: 0, defaultValue: 0)
-		_result.lat = reader.get(objectOffset, propertyIndex: 1, defaultValue: 0)
-		_result.lon = reader.get(objectOffset, propertyIndex: 2, defaultValue: 0)
-		let offset_adj : Offset? = reader.getOffset(objectOffset, propertyIndex: 3)
+		_result.lat = reader.get(objectOffset, propertyIndex: 0, defaultValue: 0)
+		_result.lon = reader.get(objectOffset, propertyIndex: 1, defaultValue: 0)
+		let offset_adj : Offset? = reader.getOffset(objectOffset, propertyIndex: 2)
 		let length_adj = reader.getVectorLength(offset_adj)
 		if(length_adj > 0){
 			var index = 0
@@ -51,14 +45,13 @@ public extension OsmNode {
 			_objectOffset = objectOffset
 		}
 
-		public lazy var id : UInt32 = self._reader.get(self._objectOffset, propertyIndex: 0, defaultValue:0)
-		public lazy var lat : Float64 = self._reader.get(self._objectOffset, propertyIndex: 1, defaultValue:0)
-		public lazy var lon : Float64 = self._reader.get(self._objectOffset, propertyIndex: 2, defaultValue:0)
-		public lazy var adj : LazyVector<UInt64> = {
-			let vectorOffset : Offset? = self._reader.getOffset(self._objectOffset, propertyIndex: 3)
+		public lazy var lat : Float64 = self._reader.get(self._objectOffset, propertyIndex: 0, defaultValue:0)
+		public lazy var lon : Float64 = self._reader.get(self._objectOffset, propertyIndex: 1, defaultValue:0)
+		public lazy var adj : LazyVector<UInt32> = {
+			let vectorOffset : Offset? = self._reader.getOffset(self._objectOffset, propertyIndex: 2)
 			let vectorLength = self._reader.getVectorLength(vectorOffset)
 			return LazyVector(count: vectorLength){
-				self._reader.getVectorScalarElement(vectorOffset!, index: $0) as UInt64
+				self._reader.getVectorScalarElement(vectorOffset!, index: $0) as UInt32
 			}
 		}()
 
@@ -67,7 +60,7 @@ public extension OsmNode {
 }
 public extension OsmNode {
 	private func addToByteArray(builder : FlatBufferBuilder) -> Offset {
-		var offset3 = Offset(0)
+		var offset2 = Offset(0)
 		if adj.count > 0{
 			try! builder.startVector(adj.count)
 			var index = adj.count - 1
@@ -75,13 +68,12 @@ public extension OsmNode {
 				builder.put(adj[index])
 				index -= 1
 			}
-			offset3 = builder.endVector()
+			offset2 = builder.endVector()
 		}
-		try! builder.openObject(4)
-		try! builder.addPropertyOffsetToOpenObject(3, offset: offset3)
-		try! builder.addPropertyToOpenObject(2, value : lon, defaultValue : 0)
-		try! builder.addPropertyToOpenObject(1, value : lat, defaultValue : 0)
-		try! builder.addPropertyToOpenObject(0, value : id, defaultValue : 0)
+		try! builder.openObject(3)
+		try! builder.addPropertyOffsetToOpenObject(2, offset: offset2)
+		try! builder.addPropertyToOpenObject(1, value : lon, defaultValue : 0)
+		try! builder.addPropertyToOpenObject(0, value : lat, defaultValue : 0)
 		return try! builder.closeObject()
 	}
 }

@@ -1,8 +1,7 @@
 table OsmNode {
-    id: uint;
     lat: double;
     lon: double;
-    adj: [ulong];
+    adj: [uint];
 }
 
 table OsmGraph {
