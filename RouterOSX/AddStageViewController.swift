@@ -4,6 +4,7 @@ import RealmSwift
 class AddStageViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var competitionNameTextField: NSTextField!
     @IBOutlet weak var osmFileTextField: NSTextField!
+    @IBOutlet weak var osmSelectButton: NSButton!
     @IBOutlet weak var conversionProgressBar: NSProgressIndicator!
     @IBOutlet weak var cancelButton: NSButton!
     @IBOutlet weak var addButton: NSButton!
@@ -44,12 +45,9 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
 
     @IBAction func onCancelClick(sender: AnyObject) {
         let canDismiss = !importInProgress
-        importInProgress = false
+        setImportState(false)
         if canDismiss {
             dismiss()
-        } else {
-            addButton.enabled = true
-            progressStackView.hidden = true
         }
     }
 
@@ -58,8 +56,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             return
         }
 
-        importInProgress = true
-        addButton.enabled = false
+        setImportState(true)
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             self.createStage(self.competitionNameTextField.stringValue, self.osmFileTextField.stringValue)
@@ -69,7 +66,6 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     private func createStage(competitionName: String, _ mapFileName: String) {
         dispatch_async(dispatch_get_main_queue()) {
             self.conversionProgressBar.doubleValue = 0.0
-            self.progressStackView.hidden = false
         }
         var maybeBinMapFileName: String?
         let importer = MapImporter(sourceMapFileName: mapFileName) {
@@ -125,5 +121,21 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     private func dismiss() {
         self.dismissController(self)
         self.parentController.reloadData()
+    }
+    
+    private func setImportState(inProgress: Bool) {
+        self.importInProgress = inProgress
+        let noImportInProgress = !importInProgress
+        self.progressStackView.hidden = noImportInProgress
+        
+        for control in [
+            self.addButton,
+            self.osmSelectButton,
+            self.osmFileTextField,
+            self.competitionNameTextField
+        ]
+        {
+            control.enabled = noImportInProgress
+        }
     }
 }

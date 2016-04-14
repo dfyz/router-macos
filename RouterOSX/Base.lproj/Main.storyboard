@@ -263,6 +263,7 @@ Gw
                         <outlet property="competitionNameTextField" destination="dqM-Qh-zxe" id="sbm-hC-TZn"/>
                         <outlet property="conversionProgressBar" destination="fGB-GN-IfI" id="n0B-34-KZE"/>
                         <outlet property="osmFileTextField" destination="Jvw-lK-B6U" id="l0y-Fe-o9F"/>
+                        <outlet property="osmSelectButton" destination="ohD-3b-fxL" id="lPp-8J-Q7T"/>
                         <outlet property="progressStackView" destination="ktU-Uc-Ome" id="HNu-DD-Vfd"/>
                     </connections>
                 </viewController>
