@@ -93,10 +93,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="533" height="148"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Tq-4eD">
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Tq-4eD">
                                 <rect key="frame" x="10" y="10" width="513" height="128"/>
                                 <subviews>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wbe-Db-CoP">
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wbe-Db-CoP">
                                         <rect key="frame" x="0.0" y="108" width="513" height="20"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TdG-RB-xKi">
@@ -128,7 +128,7 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3y-Ie-cf7">
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3y-Ie-cf7">
                                         <rect key="frame" x="0.0" y="78" width="498" height="20"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nFU-iW-N9w">
@@ -175,7 +175,7 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ktU-Uc-Ome">
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ktU-Uc-Ome">
                                         <rect key="frame" x="0.0" y="50" width="513" height="18"/>
                                         <subviews>
                                             <progressIndicator wantsLayer="YES" maxValue="100" displayedWhenStopped="NO" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="fGB-GN-IfI">
@@ -231,7 +231,6 @@ Gw
                                     </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="fGB-GN-IfI" secondAttribute="trailing" constant="-50" id="5sH-DR-0Jb"/>
                                     <constraint firstItem="ktU-Uc-Ome" firstAttribute="width" secondItem="dgS-Tq-4eD" secondAttribute="width" id="H9G-Cu-y36"/>
                                     <constraint firstAttribute="trailing" secondItem="Grr-2z-E6f" secondAttribute="trailing" constant="15" id="Nqh-Ds-wYa"/>
                                     <constraint firstItem="yMd-zP-6Oa" firstAttribute="trailing" secondItem="ohD-3b-fxL" secondAttribute="trailing" id="uAa-mV-W0J"/>
@@ -264,6 +263,7 @@ Gw
                         <outlet property="competitionNameTextField" destination="dqM-Qh-zxe" id="sbm-hC-TZn"/>
                         <outlet property="conversionProgressBar" destination="fGB-GN-IfI" id="n0B-34-KZE"/>
                         <outlet property="osmFileTextField" destination="Jvw-lK-B6U" id="l0y-Fe-o9F"/>
+                        <outlet property="progressStackView" destination="ktU-Uc-Ome" id="HNu-DD-Vfd"/>
                     </connections>
                 </viewController>
                 <customObject id="RY6-A0-D0C" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

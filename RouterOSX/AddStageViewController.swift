@@ -7,10 +7,11 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var conversionProgressBar: NSProgressIndicator!
     @IBOutlet weak var cancelButton: NSButton!
     @IBOutlet weak var addButton: NSButton!
+    @IBOutlet weak var progressStackView: NSStackView!
 
     let fileManager = NSFileManager.defaultManager()
     var parentController: MainViewController!
-    var shouldContinueImport: Bool = false
+    var importInProgress: Bool = false
 
     override func controlTextDidChange(obj: NSNotification) {
         osmFileTextField.textColor = isGoodOsmFile() ? NSColor.blackColor() : NSColor.redColor()
@@ -42,8 +43,14 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     }
 
     @IBAction func onCancelClick(sender: AnyObject) {
-        shouldContinueImport = false
-        dismiss()
+        let canDismiss = !importInProgress
+        importInProgress = false
+        if canDismiss {
+            dismiss()
+        } else {
+            addButton.enabled = true
+            progressStackView.hidden = true
+        }
     }
 
     @IBAction func onAddStageClick(sender: AnyObject) {
@@ -51,7 +58,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             return
         }
 
-        shouldContinueImport = true
+        importInProgress = true
         addButton.enabled = false
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
@@ -60,17 +67,21 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     }
 
     private func createStage(competitionName: String, _ mapFileName: String) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.conversionProgressBar.doubleValue = 0.0
+            self.progressStackView.hidden = false
+        }
         var maybeBinMapFileName: String?
         let importer = MapImporter(sourceMapFileName: mapFileName) {
             progress -> Bool in
             dispatch_async(dispatch_get_main_queue()) {
                 self.conversionProgressBar.doubleValue = progress
             }
-            return self.shouldContinueImport
+            return self.importInProgress
         }
         do {
             maybeBinMapFileName = try importer.doImport()
-        } catch MapImportError.Error(let message) {
+        } catch MapImportError.Error(let message) where importInProgress {
             dispatch_async(dispatch_get_main_queue()) {
                 let alert = NSAlert()
                 alert.addButtonWithTitle("OK")
@@ -78,6 +89,10 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
                 alert.runModal()
             }
         } catch {
+        }
+
+        if !importInProgress {
+            return
         }
 
         if let binMapFileName = maybeBinMapFileName {
@@ -93,9 +108,8 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
 
                 realm.add(stage)
             }
+            dispatch_async(dispatch_get_main_queue(), dismiss)
         }
-
-        dispatch_async(dispatch_get_main_queue(), dismiss)
     }
 
     private func isGoodOsmFile() -> Bool {
