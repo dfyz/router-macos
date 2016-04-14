@@ -77,16 +77,18 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         }
         do {
             maybeBinMapFileName = try importer.doImport()
-        } catch MapImportError.Error(let message) where importInProgress {
+        } catch MapImportError.Error(let message) {
             dispatch_async(dispatch_get_main_queue()) {
                 self.setImportState(false)
-                let alert = NSAlert()
-                alert.addButtonWithTitle("OK")
-                alert.messageText = message
-                alert.runModal()
+                if self.importInProgress {
+                    let alert = NSAlert()
+                    alert.addButtonWithTitle("OK")
+                    alert.messageText = message
+                    alert.runModal()
+                }
             }
         } catch {
-            fatalError("Should never have happened")
+            fatalError("Should never happen")
         }
 
         if !importInProgress {
@@ -121,8 +123,8 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     }
 
     private func dismiss() {
-        self.dismissController(self)
         self.parentController.reloadData()
+        self.dismissController(self)
     }
     
     private func setImportState(inProgress: Bool) {
