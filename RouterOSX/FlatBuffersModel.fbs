@@ -1,0 +1,12 @@
+table OsmNode {
+    id: uint;
+    lat: double;
+    lon: double;
+    adj: [ulong];
+}
+
+table OsmGraph {
+    nodes: [OsmNode];
+}
+
+root_type OsmGraph;
