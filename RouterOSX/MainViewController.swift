@@ -27,7 +27,9 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
             text = "\(stage.stageNumber)"
         case "MapAreaColumn":
             let center = stage.mapArea!
-            text = "\(center.width) × \(center.height) (center is \(center.centerLat), \(center.centerLon))"
+            let roundedCenterLat = String(format: "%.6f", center.centerLat)
+            let roundedCenterLon = String(format: "%.6f", center.centerLon)
+            text = "(\(roundedCenterLat), \(roundedCenterLon))"
         default:
             print("Unknown column \(columnIdentifier)")
             return nil

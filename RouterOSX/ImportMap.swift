@@ -5,6 +5,11 @@ enum MapImportError: ErrorType {
     case Error(String)
 }
 
+struct ImportResult {
+    let mapArea: MapArea
+    let binMapFileName: String
+}
+
 class MapImporter: NSObject, NSXMLParserDelegate {
     let fileManager = NSFileManager.defaultManager()
 
@@ -71,7 +76,7 @@ class MapImporter: NSObject, NSXMLParserDelegate {
         currentNodes.removeAll()
     }
 
-    func doImport() throws -> String {
+    func doImport() throws -> ImportResult {
         input = NSInputStream(fileAtPath: sourceMapFileName)
         if input == nil {
             throw MapImportError.Error("Failed to load \(sourceMapFileName)")
@@ -90,7 +95,7 @@ class MapImporter: NSObject, NSXMLParserDelegate {
 
         let resultFileName = getBinMapFileName(sourceMapFileName)
         saveToFile(resultFileName)
-        return resultFileName
+        return ImportResult(mapArea: getMapArea(), binMapFileName: resultFileName)
     }
 
     private func getBinMapFileName(sourceMapFileName: String) -> String {
@@ -105,6 +110,36 @@ class MapImporter: NSObject, NSXMLParserDelegate {
         let rawData = graph.toByteArray
         let nsData = NSData(bytes: rawData, length: rawData.count)
         nsData.writeToFile(resultFileName, atomically: true)
+    }
+
+    private func getMapArea() -> MapArea {
+        var minLat = Double.infinity
+        var maxLat = -Double.infinity
+        var minLon = Double.infinity
+        var maxLon = -Double.infinity
+
+        for maybeNode in nodes {
+            let node = maybeNode!
+            if node.lat < minLat {
+                minLat = node.lat
+            }
+            if node.lat > maxLat {
+                maxLat = node.lat
+            }
+            if node.lon < minLon {
+                minLon = node.lon
+            }
+            if node.lon > maxLon {
+                maxLon = node.lon
+            }
+        }
+
+        let result = MapArea()
+        result.height = maxLat - minLat
+        result.width = maxLon - minLon
+        result.centerLat = (minLat + maxLat) / 2.0
+        result.centerLon = (minLon + maxLon) / 2.0
+        return result
     }
 
     private func getFileSize(fileName: String) -> UInt64? {

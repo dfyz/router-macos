@@ -67,7 +67,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         dispatch_async(dispatch_get_main_queue()) {
             self.conversionProgressBar.doubleValue = 0.0
         }
-        var maybeBinMapFileName: String?
+
         let importer = MapImporter(sourceMapFileName: mapFileName) {
             progress -> Bool in
             dispatch_async(dispatch_get_main_queue()) {
@@ -75,8 +75,10 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             }
             return self.importInProgress
         }
+
+        var maybeImportResult: ImportResult?
         do {
-            maybeBinMapFileName = try importer.doImport()
+            maybeImportResult = try importer.doImport()
         } catch MapImportError.Error(let message) {
             dispatch_async(dispatch_get_main_queue()) {
                 self.setImportState(false)
@@ -95,16 +97,14 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             return
         }
 
-        if let binMapFileName = maybeBinMapFileName {
+        if let importResult = maybeImportResult {
             let realm = try! Realm()
             try! realm.write {
                 let stage = Stage()
                 stage.competitionName = competitionName
                 stage.stageNumber = 1
-                stage.binMapFileName = binMapFileName
-
-                let mapArea = MapArea()
-                stage.mapArea = mapArea
+                stage.binMapFileName = importResult.binMapFileName
+                stage.mapArea = importResult.mapArea
 
                 realm.add(stage)
             }
