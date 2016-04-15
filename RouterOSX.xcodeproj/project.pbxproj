@@ -19,7 +19,9 @@
 		4F96B75D1CC0503F0032196E /* FlatBufferReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7591CC0503F0032196E /* FlatBufferReader.swift */; };
 		4F96B75E1CC0503F0032196E /* FlatBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B75A1CC0503F0032196E /* FlatBuffers.swift */; };
 		4F96B75F1CC0503F0032196E /* LazyVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B75B1CC0503F0032196E /* LazyVector.swift */; };
+		4F96B7641CC075800032196E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7631CC075800032196E /* MapViewController.swift */; };
 		4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC1A0A81CBC3D3400986367 /* RealmModel.swift */; };
+		4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD2C3D21CC079D900849C58 /* MapKit.framework */; };
 		E01DB763ABD4DD6AB134FBA0 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */; };
 /* End PBXBuildFile section */
 
@@ -38,7 +40,9 @@
 		4F96B7591CC0503F0032196E /* FlatBufferReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatBufferReader.swift; path = FlatBuffersSwift/FlatBufferReader.swift; sourceTree = "<group>"; };
 		4F96B75A1CC0503F0032196E /* FlatBuffers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatBuffers.swift; path = FlatBuffersSwift/FlatBuffers.swift; sourceTree = "<group>"; };
 		4F96B75B1CC0503F0032196E /* LazyVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LazyVector.swift; path = FlatBuffersSwift/LazyVector.swift; sourceTree = "<group>"; };
+		4F96B7631CC075800032196E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4FC1A0A81CBC3D3400986367 /* RealmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmModel.swift; sourceTree = "<group>"; };
+		4FD2C3D21CC079D900849C58 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RouterOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C752808568C12822F3054DB /* Pods-RouterOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.release.xcconfig"; sourceTree = "<group>"; };
 		C5AB874547DE761412B6AC97 /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
@@ -49,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */,
 				E01DB763ABD4DD6AB134FBA0 /* Pods_RouterOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +99,7 @@
 			children = (
 				4F273F151CBB00E1001F582E /* MainViewController.swift */,
 				4F8BDF841CBDA38400EAF4D7 /* AddStageViewController.swift */,
+				4F96B7631CC075800032196E /* MapViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -130,6 +136,7 @@
 		502D152B27A93E832B167D86 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4FD2C3D21CC079D900849C58 /* MapKit.framework */,
 				79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */,
 			);
 			name = Frameworks;
@@ -266,6 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F96B7641CC075800032196E /* MapViewController.swift in Sources */,
 				4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */,
 				4F96B75E1CC0503F0032196E /* FlatBuffers.swift in Sources */,
 				4F96B75F1CC0503F0032196E /* LazyVector.swift in Sources */,

@@ -58,6 +58,11 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         if let dest = segue.destinationController as? AddStageViewController {
             dest.parentController = self
         }
+        if let dest = segue.destinationController as? MapViewController {
+            if let stage = getSelectedStage() {
+                dest.stage = stage
+            }
+        }
     }
 
     func reloadData() {

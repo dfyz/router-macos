@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.MapKitIBPlugin" version="10116"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
@@ -93,10 +94,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="533" height="148"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Tq-4eD">
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" spacing="10" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Tq-4eD">
                                 <rect key="frame" x="10" y="10" width="513" height="128"/>
                                 <subviews>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wbe-Db-CoP">
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wbe-Db-CoP">
                                         <rect key="frame" x="0.0" y="108" width="513" height="20"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TdG-RB-xKi">
@@ -128,7 +129,7 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3y-Ie-cf7">
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3y-Ie-cf7">
                                         <rect key="frame" x="0.0" y="78" width="498" height="20"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nFU-iW-N9w">
@@ -175,7 +176,7 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
-                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ktU-Uc-Ome">
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ktU-Uc-Ome">
                                         <rect key="frame" x="0.0" y="50" width="513" height="18"/>
                                         <subviews>
                                             <progressIndicator wantsLayer="YES" maxValue="100" displayedWhenStopped="NO" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="fGB-GN-IfI">
@@ -271,6 +272,51 @@ Gw
             </objects>
             <point key="canvasLocation" x="738.5" y="362.5"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="evJ-S5-TXl">
+            <objects>
+                <windowController id="SQv-qm-2ic" sceneMemberID="viewController">
+                    <window key="window" title="Map" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="zFb-rg-BI0">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="218" y="1223" width="480" height="270"/>
+                        <rect key="screenRect" x="-76" y="900" width="1920" height="1080"/>
+                    </window>
+                    <connections>
+                        <segue destination="Gjr-Qd-uUd" kind="relationship" relationship="window.shadowedContentViewController" id="kQS-g0-h7U"/>
+                    </connections>
+                </windowController>
+                <customObject id="VlX-Mu-vYU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1052" y="684"/>
+        </scene>
+        <!--Map View Controller-->
+        <scene sceneID="hjj-Rl-8dB">
+            <objects>
+                <viewController id="Gjr-Qd-uUd" customClass="MapViewController" customModule="RouterOSX" sceneMemberID="viewController">
+                    <view key="view" id="J0f-b9-IHB">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <mapView ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="SHD-qP-Gg0">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            </mapView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="SHD-qP-Gg0" firstAttribute="width" secondItem="J0f-b9-IHB" secondAttribute="width" id="97X-20-mTy"/>
+                            <constraint firstAttribute="trailing" secondItem="SHD-qP-Gg0" secondAttribute="trailing" id="ER5-oP-svw"/>
+                            <constraint firstItem="SHD-qP-Gg0" firstAttribute="leading" secondItem="J0f-b9-IHB" secondAttribute="leading" id="aRP-Ef-eZN"/>
+                            <constraint firstItem="SHD-qP-Gg0" firstAttribute="height" secondItem="J0f-b9-IHB" secondAttribute="height" id="oLP-20-m3H"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="SHD-qP-Gg0" id="MRh-Pb-pXI"/>
+                    </connections>
+                </viewController>
+                <customObject id="9AZ-n8-mJ0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1759" y="659"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
@@ -289,7 +335,7 @@ Gw
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Tw5-Wz-JnH" viewBased="YES" id="Dpb-qs-u2R">
-                                                    <rect key="frame" x="0.0" y="0.0" width="679" height="207"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="679" height="0.0"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -400,6 +446,9 @@ Gw
                                                             </prototypeCellViews>
                                                         </tableColumn>
                                                     </tableColumns>
+                                                    <connections>
+                                                        <segue destination="Gjr-Qd-uUd" kind="show" id="7iq-AV-Ea6"/>
+                                                    </connections>
                                                 </tableView>
                                             </subviews>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -496,4 +545,7 @@ Gw
             <point key="canvasLocation" x="294.5" y="829"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="kQS-g0-h7U"/>
+    </inferredMetricsTieBreakers>
 </document>
