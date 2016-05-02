@@ -120,18 +120,10 @@ class MapImporter: NSObject, NSXMLParserDelegate {
 
         for maybeNode in nodes {
             let node = maybeNode!
-            if node.lat < minLat {
-                minLat = node.lat
-            }
-            if node.lat > maxLat {
-                maxLat = node.lat
-            }
-            if node.lon < minLon {
-                minLon = node.lon
-            }
-            if node.lon > maxLon {
-                maxLon = node.lon
-            }
+            minLat = min(minLat, node.lat)
+            maxLat = max(maxLat, node.lat)
+            minLon = min(minLon, node.lon)
+            maxLon = max(maxLon, node.lon)
         }
 
         let result = MapArea()

@@ -447,7 +447,7 @@ Gw
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
-                                                        <segue destination="Gjr-Qd-uUd" kind="show" id="7iq-AV-Ea6"/>
+                                                        <action trigger="doubleAction" selector="onStageDoubleClick:" target="XfG-lQ-9wD" id="xTT-41-tMb"/>
                                                     </connections>
                                                 </tableView>
                                             </subviews>
@@ -538,6 +538,7 @@ Gw
                     </view>
                     <connections>
                         <outlet property="mainTableView" destination="Dpb-qs-u2R" id="vfn-rQ-lND"/>
+                        <segue destination="Gjr-Qd-uUd" kind="show" identifier="ShowMapSegue" id="Ctm-1u-1tB"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -546,6 +547,6 @@ Gw
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="kQS-g0-h7U"/>
+        <segue reference="Ctm-1u-1tB"/>
     </inferredMetricsTieBreakers>
 </document>
