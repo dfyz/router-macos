@@ -3,11 +3,14 @@ import MapKit
 
 class MapViewController: NSViewController {
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var geocoderTextField: NSTextField!
 
     var stage: Stage!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        geocoderTextField.wantsLayer = true
 
         if let mapArea = stage?.mapArea {
             let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)

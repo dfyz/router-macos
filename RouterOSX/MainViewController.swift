@@ -96,7 +96,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         reloadData()
     }
 
-    @IBAction func onDeleteStageClick(sender: AnyObject) {
+    @IBAction func onDeleteItem(sender: AnyObject) {
         guard let stage = getSelectedStage() else {
             return
         }
