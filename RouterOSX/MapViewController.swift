@@ -7,17 +7,18 @@ struct GeocodingResult {
     let lon: Float64
 }
 
-class GeocodingResultTable: NSObject, NSTableViewDataSource {
+class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     let resultTable: NSScrollView
     let results: [GeocodingResult]
 
     init(parent: NSView, displayBelow: NSView, results: [GeocodingResult]) {
         self.results = results
+        let resultHeight = CGFloat(300.0)
         let tableFrame = NSMakeRect(
             displayBelow.frame.minX,
-            displayBelow.frame.minY - 400,
+            displayBelow.frame.minY - resultHeight,
             displayBelow.frame.width,
-            400
+            resultHeight
         )
         self.resultTable = NSScrollView(frame: tableFrame)
 
@@ -25,11 +26,16 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource {
 
         let innerTable = NSTableView(frame: tableFrame)
 
-        let column = NSTableColumn(identifier: "NameColumn")
-        innerTable.addTableColumn(column)
+        for col in [
+            NSTableColumn(identifier: "ImageColumn"),
+            NSTableColumn(identifier: "NameColumn"),
+        ] {
+            innerTable.addTableColumn(col)
+        }
 
         innerTable.headerView = nil
         innerTable.setDataSource(self)
+        innerTable.setDelegate(self)
         innerTable.reloadData()
 
         resultTable.documentView = innerTable
@@ -43,22 +49,22 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource {
         resultTable.rightAnchor.constraintEqualToAnchor(displayBelow.rightAnchor).active = true
     }
 
+    deinit {
+        resultTable.removeFromSuperview()
+    }
+
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         return results.count
     }
 
-    func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
-        return results[row].name
-    }
-
-    func dismiss() {
-        resultTable.removeFromSuperview()
+    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        return nil
     }
 }
 
 class MapViewController: NSViewController {
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var geocoderSearchField: NSSearchField!
+    @IBOutlet weak var geocoderTextField: NSTextField!
 
     var stage: Stage!
     var geocodingResults: GeocodingResultTable?
@@ -66,7 +72,7 @@ class MapViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        geocoderSearchField.wantsLayer = true
+        geocoderTextField.wantsLayer = true
 
         if let mapArea = stage?.mapArea {
             let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)
@@ -91,6 +97,6 @@ class MapViewController: NSViewController {
             GeocodingResult(name: "Def", lat: 0.0, lon: 0.0),
             GeocodingResult(name: "Ololo", lat: 0.0, lon: 0.0),
         ]
-        geocodingResults = GeocodingResultTable(parent: view, displayBelow: geocoderSearchField, results: results)
+        geocodingResults = GeocodingResultTable(parent: view, displayBelow: geocoderTextField, results: results)
     }
 }
