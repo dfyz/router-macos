@@ -415,30 +415,30 @@ Gw
                                     <real value="250"/>
                                 </holdingPriorities>
                             </splitView>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PBS-nO-0FA">
-                                <rect key="frame" x="20" y="220" width="273" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="Y5N-tI-evQ"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="ZhW-WA-f4J">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uhr-jk-ATJ">
+                                <rect key="frame" x="20" y="228" width="273" height="22"/>
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsWholeSearchString="YES" id="lkd-b8-wud">
+                                    <font key="font" metaFont="system" size="18"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                                </searchFieldCell>
+                                <connections>
+                                    <action selector="onGeocodingRequest:" target="Gjr-Qd-uUd" id="i8c-eK-G0e"/>
+                                </connections>
+                            </searchField>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="PBS-nO-0FA" firstAttribute="trailing" secondItem="SHD-qP-Gg0" secondAttribute="trailing" constant="-20" id="459-xG-XvH"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="height" secondItem="J0f-b9-IHB" secondAttribute="height" id="90G-gO-34h"/>
-                            <constraint firstItem="PBS-nO-0FA" firstAttribute="top" secondItem="SHD-qP-Gg0" secondAttribute="top" constant="20" id="AXf-r0-kPr"/>
-                            <constraint firstItem="PBS-nO-0FA" firstAttribute="leading" secondItem="SHD-qP-Gg0" secondAttribute="leading" constant="20" id="Lya-3i-d8A"/>
+                            <constraint firstItem="uhr-jk-ATJ" firstAttribute="trailing" secondItem="SHD-qP-Gg0" secondAttribute="trailing" constant="-20" id="HbA-Hv-BRq"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="width" secondItem="J0f-b9-IHB" secondAttribute="width" id="My1-1c-UQ4"/>
+                            <constraint firstItem="uhr-jk-ATJ" firstAttribute="leading" secondItem="SHD-qP-Gg0" secondAttribute="leading" constant="20" id="WmK-CJ-IiR"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="top" secondItem="J0f-b9-IHB" secondAttribute="top" id="aGU-sS-3YI"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="leading" secondItem="J0f-b9-IHB" secondAttribute="leading" id="dj5-Me-BLm"/>
+                            <constraint firstItem="uhr-jk-ATJ" firstAttribute="top" secondItem="SHD-qP-Gg0" secondAttribute="top" constant="20" id="t8U-9l-FQN"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="geocoderTextField" destination="PBS-nO-0FA" id="qgf-Sw-Qvs"/>
+                        <outlet property="geocoderSearchField" destination="uhr-jk-ATJ" id="r2o-2W-qVK"/>
                         <outlet property="mapView" destination="SHD-qP-Gg0" id="MRh-Pb-pXI"/>
                     </connections>
                 </viewController>
@@ -454,7 +454,7 @@ Gw
                         <rect key="frame" x="0.0" y="0.0" width="681" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z7j-I6-Gzn">
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z7j-I6-Gzn">
                                 <rect key="frame" x="0.0" y="10" width="682" height="260"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UAZ-3e-Zci">
@@ -464,7 +464,7 @@ Gw
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Tw5-Wz-JnH" viewBased="YES" id="Dpb-qs-u2R">
-                                                    <rect key="frame" x="0.0" y="0.0" width="680" height="207"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="680" height="0.0"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -595,10 +595,10 @@ Gw
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
                                     </scrollView>
-                                    <stackView distribution="fillProportionally" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fs9-ZN-DdJ">
+                                    <stackView distribution="fillProportionally" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fs9-ZN-DdJ">
                                         <rect key="frame" x="10" y="0.0" width="662" height="21"/>
                                         <subviews>
-                                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pYk-PI-0eE">
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pYk-PI-0eE">
                                                 <rect key="frame" x="-6" y="-7" width="413" height="32"/>
                                                 <buttonCell key="cell" type="push" title="Copy existing stage" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="kHz-UW-V8f">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -608,7 +608,7 @@ Gw
                                                     <action selector="onCopyExistingStageClick:" target="XfG-lQ-9wD" id="KOa-mn-B7S"/>
                                                 </connections>
                                             </button>
-                                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YPT-Va-nq5">
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YPT-Va-nq5">
                                                 <rect key="frame" x="403" y="-7" width="265" height="32"/>
                                                 <buttonCell key="cell" type="push" title="New stage" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="BNJ-J6-gX5">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -661,6 +661,6 @@ Gw
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="kQS-g0-h7U"/>
+        <segue reference="Ctm-1u-1tB"/>
     </inferredMetricsTieBreakers>
 </document>
