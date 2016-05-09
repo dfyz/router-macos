@@ -155,7 +155,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
     }
 }
 
-class MapViewController: NSViewController {
+class MapViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var geocoderTextField: NSTextField!
 
@@ -166,6 +166,7 @@ class MapViewController: NSViewController {
         super.viewDidLoad()
 
         geocoderTextField.wantsLayer = true
+        geocoderTextField.delegate = self
 
         if let mapArea = stage?.mapArea {
             let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)
@@ -208,5 +209,17 @@ class MapViewController: NSViewController {
 
             geocoder.geocode()
         }
+    }
+
+    func control(
+        control: NSControl,
+        textView: NSTextView,
+        completions words: [String],
+        forPartialWordRange charRange: NSRange,
+        indexOfSelectedItem index: UnsafeMutablePointer<Int>
+    ) -> [String]
+    {
+        self.geocodingResults = nil
+        return []
     }
 }

@@ -430,8 +430,8 @@ Gw
                                     <real value="250"/>
                                 </holdingPriorities>
                             </splitView>
-                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
-                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="29"/>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
+                                <rect key="frame" x="20" y="220" width="273" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="dn8-CW-S9X"/>
                                 </constraints>
