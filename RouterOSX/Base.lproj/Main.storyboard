@@ -61,6 +61,21 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Edit" id="mcM-XZ-onp">
                                     <items>
+                                        <menuItem title="Cut" keyEquivalent="x" id="Rm1-Zv-dWp">
+                                            <connections>
+                                                <action selector="cut:" target="Oky-zY-oP4" id="NRJ-HQ-2t2"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Copy" keyEquivalent="c" id="CsA-lC-3I8">
+                                            <connections>
+                                                <action selector="copy:" target="Oky-zY-oP4" id="Qn4-Sp-Lhi"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Paste" keyEquivalent="v" id="O3f-ua-EFd">
+                                            <connections>
+                                                <action selector="paste:" target="Oky-zY-oP4" id="VDP-XQ-TOH"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Delete" keyEquivalent="d" id="9kh-If-YJD">
                                             <connections>
                                                 <action selector="onDeleteItem:" target="Ady-hI-5gd" id="49e-gT-rlf"/>

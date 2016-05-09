@@ -44,6 +44,9 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         resultTable.rightAnchor.constraintEqualToAnchor(displayBelow.rightAnchor).active = true
 
         innerTable.sizeLastColumnToFit()
+
+        innerTable.nextKeyView = displayBelow
+        displayBelow.nextKeyView = innerTable
     }
 
     deinit {
