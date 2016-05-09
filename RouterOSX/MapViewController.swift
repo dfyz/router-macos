@@ -1,6 +1,12 @@
 import Cocoa
 import MapKit
 
+class VerticallyCenteredTextField: NSTextField {
+    override func viewWillDraw() {
+        self.topAnchor.constraintEqualToAnchor(superview!.topAnchor, constant: 50.0).active = true
+    }
+}
+
 class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     let resultTable: NSScrollView
     let innerTable: NSTableView
@@ -28,6 +34,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
 
         resultTable.documentView = innerTable
         resultTable.hasVerticalScroller = true
+        resultTable.hasHorizontalScroller = true
 
         parent.window?.contentView?.addSubview(resultTable)
 
@@ -35,6 +42,8 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         resultTable.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
         resultTable.topAnchor.constraintEqualToAnchor(displayBelow.bottomAnchor).active = true
         resultTable.rightAnchor.constraintEqualToAnchor(displayBelow.rightAnchor).active = true
+
+        innerTable.sizeLastColumnToFit()
     }
 
     deinit {
@@ -43,11 +52,10 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
 
     func addColumns(table: NSTableView) {
         let imageColumn = NSTableColumn(identifier: "ImageColumn")
-        imageColumn.width = 40
+        imageColumn.width = 30
         table.addTableColumn(imageColumn)
 
         let nameColumn = NSTableColumn(identifier: "NameColumn")
-        nameColumn.width = 400
         table.addTableColumn(nameColumn)
     }
 
@@ -73,18 +81,22 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             imageCell.image = result.image
             return imageCell
         case "NameColumn":
-            let textCell = NSTextField()
+            let textCell = VerticallyCenteredTextField()
             textCell.drawsBackground = false
             textCell.bezeled = false
             textCell.editable = false
             textCell.selectable = false
             textCell.stringValue = result.text
             textCell.textColor = result.color
-            textCell.font = NSFont.controlContentFontOfSize(18.0)
+            textCell.font = NSFont.controlContentFontOfSize(24.0)
             return textCell
         default:
             fatalError("Unknown column " + columnIdentifier)
         }
+    }
+
+    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        return CGFloat(30.0)
     }
 
     private func getTableRowParams(result: GeocodingResult) -> TableRowParams {
@@ -134,6 +146,10 @@ class MapViewController: NSViewController {
         }
 
         view.window?.title = "\(stage.competitionName) — \(stage.stageNumber)"
+
+        if let screenFrame = NSScreen.mainScreen()?.visibleFrame {
+            view.window?.setFrame(screenFrame, display: true)
+        }
     }
 
     @IBAction func onGeocodingRequest(sender: AnyObject) {

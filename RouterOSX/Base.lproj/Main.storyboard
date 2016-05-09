@@ -416,12 +416,12 @@ Gw
                                 </holdingPriorities>
                             </splitView>
                             <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
-                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="27"/>
+                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="dn8-CW-S9X"/>
                                 </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="onE-IG-d1a">
-                                    <font key="font" metaFont="system" size="18"/>
+                                    <font key="font" metaFont="system" size="20"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>

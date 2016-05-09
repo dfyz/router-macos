@@ -121,6 +121,9 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
     }
 
     @IBAction func onStageDoubleClick(sender: AnyObject) {
+        if getSelectedStage() == nil {
+            return
+        }
         performSegueWithIdentifier("ShowMapSegue", sender: self)
     }
 
