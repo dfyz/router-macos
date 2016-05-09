@@ -9,8 +9,8 @@ class VerticallyCenteredTextField: NSTextField {
 
 class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     let resultTable: NSScrollView
-    let innerTable: NSTableView
     var results: [GeocodingResult]
+    private let innerTable: NSTableView
 
     init(parent: NSView, displayBelow: NSView, results: [GeocodingResult]) {
         self.results = results
@@ -50,13 +50,37 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         resultTable.removeFromSuperview()
     }
 
-    func addColumns(table: NSTableView) {
-        let imageColumn = NSTableColumn(identifier: "ImageColumn")
-        imageColumn.width = 30
-        table.addTableColumn(imageColumn)
+    func addResults(results: [GeocodingResult]) {
+        var resultsByProvider = [String: [GeocodingResult]]()
+        for result in self.results + results {
+            var key = ""
+            switch result {
+            case .Ok(let place):
+                key = place.provider
+            case .Error(let failure):
+                key = failure.provider
+            }
+            var currentResults = resultsByProvider[key] ?? []
+            currentResults.append(result)
+            resultsByProvider[key] = currentResults
+        }
 
-        let nameColumn = NSTableColumn(identifier: "NameColumn")
-        table.addTableColumn(nameColumn)
+        var newResults = [GeocodingResult]()
+        let keys = Array(resultsByProvider.keys)
+        var added = true
+        while added {
+            added = false
+            for key in keys {
+                if var currentResults = resultsByProvider[key] where !currentResults.isEmpty {
+                    newResults.append(currentResults.first!)
+                    currentResults.removeAtIndex(0)
+                    resultsByProvider[key] = currentResults
+                    added = true
+                }
+            }
+        }
+        self.results = newResults
+        self.innerTable.reloadData()
     }
 
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
@@ -117,6 +141,15 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         let image = NSImage(named: "\(provider).ico")
         return TableRowParams(image: image, text: text, color: color)
     }
+
+    private func addColumns(table: NSTableView) {
+        let imageColumn = NSTableColumn(identifier: "ImageColumn")
+        imageColumn.width = 30
+        table.addTableColumn(imageColumn)
+
+        let nameColumn = NSTableColumn(identifier: "NameColumn")
+        table.addTableColumn(nameColumn)
+    }
 }
 
 class MapViewController: NSViewController {
@@ -167,8 +200,7 @@ class MapViewController: NSViewController {
                         results: []
                     )
                 }
-                self.geocodingResults!.results.appendContentsOf(results)
-                self.geocodingResults!.innerTable.reloadData()
+                self.geocodingResults!.addResults(results)
             }
 
             geocoder.geocode()
