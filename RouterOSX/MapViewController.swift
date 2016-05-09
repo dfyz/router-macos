@@ -1,15 +1,10 @@
 import Cocoa
 import MapKit
 
-struct GeocodingResult {
-    let name: String
-    let lat: Float64
-    let lon: Float64
-}
-
 class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     let resultTable: NSScrollView
-    let results: [GeocodingResult]
+    let innerTable: NSTableView
+    var results: [GeocodingResult]
 
     init(parent: NSView, displayBelow: NSView, results: [GeocodingResult]) {
         self.results = results
@@ -21,17 +16,10 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             resultHeight
         )
         self.resultTable = NSScrollView(frame: tableFrame)
-
+        self.innerTable = NSTableView(frame: tableFrame)
         super.init()
 
-        let innerTable = NSTableView(frame: tableFrame)
-
-        for col in [
-            NSTableColumn(identifier: "ImageColumn"),
-            NSTableColumn(identifier: "NameColumn"),
-        ] {
-            innerTable.addTableColumn(col)
-        }
+        addColumns(innerTable)
 
         innerTable.headerView = nil
         innerTable.setDataSource(self)
@@ -53,12 +41,69 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         resultTable.removeFromSuperview()
     }
 
+    func addColumns(table: NSTableView) {
+        let imageColumn = NSTableColumn(identifier: "ImageColumn")
+        imageColumn.width = 40
+        table.addTableColumn(imageColumn)
+
+        let nameColumn = NSTableColumn(identifier: "NameColumn")
+        nameColumn.width = 400
+        table.addTableColumn(nameColumn)
+    }
+
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         return results.count
     }
 
+    struct TableRowParams {
+        let image: NSImage?
+        let text: String
+        let color: NSColor
+    }
+
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        return nil
+        guard let columnIdentifier = tableColumn?.identifier else {
+            return nil
+        }
+
+        let result = getTableRowParams(results[row])
+        switch columnIdentifier {
+        case "ImageColumn":
+            let imageCell = NSImageView()
+            imageCell.image = result.image
+            return imageCell
+        case "NameColumn":
+            let textCell = NSTextField()
+            textCell.drawsBackground = false
+            textCell.bezeled = false
+            textCell.editable = false
+            textCell.selectable = false
+            textCell.stringValue = result.text
+            textCell.textColor = result.color
+            textCell.font = NSFont.controlContentFontOfSize(18.0)
+            return textCell
+        default:
+            fatalError("Unknown column " + columnIdentifier)
+        }
+    }
+
+    private func getTableRowParams(result: GeocodingResult) -> TableRowParams {
+        var provider = ""
+        var text = ""
+        var color = NSColor.blackColor()
+
+        switch result {
+        case .Error(let failure):
+            provider = failure.provider
+            text = "Error: \(failure.error)"
+            color = NSColor.redColor()
+        case .Ok(let place):
+            provider = place.provider
+            text = place.name
+        }
+
+        let image = NSImage(named: "\(provider).ico")
+        return TableRowParams(image: image, text: text, color: color)
     }
 }
 
@@ -92,11 +137,25 @@ class MapViewController: NSViewController {
     }
 
     @IBAction func onGeocodingRequest(sender: AnyObject) {
-        let results = [
-            GeocodingResult(name: "Abc", lat: 0.0, lon: 0.0),
-            GeocodingResult(name: "Def", lat: 0.0, lon: 0.0),
-            GeocodingResult(name: "Ololo", lat: 0.0, lon: 0.0),
-        ]
-        geocodingResults = GeocodingResultTable(parent: view, displayBelow: geocoderTextField, results: results)
+        self.geocodingResults = nil
+
+        let place = "\(geocoderTextField.stringValue) \(stage?.competitionName ?? String())"
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let geocoder = Geocoder(place: place) {
+                results in
+
+                if self.geocodingResults == nil {
+                    self.geocodingResults = GeocodingResultTable(
+                        parent: self.view,
+                        displayBelow: self.geocoderTextField,
+                        results: []
+                    )
+                }
+                self.geocodingResults!.results.appendContentsOf(results)
+                self.geocodingResults!.innerTable.reloadData()
+            }
+
+            geocoder.geocode()
+        }
     }
 }

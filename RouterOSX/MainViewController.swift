@@ -31,8 +31,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
             let roundedCenterLon = String(format: "%.6f", center.centerLon)
             text = "(\(roundedCenterLat), \(roundedCenterLon))"
         default:
-            print("Unknown column \(columnIdentifier)")
-            return nil
+            fatalError("Unknown column " + columnIdentifier)
         }
 
         let cellIdentifier = columnIdentifier.stringByReplacingOccurrencesOfString("Column", withString: "Cell")

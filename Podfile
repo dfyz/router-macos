@@ -5,5 +5,7 @@ use_frameworks!
 
 target 'RouterOSX' do
     pod 'RealmSwift'
+    pod 'Alamofire'
+    pod 'SwiftyJSON'
 end
 

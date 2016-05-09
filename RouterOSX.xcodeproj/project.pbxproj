@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032A34195ED84789B44148 /* Geocoder.swift */; };
 		4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F131CBB00E1001F582E /* AppDelegate.swift */; };
 		4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F151CBB00E1001F582E /* MainViewController.swift */; };
 		4F273F181CBB00E1001F582E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F273F171CBB00E1001F582E /* Assets.xcassets */; };
@@ -20,12 +21,16 @@
 		4F96B75E1CC0503F0032196E /* FlatBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B75A1CC0503F0032196E /* FlatBuffers.swift */; };
 		4F96B75F1CC0503F0032196E /* LazyVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B75B1CC0503F0032196E /* LazyVector.swift */; };
 		4F96B7641CC075800032196E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7631CC075800032196E /* MapViewController.swift */; };
+		4FAE23621CDFDB8A00BCE3F2 /* yandex.ico in Resources */ = {isa = PBXBuildFile; fileRef = 4FAE23611CDFDB8A00BCE3F2 /* yandex.ico */; };
+		4FAE23661CDFDE0F00BCE3F2 /* google.ico in Resources */ = {isa = PBXBuildFile; fileRef = 4FAE23641CDFDE0F00BCE3F2 /* google.ico */; };
+		4FAE23671CDFDE0F00BCE3F2 /* osm.ico in Resources */ = {isa = PBXBuildFile; fileRef = 4FAE23651CDFDE0F00BCE3F2 /* osm.ico */; };
 		4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC1A0A81CBC3D3400986367 /* RealmModel.swift */; };
 		4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD2C3D21CC079D900849C58 /* MapKit.framework */; };
 		E01DB763ABD4DD6AB134FBA0 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F032A34195ED84789B44148 /* Geocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geocoder.swift; sourceTree = "<group>"; };
 		4F273F101CBB00E1001F582E /* RouterOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RouterOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F273F131CBB00E1001F582E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4F273F151CBB00E1001F582E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -41,6 +46,9 @@
 		4F96B75A1CC0503F0032196E /* FlatBuffers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatBuffers.swift; path = FlatBuffersSwift/FlatBuffers.swift; sourceTree = "<group>"; };
 		4F96B75B1CC0503F0032196E /* LazyVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LazyVector.swift; path = FlatBuffersSwift/LazyVector.swift; sourceTree = "<group>"; };
 		4F96B7631CC075800032196E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		4FAE23611CDFDB8A00BCE3F2 /* yandex.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = yandex.ico; sourceTree = SOURCE_ROOT; };
+		4FAE23641CDFDE0F00BCE3F2 /* google.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = google.ico; sourceTree = SOURCE_ROOT; };
+		4FAE23651CDFDE0F00BCE3F2 /* osm.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = osm.ico; sourceTree = SOURCE_ROOT; };
 		4FC1A0A81CBC3D3400986367 /* RealmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmModel.swift; sourceTree = "<group>"; };
 		4FD2C3D21CC079D900849C58 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		79B882A5611C75CF537432E6 /* Pods_RouterOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RouterOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +90,7 @@
 		4F273F121CBB00E1001F582E /* RouterOSX */ = {
 			isa = PBXGroup;
 			children = (
+				4FAE23631CDFDD5E00BCE3F2 /* Icons */,
 				4F96B7571CC0502D0032196E /* FlatBuffersSwift */,
 				4F96B72F1CBEF8BE0032196E /* Models */,
 				4F96B72C1CBEF7A60032196E /* Backend */,
@@ -108,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				4F96B72D1CBEF7D60032196E /* ImportMap.swift */,
+				2F032A34195ED84789B44148 /* Geocoder.swift */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -131,6 +141,16 @@
 				4F96B75B1CC0503F0032196E /* LazyVector.swift */,
 			);
 			name = FlatBuffersSwift;
+			sourceTree = "<group>";
+		};
+		4FAE23631CDFDD5E00BCE3F2 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				4FAE23641CDFDE0F00BCE3F2 /* google.ico */,
+				4FAE23651CDFDE0F00BCE3F2 /* osm.ico */,
+				4FAE23611CDFDB8A00BCE3F2 /* yandex.ico */,
+			);
+			name = Icons;
 			sourceTree = "<group>";
 		};
 		502D152B27A93E832B167D86 /* Frameworks */ = {
@@ -214,6 +234,9 @@
 			files = (
 				4F273F181CBB00E1001F582E /* Assets.xcassets in Resources */,
 				4F96B7331CC03F570032196E /* FlatBuffersModel.fbs in Resources */,
+				4FAE23621CDFDB8A00BCE3F2 /* yandex.ico in Resources */,
+				4FAE23671CDFDE0F00BCE3F2 /* osm.ico in Resources */,
+				4FAE23661CDFDE0F00BCE3F2 /* google.ico in Resources */,
 				4F273F1B1CBB00E1001F582E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,6 +307,7 @@
 				4F96B75D1CC0503F0032196E /* FlatBufferReader.swift in Sources */,
 				4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */,
 				4F8BDF851CBDA38400EAF4D7 /* AddStageViewController.swift in Sources */,
+				2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
