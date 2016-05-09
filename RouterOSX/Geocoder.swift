@@ -31,8 +31,8 @@ class Geocoder {
     func geocode() {
         let geocoders = [
             geocodeYandex,
-            // geocodeGoogle,
-            // geocodeOsm,
+            geocodeGoogle,
+            geocodeOsm,
         ]
 
         for coder in geocoders {
@@ -69,6 +69,74 @@ class Geocoder {
                 provider: providerName,
                 lat: Double(coords[1]) ?? 0.0,
                 lon: Double(coords[0]) ?? 0.0
+            )
+        }
+
+        genericGeocode(request, providerName, extractPoints, convertPoint)
+    }
+
+    func geocodeGoogle(place: String) {
+        let request = Alamofire.request(
+            .GET,
+            "https://maps.googleapis.com/maps/api/geocode/json",
+            parameters: ["address": place]
+        )
+
+        let providerName = "google"
+
+        let extractPoints = {
+            (json: JSON) in json["results"]
+        }
+
+        let convertPoint = {
+            (point: JSON) -> GeocodedPlace? in
+
+            guard let name = point["formatted_address"].string else {
+                return nil
+            }
+            let coords = point["geometry"]["location"]
+            return GeocodedPlace(
+                name: name,
+                provider: providerName,
+                lat: coords["lat"].double ?? 0.0,
+                lon: coords["lon"].double ?? 0.0
+            )
+        }
+
+        genericGeocode(request, providerName, extractPoints, convertPoint)
+    }
+
+    func geocodeOsm(place: String) {
+        let request = Alamofire.request(
+            .GET,
+            "https://nominatim.openstreetmap.org/search",
+            parameters: ["q": place, "format": "json"]
+        )
+
+        let providerName = "osm"
+
+        let extractPoints = {
+            (json: JSON) in json
+        }
+
+        let convertPoint = {
+            (point: JSON) -> GeocodedPlace? in
+
+            guard let name = point["display_name"].string else {
+                return nil
+            }
+            guard let lat = point["lat"].string else {
+                return nil
+            }
+            guard let lon = point["lon"].string else {
+                return nil
+            }
+
+            return GeocodedPlace(
+                name: name,
+                provider: providerName,
+                lat: Double(lat) ?? 0.0,
+                lon: Double(lon) ?? 0.0
             )
         }
 
