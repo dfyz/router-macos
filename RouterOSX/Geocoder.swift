@@ -99,7 +99,7 @@ class Geocoder {
                 name: name,
                 provider: providerName,
                 lat: coords["lat"].double ?? 0.0,
-                lon: coords["lon"].double ?? 0.0
+                lon: coords["lng"].double ?? 0.0
             )
         }
 

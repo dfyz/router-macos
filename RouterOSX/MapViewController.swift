@@ -8,12 +8,18 @@ class VerticallyCenteredTextField: NSTextField {
 }
 
 class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate {
+    weak var mapView: MapViewController!
     let resultTable: NSScrollView
-    var results: [GeocodingResult]
+
+    private var results: [GeocodingResult]
     private let innerTable: NSTableView
 
-    init(parent: NSView, displayBelow: NSView, results: [GeocodingResult]) {
+    init(mapView: MapViewController, results: [GeocodingResult]) {
+        self.mapView = mapView
         self.results = results
+
+        let displayBelow = mapView.geocoderTextField
+
         let resultHeight = CGFloat(300.0)
         let tableFrame = NSMakeRect(
             displayBelow.frame.minX,
@@ -27,37 +33,42 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
 
         addColumns(innerTable)
 
-        innerTable.headerView = nil
-        innerTable.setDataSource(self)
-        innerTable.setDelegate(self)
-        innerTable.reloadData()
+        self.innerTable.headerView = nil
+        self.innerTable.setDataSource(self)
+        self.innerTable.setDelegate(self)
+        self.innerTable.reloadData()
 
-        resultTable.documentView = innerTable
-        resultTable.hasVerticalScroller = true
-        resultTable.hasHorizontalScroller = true
+        self.resultTable.documentView = self.innerTable
+        self.resultTable.hasVerticalScroller = true
+        self.resultTable.hasHorizontalScroller = true
 
-        parent.window?.contentView?.addSubview(resultTable)
+        mapView.view.window?.contentView?.addSubview(self.resultTable)
 
-        resultTable.autoresizesSubviews = true
-        resultTable.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
-        resultTable.topAnchor.constraintEqualToAnchor(displayBelow.bottomAnchor).active = true
-        resultTable.rightAnchor.constraintEqualToAnchor(displayBelow.rightAnchor).active = true
+        self.resultTable.autoresizesSubviews = true
+        self.resultTable.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
+        self.resultTable.topAnchor.constraintEqualToAnchor(displayBelow.bottomAnchor).active = true
+        self.resultTable.rightAnchor.constraintEqualToAnchor(displayBelow.rightAnchor).active = true
 
-        innerTable.sizeLastColumnToFit()
+        self.innerTable.sizeLastColumnToFit()
 
-        innerTable.nextKeyView = displayBelow
-        displayBelow.nextKeyView = innerTable
+        self.innerTable.nextKeyView = displayBelow
+        displayBelow.nextKeyView = self.innerTable
 
-        innerTable.target = self
-        innerTable.action = #selector(GeocodingResultTable.lol)
+        self.innerTable.target = self
+        self.innerTable.action = #selector(GeocodingResultTable.addPoint)
     }
 
     deinit {
-        resultTable.removeFromSuperview()
+        self.resultTable.removeFromSuperview()
     }
 
-    func lol(sender: NSControl) {
-        print("lol")
+    func addPoint(sender: NSControl) {
+        let placeIndex = self.innerTable.selectedRow
+        if placeIndex >= 0 {
+            if case .Ok(let place) = self.results[placeIndex] {
+                mapView.addPoint(mapView.geocoderTextField.stringValue, lat: place.lat, lon: place.lon)
+            }
+        }
     }
 
     func addResults(results: [GeocodingResult]) {
@@ -183,6 +194,9 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
             mapView.region = MKCoordinateRegion(center: center, span: span)
         }
 
+        mapView.pitchEnabled = false
+        mapView.rotateEnabled = false
+
         hideGeocodingResults()
     }
 
@@ -234,6 +248,16 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
         return []
     }
 
+    func addPoint(name: String, lat: Double, lon: Double) {
+        let point = MKPointAnnotation()
+        let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        point.coordinate = coords
+        point.title = name
+        mapView.addAnnotation(point)
+        mapView.setCenterCoordinate(coords, animated: true)
+        hideGeocodingResults()
+    }
+
     private func hideGeocodingResults() {
         self.geocodingResults = nil
         self.geocoderClearButton.hidden = true
@@ -241,8 +265,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
 
     private func showGeocodingResults() {
         self.geocodingResults = GeocodingResultTable(
-            parent: self.view,
-            displayBelow: self.geocoderTextField,
+            mapView: self,
             results: []
         )
         self.geocoderClearButton.hidden = false
