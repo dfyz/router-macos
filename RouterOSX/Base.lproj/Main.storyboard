@@ -430,8 +430,8 @@ Gw
                                     <real value="250"/>
                                 </holdingPriorities>
                             </splitView>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
-                                <rect key="frame" x="20" y="220" width="273" height="30"/>
+                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
+                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="dn8-CW-S9X"/>
                                 </constraints>
@@ -444,18 +444,32 @@ Gw
                                     <action selector="onGeocodingRequest:" target="Gjr-Qd-uUd" id="XBd-He-4Ti"/>
                                 </connections>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ihI-dn-GBS">
+                                <rect key="frame" x="274" y="220" width="14" height="30"/>
+                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSStopProgressFreestandingTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="oLY-1J-C8z">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="onGeocoderClear:" target="Gjr-Qd-uUd" id="rER-8e-xL9"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="height" secondItem="J0f-b9-IHB" secondAttribute="height" id="90G-gO-34h"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="width" secondItem="J0f-b9-IHB" secondAttribute="width" id="My1-1c-UQ4"/>
                             <constraint firstItem="t4N-2x-dmO" firstAttribute="trailing" secondItem="SHD-qP-Gg0" secondAttribute="trailing" constant="-20" id="Nbd-MA-Tee"/>
+                            <constraint firstItem="ihI-dn-GBS" firstAttribute="trailing" secondItem="t4N-2x-dmO" secondAttribute="trailing" constant="-5" id="Wsz-6j-ZoI"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="top" secondItem="J0f-b9-IHB" secondAttribute="top" id="aGU-sS-3YI"/>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="leading" secondItem="J0f-b9-IHB" secondAttribute="leading" id="dj5-Me-BLm"/>
                             <constraint firstItem="t4N-2x-dmO" firstAttribute="leading" secondItem="SHD-qP-Gg0" secondAttribute="leading" constant="20" id="eqr-W9-Z0G"/>
+                            <constraint firstItem="ihI-dn-GBS" firstAttribute="centerY" secondItem="t4N-2x-dmO" secondAttribute="centerY" id="h5C-T5-rst"/>
                             <constraint firstItem="t4N-2x-dmO" firstAttribute="top" secondItem="SHD-qP-Gg0" secondAttribute="top" constant="20" id="mP9-dM-IWp"/>
+                            <constraint firstItem="ihI-dn-GBS" firstAttribute="height" secondItem="t4N-2x-dmO" secondAttribute="height" id="pnl-Rp-vIQ"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="geocoderClearButton" destination="ihI-dn-GBS" id="tof-ZF-BDe"/>
                         <outlet property="geocoderTextField" destination="t4N-2x-dmO" id="jPi-Wy-tRk"/>
                         <outlet property="mapView" destination="SHD-qP-Gg0" id="MRh-Pb-pXI"/>
                     </connections>
@@ -678,6 +692,9 @@ Gw
             <point key="canvasLocation" x="294.5" y="829"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Ctm-1u-1tB"/>
     </inferredMetricsTieBreakers>

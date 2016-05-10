@@ -47,10 +47,17 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
 
         innerTable.nextKeyView = displayBelow
         displayBelow.nextKeyView = innerTable
+
+        innerTable.target = self
+        innerTable.action = #selector(GeocodingResultTable.lol)
     }
 
     deinit {
         resultTable.removeFromSuperview()
+    }
+
+    func lol(sender: NSControl) {
+        print("lol")
     }
 
     func addResults(results: [GeocodingResult]) {
@@ -158,6 +165,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
 class MapViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var geocoderTextField: NSTextField!
+    @IBOutlet weak var geocoderClearButton: NSButton!
 
     var stage: Stage!
     var geocodingResults: GeocodingResultTable?
@@ -166,6 +174,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
         super.viewDidLoad()
 
         geocoderTextField.wantsLayer = true
+        geocoderClearButton.wantsLayer = true
         geocoderTextField.delegate = self
 
         if let mapArea = stage?.mapArea {
@@ -173,6 +182,8 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
             let span = MKCoordinateSpan(latitudeDelta: mapArea.height, longitudeDelta: mapArea.width)
             mapView.region = MKCoordinateRegion(center: center, span: span)
         }
+
+        hideGeocodingResults()
     }
 
     override func viewWillAppear() {
@@ -190,7 +201,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
     }
 
     @IBAction func onGeocodingRequest(sender: AnyObject) {
-        self.geocodingResults = nil
+        hideGeocodingResults()
 
         let place = "\(geocoderTextField.stringValue) \(stage?.competitionName ?? String())"
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
@@ -198,17 +209,17 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
                 results in
 
                 if self.geocodingResults == nil {
-                    self.geocodingResults = GeocodingResultTable(
-                        parent: self.view,
-                        displayBelow: self.geocoderTextField,
-                        results: []
-                    )
+                    self.showGeocodingResults()
                 }
                 self.geocodingResults!.addResults(results)
             }
 
             geocoder.geocode()
         }
+    }
+
+    @IBAction func onGeocoderClear(sender: AnyObject) {
+        hideGeocodingResults()
     }
 
     func control(
@@ -219,7 +230,21 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
         indexOfSelectedItem index: UnsafeMutablePointer<Int>
     ) -> [String]
     {
-        self.geocodingResults = nil
+        hideGeocodingResults()
         return []
+    }
+
+    private func hideGeocodingResults() {
+        self.geocodingResults = nil
+        self.geocoderClearButton.hidden = true
+    }
+
+    private func showGeocodingResults() {
+        self.geocodingResults = GeocodingResultTable(
+            parent: self.view,
+            displayBelow: self.geocoderTextField,
+            results: []
+        )
+        self.geocoderClearButton.hidden = false
     }
 }
