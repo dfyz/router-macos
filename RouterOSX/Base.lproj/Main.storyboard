@@ -324,7 +324,7 @@ Gw
                             <splitView arrangesAllSubviews="NO" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L3R-fm-esx">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                                 <subviews>
-                                    <mapView mapType="standard" id="SHD-qP-Gg0">
+                                    <mapView mapType="standard" rotateEnabled="NO" pitchEnabled="NO" id="SHD-qP-Gg0">
                                         <rect key="frame" x="0.0" y="0.0" width="313" height="270"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     </mapView>

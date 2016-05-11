@@ -1,9 +1,13 @@
 import Cocoa
 import MapKit
 
-class VerticallyCenteredTextField: NSTextField {
-    override func viewWillDraw() {
-        self.topAnchor.constraintEqualToAnchor(superview!.topAnchor, constant: 50.0).active = true
+class NSTableViewWithActionOnEnter: NSTableView {
+    override func keyDown(event: NSEvent) {
+        if event.keyCode == 0x24 {
+            self.sendAction(self.action, to: self.target)
+        } else {
+            super.keyDown(event)
+        }
     }
 }
 
@@ -28,7 +32,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             resultHeight
         )
         self.resultTable = NSScrollView(frame: tableFrame)
-        self.innerTable = NSTableView(frame: tableFrame)
+        self.innerTable = NSTableViewWithActionOnEnter(frame: tableFrame)
         super.init()
 
         addColumns(innerTable)
@@ -102,6 +106,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         }
         self.results = newResults
         self.innerTable.reloadData()
+        self.resultTable.becomeFirstResponder()
     }
 
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
@@ -126,7 +131,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             imageCell.image = result.image
             return imageCell
         case "NameColumn":
-            let textCell = VerticallyCenteredTextField()
+            let textCell = NSTextField()
             textCell.drawsBackground = false
             textCell.bezeled = false
             textCell.editable = false
@@ -173,13 +178,14 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
     }
 }
 
-class MapViewController: NSViewController, NSTextFieldDelegate {
+class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var geocoderTextField: NSTextField!
     @IBOutlet weak var geocoderClearButton: NSButton!
 
     var stage: Stage!
     var geocodingResults: GeocodingResultTable?
+    var mapMonitor: AnyObject!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -194,8 +200,13 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
             mapView.region = MKCoordinateRegion(center: center, span: span)
         }
 
-        mapView.pitchEnabled = false
-        mapView.rotateEnabled = false
+        let osmTileTemplate = "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        let osmOverlay = MKTileOverlay(URLTemplate: osmTileTemplate)
+        osmOverlay.canReplaceMapContent = true
+        mapView.addOverlay(osmOverlay)
+
+        self.mapMonitor = NSEvent.addLocalMonitorForEventsMatchingMask(.RightMouseUpMask, handler: onMapRightClick)
+        mapView.delegate = self
 
         hideGeocodingResults()
     }
@@ -212,6 +223,10 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
         if let screenFrame = NSScreen.mainScreen()?.visibleFrame {
             view.window?.setFrame(screenFrame, display: true)
         }
+    }
+
+    override func viewWillDisappear() {
+        NSEvent.removeMonitor(mapMonitor)
     }
 
     @IBAction func onGeocodingRequest(sender: AnyObject) {
@@ -236,6 +251,18 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
         hideGeocodingResults()
     }
 
+    func onMapRightClick(event: NSEvent) -> NSEvent? {
+        if event.window == view.window {
+            let locationInMapView = mapView.convertPoint(event.locationInWindow, fromView: nil)
+            let clickedCoords = mapView.convertPoint(locationInMapView, toCoordinateFromView: mapView)
+            let clickedPoint = MKMapPointForCoordinate(clickedCoords)
+            if MKMapRectContainsPoint(mapView.visibleMapRect, clickedPoint) {
+                addPoint("HERE BE DRAGONS", lat: clickedCoords.latitude, lon: clickedCoords.longitude)
+            }
+        }
+        return event
+    }
+
     func control(
         control: NSControl,
         textView: NSTextView,
@@ -246,6 +273,13 @@ class MapViewController: NSViewController, NSTextFieldDelegate {
     {
         hideGeocodingResults()
         return []
+    }
+
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        guard let osmOverlay = overlay as? MKTileOverlay else {
+            return MKOverlayRenderer()
+        }
+        return MKTileOverlayRenderer(tileOverlay: osmOverlay)
     }
 
     func addPoint(name: String, lat: Double, lon: Double) {
