@@ -200,8 +200,10 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         realm = try! Realm()
 
         geocoderTextField.wantsLayer = true
-        geocoderClearButton.wantsLayer = true
         geocoderTextField.delegate = self
+        geocoderTextField.becomeFirstResponder()
+
+        geocoderClearButton.wantsLayer = true
 
         let mapArea = stage.mapArea!
         let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)
@@ -262,6 +264,28 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         hideGeocodingResults()
     }
 
+    @IBAction func onPointNameEdited(sender: NSTextField) {
+        guard let point = getSelectedPoint() else {
+            return
+        }
+
+        try! realm.write {
+            point.name = sender.stringValue
+        }
+        reloadPoints()
+    }
+
+    @IBAction func onDeleteItem(sender: AnyObject) {
+        guard let point = getSelectedPoint() else {
+            return
+        }
+
+        try! realm.write {
+            realm.delete(point)
+        }
+        reloadPoints()
+    }
+
     func onMapRightClick(event: NSEvent) -> NSEvent? {
         if event.window == view.window {
             let locationInMapView = mapView.convertPoint(event.locationInWindow, fromView: nil)
@@ -311,6 +335,20 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         }
 
         return result
+    }
+
+    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
+        guard let annotationView = view as? MKPinAnnotationView else {
+            return
+        }
+
+        guard let point = annotationView.annotation as? PointAnnotation else {
+            return
+        }
+
+        if !point.permanent {
+            mapView.removeAnnotation(point)
+        }
     }
 
     func makePointPermanent(sender: NSButton?) {
@@ -410,5 +448,13 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             return 1
         }
         return stage.points.last!.number + 1
+    }
+
+    private func getSelectedPoint() -> Point? {
+        let pointIndex = pointTableView.selectedRow
+        if pointIndex < 0 {
+            return nil
+        }
+        return stage.points[pointIndex]
     }
 }
