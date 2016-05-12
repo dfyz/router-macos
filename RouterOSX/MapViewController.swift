@@ -1,5 +1,6 @@
 import Cocoa
 import MapKit
+import RealmSwift
 
 class NSTableViewWithActionOnEnter: NSTableView {
     override func keyDown(event: NSEvent) {
@@ -59,18 +60,18 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         displayBelow.nextKeyView = self.innerTable
 
         self.innerTable.target = self
-        self.innerTable.action = #selector(GeocodingResultTable.addPoint)
+        self.innerTable.action = #selector(GeocodingResultTable.addPointToMap)
     }
 
     deinit {
         self.resultTable.removeFromSuperview()
     }
 
-    func addPoint(sender: NSControl) {
+    func addPointToMap(sender: NSControl) {
         let placeIndex = self.innerTable.selectedRow
         if placeIndex >= 0 {
             if case .Ok(let place) = self.results[placeIndex] {
-                mapView.addPoint(mapView.geocoderTextField.stringValue, lat: place.lat, lon: place.lon)
+                mapView.addPointToMap(mapView.geocoderTextField.stringValue, lat: place.lat, lon: place.lon)
             }
         }
     }
@@ -178,11 +179,17 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
     }
 }
 
-class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegate {
+class PointAnnotation: MKPointAnnotation {
+    var permanent = false
+}
+
+class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataSource, NSTableViewDelegate, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var geocoderTextField: NSTextField!
     @IBOutlet weak var geocoderClearButton: NSButton!
+    @IBOutlet weak var pointTableView: NSTableView!
 
+    var realm: Realm!
     var stage: Stage!
     var geocodingResults: GeocodingResultTable?
     var mapMonitor: AnyObject!
@@ -190,15 +197,16 @@ class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        realm = try! Realm()
+
         geocoderTextField.wantsLayer = true
         geocoderClearButton.wantsLayer = true
         geocoderTextField.delegate = self
 
-        if let mapArea = stage?.mapArea {
-            let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)
-            let span = MKCoordinateSpan(latitudeDelta: mapArea.height, longitudeDelta: mapArea.width)
-            mapView.region = MKCoordinateRegion(center: center, span: span)
-        }
+        let mapArea = stage.mapArea!
+        let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)
+        let span = MKCoordinateSpan(latitudeDelta: mapArea.height, longitudeDelta: mapArea.width)
+        mapView.region = MKCoordinateRegion(center: center, span: span)
 
         let osmTileTemplate = "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
         let osmOverlay = MKTileOverlay(URLTemplate: osmTileTemplate)
@@ -207,6 +215,10 @@ class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegat
 
         self.mapMonitor = NSEvent.addLocalMonitorForEventsMatchingMask(.RightMouseUpMask, handler: onMapRightClick)
         mapView.delegate = self
+
+        pointTableView.setDataSource(self)
+        pointTableView.setDelegate(self)
+        pointTableView.sizeLastColumnToFit()
 
         hideGeocodingResults()
     }
@@ -257,7 +269,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegat
             let clickedCoords = mapView.convertPoint(locationInMapView, toCoordinateFromView: mapView)
             let clickedPoint = MKMapPointForCoordinate(clickedCoords)
             if MKMapRectContainsPoint(mapView.visibleMapRect, clickedPoint) {
-                addPoint("HERE BE DRAGONS", lat: clickedCoords.latitude, lon: clickedCoords.longitude)
+                addPointToMap("HERE BE DRAGONS", lat: clickedCoords.latitude, lon: clickedCoords.longitude)
             }
         }
         return event
@@ -282,12 +294,90 @@ class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegat
         return MKTileOverlayRenderer(tileOverlay: osmOverlay)
     }
 
-    func addPoint(name: String, lat: Double, lon: Double) {
-        let point = MKPointAnnotation()
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let point = annotation as? PointAnnotation else {
+            return nil
+        }
+
+        let result = MKPinAnnotationView(annotation: point, reuseIdentifier: nil)
+        result.canShowCallout = true
+
+        if !point.permanent {
+            let button = NSButton()
+            button.bezelStyle = .SmallSquareBezelStyle
+            button.image = NSImage(named: NSImageNameAddTemplate)
+            button.target = self
+            button.action = #selector(makePointPermanent)
+            result.rightCalloutAccessoryView = button
+        }
+
+        return result
+    }
+
+    func makePointPermanent(sender: NSButton?) {
+        guard let btn = sender else {
+            return
+        }
+
+        var currentView = btn.superview
+        while currentView != nil {
+            if let annotationView = currentView as? MKPinAnnotationView {
+                if let point = annotationView.annotation as? PointAnnotation {
+                    addPointToRealm(point)
+                    mapView.selectAnnotation(point, animated: true)
+                    break
+                }
+            }
+            currentView = currentView!.superview
+        }
+    }
+
+    func addPointToRealm(point: PointAnnotation) {
+        try! realm.write {
+            let permanentPoint = Point()
+            permanentPoint.number = getNextPointNumber()
+            permanentPoint.name = point.title!
+            permanentPoint.lat = point.coordinate.latitude
+            permanentPoint.lon = point.coordinate.longitude
+            stage.points.append(permanentPoint)
+        }
+
+        point.permanent = true
+        reloadPoints()
+    }
+
+    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+        realm.refresh()
+        return stage.points.count
+    }
+
+    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        return getTextViewForTableCell(tableView, tableColumn) {
+            columnIdentifier in
+
+            let point = self.stage.points[row]
+            switch columnIdentifier {
+            case "PointNumberColumn":
+                return "\(point.number)"
+            case "PointNameColumn":
+                return "\(point.name)"
+            default:
+                return nil
+            }
+        }
+    }
+
+    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        return CGFloat(30.0)
+    }
+
+    func addPointToMap(name: String, lat: Double, lon: Double) {
+        let point = PointAnnotation()
         let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
         point.coordinate = coords
         point.title = name
         mapView.addAnnotation(point)
+        mapView.selectAnnotation(point, animated: true)
         mapView.setCenterCoordinate(coords, animated: true)
         hideGeocodingResults()
     }
@@ -303,5 +393,16 @@ class MapViewController: NSViewController, NSTextFieldDelegate, MKMapViewDelegat
             results: []
         )
         self.geocoderClearButton.hidden = false
+    }
+
+    private func reloadPoints() {
+        pointTableView.reloadData()
+    }
+
+    private func getNextPointNumber() -> Int {
+        if stage.points.isEmpty {
+            return 1
+        }
+        return stage.points.last!.number + 1
     }
 }

@@ -13,38 +13,30 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
     }
 
     func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        guard let columnIdentifier = tableColumn?.identifier else {
-            return nil
+        return getTextViewForTableCell(tableView, tableColumn) {
+            columnIdentifier in
+
+            let stage = self.allStages[row]
+            switch columnIdentifier {
+            case "CompetitionNameColumn":
+                return stage.competitionName
+            case "StageNumberColumn":
+                return "\(stage.stageNumber)"
+            case "MapAreaColumn":
+                let center = stage.mapArea!
+                let roundedCenterLat = String(format: "%.6f", center.centerLat)
+                let roundedCenterLon = String(format: "%.6f", center.centerLon)
+                return "(\(roundedCenterLat), \(roundedCenterLon))"
+            default:
+                return nil
+            }
         }
-
-        let stage = allStages[row]
-
-        var text = ""
-        switch columnIdentifier {
-        case "CompetitionNameColumn":
-            text = stage.competitionName
-        case "StageNumberColumn":
-            text = "\(stage.stageNumber)"
-        case "MapAreaColumn":
-            let center = stage.mapArea!
-            let roundedCenterLat = String(format: "%.6f", center.centerLat)
-            let roundedCenterLon = String(format: "%.6f", center.centerLon)
-            text = "(\(roundedCenterLat), \(roundedCenterLon))"
-        default:
-            fatalError("Unknown column " + columnIdentifier)
-        }
-
-        let cellIdentifier = columnIdentifier.stringByReplacingOccurrencesOfString("Column", withString: "Cell")
-        guard let cell = tableView.makeViewWithIdentifier(cellIdentifier, owner: nil) as? NSTableCellView else {
-            return nil
-        }
-
-        cell.textField?.stringValue = text
-        return cell
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 1)
 
         realm = try! Realm()
         allStages = realm.objects(Stage).sorted("competitionName")
