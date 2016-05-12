@@ -218,7 +218,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
         pointTableView.setDataSource(self)
         pointTableView.setDelegate(self)
-        pointTableView.sizeLastColumnToFit()
 
         hideGeocodingResults()
     }
@@ -368,7 +367,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        return CGFloat(30.0)
+        return CGFloat(50.0)
     }
 
     func addPointToMap(name: String, lat: Double, lon: Double) {
