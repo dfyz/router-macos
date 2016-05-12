@@ -10,8 +10,8 @@ class MapArea: Object {
 class Point: Object {
     dynamic var number = 0
     dynamic var name = ""
-    dynamic var lat = 0.0
-    dynamic var lon = 0.0
+    dynamic var lat: Double = 0.0
+    dynamic var lon: Double = 0.0
 }
 
 class Stage: Object {

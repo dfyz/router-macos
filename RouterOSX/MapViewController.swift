@@ -71,7 +71,12 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         let placeIndex = self.innerTable.selectedRow
         if placeIndex >= 0 {
             if case .Ok(let place) = self.results[placeIndex] {
-                mapView.addPointToMap(mapView.geocoderTextField.stringValue, lat: place.lat, lon: place.lon)
+                mapView.addPointToMap(
+                    mapView.geocoderTextField.stringValue,
+                    lat: place.lat,
+                    lon: place.lon,
+                    permanent: false
+                )
             }
         }
     }
@@ -183,6 +188,21 @@ class PointAnnotation: MKPointAnnotation {
     var permanent = false
 }
 
+struct HashablePoint: Hashable {
+    var lat: Double = 0.0
+    var lon: Double = 0.0
+
+    var hashValue: Int {
+        get {
+            return "\(lat) \(lon)".hashValue
+        }
+    }
+}
+
+func ==(lhs: HashablePoint, rhs: HashablePoint) -> Bool {
+    return lhs.lat == rhs.lat && lhs.lon == rhs.lon
+}
+
 class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataSource, NSTableViewDelegate, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var geocoderTextField: NSTextField!
@@ -193,6 +213,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     var stage: Stage!
     var geocodingResults: GeocodingResultTable?
     var mapMonitor: AnyObject!
+    var pointToAnnotation = [HashablePoint: PointAnnotation]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -222,6 +243,10 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         pointTableView.setDelegate(self)
 
         hideGeocodingResults()
+
+        for point in stage.points {
+            addPointToMap(point.name, lat: point.lat, lon: point.lon, permanent: true)
+        }
     }
 
     override func viewWillAppear() {
@@ -280,9 +305,14 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             return
         }
 
+        if let annotation = pointToAnnotation[HashablePoint(lat: point.lat, lon: point.lon)] {
+            mapView.removeAnnotation(annotation)
+        }
+
         try! realm.write {
             realm.delete(point)
         }
+
         reloadPoints()
     }
 
@@ -292,7 +322,12 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             let clickedCoords = mapView.convertPoint(locationInMapView, toCoordinateFromView: mapView)
             let clickedPoint = MKMapPointForCoordinate(clickedCoords)
             if MKMapRectContainsPoint(mapView.visibleMapRect, clickedPoint) {
-                addPointToMap("HERE BE DRAGONS", lat: clickedCoords.latitude, lon: clickedCoords.longitude)
+                addPointToMap(
+                    "HERE BE DRAGONS",
+                    lat: clickedCoords.latitude,
+                    lon: clickedCoords.longitude,
+                    permanent: false
+                )
             }
         }
         return event
@@ -373,16 +408,34 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     func addPointToRealm(point: PointAnnotation) {
+        let permanentPoint = Point()
         try! realm.write {
-            let permanentPoint = Point()
             permanentPoint.number = getNextPointNumber()
             permanentPoint.name = point.title!
             permanentPoint.lat = point.coordinate.latitude
             permanentPoint.lon = point.coordinate.longitude
             stage.points.append(permanentPoint)
         }
+        pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
 
         reloadPoints()
+    }
+
+    func addPointToMap(name: String, lat: Double, lon: Double, permanent: Bool) {
+        let point = PointAnnotation()
+        let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        point.coordinate = coords
+        point.title = name
+        point.permanent = permanent
+        mapView.addAnnotation(point)
+
+        if !permanent {
+            mapView.selectAnnotation(point, animated: true)
+            mapView.setCenterCoordinate(coords, animated: true)
+            hideGeocodingResults()
+        } else {
+            pointToAnnotation[HashablePoint(lat: lat, lon: lon)] = point
+        }
     }
 
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
@@ -413,17 +466,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         return CGFloat(50.0)
-    }
-
-    func addPointToMap(name: String, lat: Double, lon: Double) {
-        let point = PointAnnotation()
-        let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        point.coordinate = coords
-        point.title = name
-        mapView.addAnnotation(point)
-        mapView.selectAnnotation(point, animated: true)
-        mapView.setCenterCoordinate(coords, animated: true)
-        hideGeocodingResults()
     }
 
     private func hideGeocodingResults() {
