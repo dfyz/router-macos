@@ -321,6 +321,30 @@ Gw
                         <rect key="frame" x="0.0" y="0.0" width="754" height="520"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
+                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="dn8-CW-S9X"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="onE-IG-d1a">
+                                    <font key="font" metaFont="system" size="20"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="onGeocodingRequest:" target="Gjr-Qd-uUd" id="XBd-He-4Ti"/>
+                                </connections>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ihI-dn-GBS">
+                                <rect key="frame" x="456" y="470" width="14" height="30"/>
+                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSStopProgressFreestandingTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="oLY-1J-C8z">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="onGeocoderClear:" target="Gjr-Qd-uUd" id="rER-8e-xL9"/>
+                                </connections>
+                            </button>
                             <splitView arrangesAllSubviews="NO" dividerStyle="paneSplitter" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L3R-fm-esx">
                                 <rect key="frame" x="0.0" y="0.0" width="754" height="520"/>
                                 <subviews>
@@ -342,7 +366,7 @@ Gw
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="PointNumberColumn" width="40" minWidth="40" maxWidth="1000" id="VZu-Th-5d0">
+                                                        <tableColumn identifier="PointNumberColumn" width="50" minWidth="50" maxWidth="1000" id="VZu-Th-5d0">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -355,12 +379,15 @@ Gw
                                                             </textFieldCell>
                                                             <prototypeCellViews>
                                                                 <tableCellView identifier="PointNumberCell" id="Hvq-b3-WdR">
-                                                                    <rect key="frame" x="1" y="1" width="40" height="30"/>
+                                                                    <rect key="frame" x="1" y="1" width="50" height="30"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yix-i5-3p1">
-                                                                            <rect key="frame" x="1" y="2" width="24" height="27"/>
-                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="Table View Cell" id="b0q-f4-TlC">
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Yix-i5-3p1">
+                                                                            <rect key="frame" x="1" y="2" width="54" height="27"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" constant="50" id="aq5-V1-e1u"/>
+                                                                            </constraints>
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" alignment="center" title="Table View Cell" id="b0q-f4-TlC">
                                                                                 <font key="font" metaFont="systemBold" size="22"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -368,6 +395,7 @@ Gw
                                                                         </textField>
                                                                     </subviews>
                                                                     <constraints>
+                                                                        <constraint firstItem="Yix-i5-3p1" firstAttribute="leading" secondItem="Hvq-b3-WdR" secondAttribute="leading" constant="3" id="2xx-W6-HqE"/>
                                                                         <constraint firstItem="Yix-i5-3p1" firstAttribute="centerY" secondItem="Hvq-b3-WdR" secondAttribute="centerY" id="7iQ-92-KUv"/>
                                                                     </constraints>
                                                                     <connections>
@@ -390,12 +418,12 @@ Gw
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView identifier="PointNameCell" id="HYO-DN-SwC">
-                                                                    <rect key="frame" x="44" y="1" width="125" height="30"/>
+                                                                    <rect key="frame" x="54" y="1" width="125" height="30"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zin-cV-dxQ">
-                                                                            <rect key="frame" x="1" y="0.0" width="123" height="27"/>
-                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="wVW-Ep-LcL">
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="zin-cV-dxQ">
+                                                                            <rect key="frame" x="1" y="2" width="123" height="27"/>
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Table View Cell" id="wVW-Ep-LcL">
                                                                                 <font key="font" metaFont="system" size="22"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -433,30 +461,6 @@ Gw
                                     <real value="250"/>
                                 </holdingPriorities>
                             </splitView>
-                            <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t4N-2x-dmO">
-                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="29"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="dn8-CW-S9X"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="onE-IG-d1a">
-                                    <font key="font" metaFont="system" size="20"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                                <connections>
-                                    <action selector="onGeocodingRequest:" target="Gjr-Qd-uUd" id="XBd-He-4Ti"/>
-                                </connections>
-                            </textField>
-                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ihI-dn-GBS">
-                                <rect key="frame" x="274" y="470" width="14" height="30"/>
-                                <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSStopProgressFreestandingTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="oLY-1J-C8z">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="onGeocoderClear:" target="Gjr-Qd-uUd" id="rER-8e-xL9"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="L3R-fm-esx" firstAttribute="height" secondItem="J0f-b9-IHB" secondAttribute="height" id="90G-gO-34h"/>

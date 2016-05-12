@@ -323,7 +323,10 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             if let annotationView = currentView as? MKPinAnnotationView {
                 if let point = annotationView.annotation as? PointAnnotation {
                     addPointToRealm(point)
-                    mapView.selectAnnotation(point, animated: true)
+                    mapView.removeAnnotation(point)
+                    point.permanent = true
+                    mapView.addAnnotation(point)
+                    mapView.selectAnnotation(point, animated: false)
                     break
                 }
             }
@@ -341,7 +344,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             stage.points.append(permanentPoint)
         }
 
-        point.permanent = true
         reloadPoints()
     }
 
@@ -357,7 +359,12 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             let point = self.stage.points[row]
             switch columnIdentifier {
             case "PointNumberColumn":
-                return "\(point.number)"
+                if row == 0 {
+                    return "🚩"
+                } else if row + 1 >= self.stage.points.count {
+                    return "🏁"
+                }
+                return String(format: "%02d", row)
             case "PointNameColumn":
                 return "\(point.name)"
             default:
