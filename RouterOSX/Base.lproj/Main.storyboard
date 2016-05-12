@@ -421,6 +421,9 @@ Gw
                                                             </prototypeCellViews>
                                                         </tableColumn>
                                                     </tableColumns>
+                                                    <connections>
+                                                        <action selector="onPointSelected:" target="Gjr-Qd-uUd" id="8gq-Gy-AoX"/>
+                                                    </connections>
                                                 </tableView>
                                             </subviews>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

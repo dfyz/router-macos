@@ -289,14 +289,33 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         hideGeocodingResults()
     }
 
+    @IBAction func onPointSelected(sender: AnyObject) {
+        guard let point = getSelectedPoint() else {
+            return
+        }
+
+        if let annotation = pointToAnnotation[HashablePoint(lat: point.lat, lon: point.lon)] {
+            mapView.selectAnnotation(annotation, animated: true)
+            let coords = CLLocationCoordinate2D(latitude: point.lat, longitude: point.lon)
+            mapView.setCenterCoordinate(coords, animated: true)
+        }
+    }
+
     @IBAction func onPointNameEdited(sender: NSTextField) {
         guard let point = getSelectedPoint() else {
             return
         }
 
+        let newValue = sender.stringValue
+
         try! realm.write {
-            point.name = sender.stringValue
+            point.name = newValue
         }
+
+        if let annotation = pointToAnnotation[HashablePoint(lat: point.lat, lon: point.lon)] {
+            annotation.title = newValue
+        }
+
         reloadPoints()
     }
 
