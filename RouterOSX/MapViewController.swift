@@ -208,6 +208,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     @IBOutlet weak var geocoderTextField: NSTextField!
     @IBOutlet weak var geocoderClearButton: NSButton!
     @IBOutlet weak var pointTableView: NSTableView!
+    @IBOutlet weak var routeButton: NSButton!
 
     var realm: Realm!
     var stage: Stage!
@@ -225,6 +226,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         geocoderTextField.becomeFirstResponder()
 
         geocoderClearButton.wantsLayer = true
+        routeButton.wantsLayer = true
 
         let mapArea = stage.mapArea!
         let center = CLLocationCoordinate2D(latitude: mapArea.centerLat, longitude: mapArea.centerLon)
