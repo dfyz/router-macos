@@ -241,6 +241,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
         pointTableView.setDataSource(self)
         pointTableView.setDelegate(self)
+        pointTableView.registerForDraggedTypes(["point.index"])
 
         hideGeocodingResults()
 
@@ -485,6 +486,48 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
     func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         return CGFloat(50.0)
+    }
+
+    func tableView(
+            tableView: NSTableView,
+            writeRowsWithIndexes rowIndexes: NSIndexSet,
+            toPasteboard pboard: NSPasteboard
+    ) -> Bool {
+        guard pointTableView.selectedRow >= 0 else {
+            return false
+        }
+        pboard.setString(String(pointTableView.selectedRow), forType: "point.index")
+        return true
+    }
+
+    func tableView(
+            tableView: NSTableView,
+            validateDrop info: NSDraggingInfo,
+            proposedRow row: Int,
+            proposedDropOperation dropOperation: NSTableViewDropOperation
+    ) -> NSDragOperation {
+        return .Move
+    }
+
+    func tableView(
+            tableView: NSTableView,
+            acceptDrop info: NSDraggingInfo,
+            row: Int,
+            dropOperation: NSTableViewDropOperation
+    ) -> Bool {
+        let sourceIndex = Int(info.draggingPasteboard().stringForType("point.index")!)!
+        if sourceIndex == row {
+            return false
+        }
+        try! realm.write {
+            if dropOperation == .On {
+                stage.points.swap(sourceIndex, row)
+            } else {
+                stage.points.move(from: sourceIndex, to: row < sourceIndex ? row : row - 1)
+            }
+        }
+        reloadPoints()
+        return true
     }
 
     private func hideGeocodingResults() {
