@@ -242,7 +242,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     func addPointToRealm(point: PointAnnotation) {
         let permanentPoint = Point()
         try! realm.write {
-            permanentPoint.number = getNextPointNumber()
             permanentPoint.name = point.title!
             permanentPoint.lat = point.coordinate.latitude
             permanentPoint.lon = point.coordinate.longitude
@@ -357,13 +356,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
     private func reloadPoints() {
         pointTableView.reloadData()
-    }
-
-    private func getNextPointNumber() -> Int {
-        if stage.points.isEmpty {
-            return 1
-        }
-        return stage.points.last!.number + 1
     }
 
     private func getSelectedPoint() -> Point? {

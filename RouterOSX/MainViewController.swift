@@ -36,7 +36,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 1)
+        Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 2)
 
         realm = try! Realm()
         allStages = realm.objects(Stage).sorted("competitionName")
