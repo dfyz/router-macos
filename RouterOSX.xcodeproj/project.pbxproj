@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2F03200FF2D2BDF5F17F79C2 /* TableUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F03216FA607244594E78D2D /* TableUtils.swift */; };
+		2F0320F4F028F7F890B70F51 /* HashablePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0320FD81D9157769B1912E /* HashablePoint.swift */; };
+		2F032435AFAFFC00C4068CBB /* GeocodingResultTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */; };
 		2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032A34195ED84789B44148 /* Geocoder.swift */; };
 		4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F131CBB00E1001F582E /* AppDelegate.swift */; };
 		4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F151CBB00E1001F582E /* MainViewController.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F0320FD81D9157769B1912E /* HashablePoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashablePoint.swift; sourceTree = "<group>"; };
+		2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeocodingResultTable.swift; sourceTree = "<group>"; };
 		2F03216FA607244594E78D2D /* TableUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableUtils.swift; sourceTree = "<group>"; };
 		2F032A34195ED84789B44148 /* Geocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geocoder.swift; sourceTree = "<group>"; };
 		4F273F101CBB00E1001F582E /* RouterOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RouterOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,6 +116,7 @@
 				4F8BDF841CBDA38400EAF4D7 /* AddStageViewController.swift */,
 				4F96B7631CC075800032196E /* MapViewController.swift */,
 				2F03216FA607244594E78D2D /* TableUtils.swift */,
+				2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -121,6 +126,7 @@
 			children = (
 				4F96B72D1CBEF7D60032196E /* ImportMap.swift */,
 				2F032A34195ED84789B44148 /* Geocoder.swift */,
+				2F0320FD81D9157769B1912E /* HashablePoint.swift */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -312,6 +318,8 @@
 				4F8BDF851CBDA38400EAF4D7 /* AddStageViewController.swift in Sources */,
 				2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */,
 				2F03200FF2D2BDF5F17F79C2 /* TableUtils.swift in Sources */,
+				2F032435AFAFFC00C4068CBB /* GeocodingResultTable.swift in Sources */,
+				2F0320F4F028F7F890B70F51 /* HashablePoint.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
