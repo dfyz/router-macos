@@ -100,10 +100,6 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         alert.beginSheetModalForWindow(view.window!) {
             (response) -> Void in
             if response == NSAlertFirstButtonReturn {
-                do {
-                    try NSFileManager.defaultManager().removeItemAtPath(stage.binMapFileName)
-                } catch {
-                }
                 try! self.realm.write {
                     self.realm.delete(stage)
                 }
