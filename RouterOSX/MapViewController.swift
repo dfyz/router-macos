@@ -148,6 +148,31 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         mapView.setRegion(region, animated: true)
     }
 
+    func onRoute(sender: AnyObject) {
+        let points = stage.points.map { HashablePoint(lat: $0.lat, lon: $0.lon) }
+        let router = Router(points: points, binMapFileName: stage.binMapFileName)
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let indexes = try? router.route()
+            if indexes == nil {
+                return
+            }
+
+            dispatch_async(dispatch_get_main_queue()) {
+                try! self.realm.write {
+                    let newPoints = List<Point>()
+                    for idx in indexes! {
+                        newPoints.append(self.stage.points[idx])
+                    }
+                    self.stage.points.removeAll()
+                    self.stage.points.appendContentsOf(newPoints)
+                }
+
+                self.reloadPoints()
+            }
+        }
+    }
+
     func onMapRightClick(event: NSEvent) -> NSEvent? {
         if event.window == view.window {
             let locationInMapView = mapView.convertPoint(event.locationInWindow, fromView: nil)

@@ -93,6 +93,11 @@
                                                 <action selector="onGetOverview:" target="Ady-hI-5gd" id="abp-jU-nvR"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Route" keyEquivalent="r" id="QcW-vw-bNT" userLabel="Route">
+                                            <connections>
+                                                <action selector="onRoute:" target="Ady-hI-5gd" id="Tiq-Wa-hUL"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
