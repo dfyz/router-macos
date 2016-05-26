@@ -20,17 +20,6 @@ class Router {
     }
 
     func route() throws -> [Int] {
-        let start = NSDate();
-        for p in points {
-            if let idx = getNearestPointIndex(p) {
-                print("\(graph.nodes[idx]!.lat) \(graph.nodes[idx]!.lon)")
-            } else {
-                print("NIL")
-            }
-        }
-        let end = NSDate();
-        print("\(end.timeIntervalSinceDate(start))")
-
         return [0, 2, 1] + Array(3..<points.count)
     }
 
