@@ -56,10 +56,10 @@ class Geocoder {
         let convertPoint = {
             (point: JSON) -> GeocodedPlace? in
 
-            guard let name = point["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["text"].string else {
-                return nil
-            }
-            guard let coordsStr = point["GeoObject"]["Point"]["pos"].string else {
+            guard
+                let name = point["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["text"].string,
+                let coordsStr = point["GeoObject"]["Point"]["pos"].string
+            else {
                 return nil
             }
 
@@ -122,13 +122,11 @@ class Geocoder {
         let convertPoint = {
             (point: JSON) -> GeocodedPlace? in
 
-            guard let name = point["display_name"].string else {
-                return nil
-            }
-            guard let lat = point["lat"].string else {
-                return nil
-            }
-            guard let lon = point["lon"].string else {
+            guard
+                let name = point["display_name"].string,
+                let lat = point["lat"].string,
+                let lon = point["lon"].string
+            else {
                 return nil
             }
 

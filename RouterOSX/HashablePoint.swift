@@ -1,8 +1,8 @@
 import Foundation
 
 struct HashablePoint: Hashable {
-    var lat: Double = 0.0
-    var lon: Double = 0.0
+    let lat: Double
+    let lon: Double
 
     var hashValue: Int {
         get {

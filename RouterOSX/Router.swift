@@ -1,32 +1,42 @@
 import CoreLocation
 import Foundation
 
-protocol WithCoordinates {
-    var lat: Double { get }
-    var lon: Double { get }
+enum RoutingError: ErrorType {
+    case Error(String)
 }
 
-extension HashablePoint: WithCoordinates {}
-extension OsmNode.LazyAccess: WithCoordinates {}
+struct NamedPoint {
+    let name: String
+    let lat: Double
+    let lon: Double
+}
 
 class Router {
-    let points: [HashablePoint]
+    let points: [NamedPoint]
     let graph: OsmGraph.LazyAccess
 
-    init(points: [HashablePoint], binMapFileName: String) {
+    init(points: [NamedPoint], binMapFileName: String) {
         self.points = points
         print(binMapFileName)
         graph = OsmGraph.LazyAccess(data: UnsafePointer(NSData(contentsOfFile: binMapFileName)!.bytes))
     }
 
     func route() throws -> [Int] {
-        return [0, 2, 1] + Array(3..<points.count)
+        let osmNodes: [LazyOsmNode] =
+            try points.map {
+                point in
+                guard let result = getNearestOsmNode(point) else {
+                    throw RoutingError.Error("Failed to find an osm node for \(point.name)")
+                }
+                return result
+            }
+        return []
     }
 
-    private func getNearestPointIndex(point: HashablePoint) -> Int? {
-        var result: Int? = nil
+    private func getNearestOsmNode(point: NamedPoint) -> LazyOsmNode? {
+        var result: LazyOsmNode? = nil
         var minDistance = Double.infinity
-        for (idx, node) in graph.nodes.enumerate() {
+        for node in graph.nodes {
             if node.adj.count == 0 {
                 continue
             }
@@ -34,7 +44,7 @@ class Router {
             let newCost = getDistance(from: node, to: point)
             if newCost < minDistance {
                 minDistance = newCost
-                result = idx
+                result = node
             }
         }
         return result
@@ -46,3 +56,18 @@ class Router {
         return locationA.distanceFromLocation(locationB)
     }
 }
+
+private struct FoundPath {
+    let path: [LazyOsmNode]
+    let cost: Double
+}
+
+private typealias LazyOsmNode = OsmNode.LazyAccess
+
+private protocol WithCoordinates {
+    var lat: Double { get }
+    var lon: Double { get }
+}
+
+extension NamedPoint: WithCoordinates {}
+extension LazyOsmNode: WithCoordinates {}

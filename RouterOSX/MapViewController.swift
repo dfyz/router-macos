@@ -149,19 +149,24 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     func onRoute(sender: AnyObject) {
-        let points = stage.points.map { HashablePoint(lat: $0.lat, lon: $0.lon) }
+        let points = stage.points.map { NamedPoint(name: $0.name, lat: $0.lat, lon: $0.lon) }
         let router = Router(points: points, binMapFileName: stage.binMapFileName)
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let indexes = try? router.route()
-            if indexes == nil {
+            let indexes: [Int]
+            do {
+                indexes = try router.route()
+            } catch RoutingError.Error(let message) {
+                print(message)
                 return
+            } catch {
+                fatalError("Should never happen")
             }
 
             dispatch_async(dispatch_get_main_queue()) {
                 try! self.realm.write {
                     let newPoints = List<Point>()
-                    for idx in indexes! {
+                    for idx in indexes {
                         newPoints.append(self.stage.points[idx])
                     }
                     self.stage.points.removeAll()
@@ -230,11 +235,10 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
-        guard let annotationView = view as? MKPinAnnotationView else {
-            return
-        }
-
-        guard let point = annotationView.annotation as? PointAnnotation else {
+        guard
+            let annotationView = view as? MKPinAnnotationView,
+            let point = annotationView.annotation as? PointAnnotation
+        else {
             return
         }
 
