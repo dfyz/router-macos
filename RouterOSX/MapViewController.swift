@@ -17,6 +17,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     var geocodingResults: GeocodingResultTable?
     var mapMonitor: AnyObject!
     var pointToAnnotation = [HashablePoint: PointAnnotation]()
+    var routeOverlay: MKOverlay?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -150,11 +151,12 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
     func onRoute(sender: AnyObject) {
         let points = stage.points.map { NamedPoint(name: $0.name, lat: $0.lat, lon: $0.lon) }
+        let binMapFileName = self.stage.binMapFileName
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             let routingResult: RoutingResult
             do {
-                let router = try Router(points: points, binMapFileName: self.stage.binMapFileName)
+                let router = try Router(points: points, binMapFileName: binMapFileName)
                 routingResult = try router.route()
             } catch RoutingError.Error(let message) {
                 print(message)
@@ -199,10 +201,17 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let osmOverlay = overlay as? MKTileOverlay else {
-            return MKOverlayRenderer()
+        if let osmOverlay = overlay as? MKTileOverlay {
+            return MKTileOverlayRenderer(tileOverlay: osmOverlay)
+
         }
-        return MKTileOverlayRenderer(tileOverlay: osmOverlay)
+        if let polylineOverlay = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: polylineOverlay)
+            renderer.strokeColor = NSColor.redColor()
+            renderer.lineWidth = 10
+            return renderer
+        }
+        return MKOverlayRenderer()
     }
 
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -387,15 +396,28 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     private func drawRoutingResult(routingResult: RoutingResult) {
-        try! self.realm.write {
+        try! realm.write {
             let newPoints = List<Point>()
             for idx in routingResult.pointIndexes {
-                newPoints.append(self.stage.points[idx])
+                newPoints.append(stage.points[idx])
             }
-            self.stage.points.removeAll()
-            self.stage.points.appendContentsOf(newPoints)
+            stage.points.removeAll()
+            stage.points.appendContentsOf(newPoints)
         }
 
-        self.reloadPoints()
+        reloadPoints()
+
+        addPathOverlay(routingResult.path)
+    }
+
+    private func addPathOverlay(path: [CLLocationCoordinate2D]) {
+        if let prevPath = routeOverlay {
+            mapView.removeOverlay(prevPath)
+            routeOverlay = nil
+        }
+
+        var path = path
+        routeOverlay = MKPolyline(coordinates: &path, count: path.count)
+        mapView.addOverlay(routeOverlay!, level: .AboveLabels)
     }
 }

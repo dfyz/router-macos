@@ -14,7 +14,7 @@ struct NamedPoint {
 
 struct RoutingResult {
     let pointIndexes: [Int]
-    let path: [NamedPoint]
+    let path: [CLLocationCoordinate2D]
 }
 
 class Router {
@@ -33,7 +33,17 @@ class Router {
         let osmNodes = try getNearestOsmNodes()
         let allPaths = try getAllPaths(osmNodes)
 
-        throw RoutingError.Error("not implemented")
+        let costMatrix = allPaths.map { row in row.map { $0.cost } }
+        let permutation = solveTsp(costMatrix)
+
+        var finalPath = [CLLocationCoordinate2D]()
+        for i in 1..<permutation.count {
+            let from = permutation[i - 1]
+            let to = permutation[i]
+            finalPath.appendContentsOf(allPaths[from][to].path)
+        }
+
+        return RoutingResult(pointIndexes: permutation, path: finalPath)
     }
 
     private func getAllPaths(osmNodes: [LazyOsmNode]) throws -> [[FoundPath]] {
@@ -53,6 +63,12 @@ class Router {
     }
 
     private func getPath(from: Int, to: Int) -> FoundPath? {
+        print("\(from) -> \(to)")
+
+        if from == to {
+            return FoundPath(path: [], cost: 0.0)
+        }
+
         let n = graph.nodes.count
 
         var prevIndex = [Int?](count: n, repeatedValue: nil)
@@ -94,10 +110,10 @@ class Router {
         }
         indexes = indexes.reverse()
 
-        let finalPath: [CLLocation] = indexes.map {
+        let finalPath: [CLLocationCoordinate2D] = indexes.map {
             idx in
             let node = getNode(idx)
-            return CLLocation(latitude: node.lat, longitude: node.lon)
+            return CLLocationCoordinate2D(latitude: node.lat, longitude: node.lon)
         }
         return FoundPath(path: finalPath, cost: dist[to])
     }
@@ -113,6 +129,7 @@ class Router {
     }
 
     private func getNearestOsmNode(point: NamedPoint) -> LazyOsmNode? {
+        print(point.name)
         var result: LazyOsmNode? = nil
         var minDistance = Double.infinity
         for node in graph.nodes {
@@ -150,7 +167,7 @@ private func <(lhs: PathfindingState, rhs: PathfindingState) -> Bool {
 }
 
 private struct FoundPath {
-    let path: [CLLocation]
+    let path: [CLLocationCoordinate2D]
     let cost: Double
 }
 
