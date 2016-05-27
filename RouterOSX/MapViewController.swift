@@ -150,12 +150,12 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
 
     func onRoute(sender: AnyObject) {
         let points = stage.points.map { NamedPoint(name: $0.name, lat: $0.lat, lon: $0.lon) }
-        let router = Router(points: points, binMapFileName: stage.binMapFileName)
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let indexes: [Int]
+            let routingResult: RoutingResult
             do {
-                indexes = try router.route()
+                let router = try Router(points: points, binMapFileName: self.stage.binMapFileName)
+                routingResult = try router.route()
             } catch RoutingError.Error(let message) {
                 print(message)
                 return
@@ -164,16 +164,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             }
 
             dispatch_async(dispatch_get_main_queue()) {
-                try! self.realm.write {
-                    let newPoints = List<Point>()
-                    for idx in indexes {
-                        newPoints.append(self.stage.points[idx])
-                    }
-                    self.stage.points.removeAll()
-                    self.stage.points.appendContentsOf(newPoints)
-                }
-
-                self.reloadPoints()
+                self.drawRoutingResult(routingResult)
             }
         }
     }
@@ -393,5 +384,18 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             return nil
         }
         return stage.points[pointIndex]
+    }
+
+    private func drawRoutingResult(routingResult: RoutingResult) {
+        try! self.realm.write {
+            let newPoints = List<Point>()
+            for idx in routingResult.pointIndexes {
+                newPoints.append(self.stage.points[idx])
+            }
+            self.stage.points.removeAll()
+            self.stage.points.appendContentsOf(newPoints)
+        }
+
+        self.reloadPoints()
     }
 }

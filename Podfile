@@ -7,5 +7,6 @@ target 'RouterOSX' do
     pod 'RealmSwift'
     pod 'Alamofire'
     pod 'SwiftyJSON'
+    pod 'SwiftPriorityQueue'
 end
 
