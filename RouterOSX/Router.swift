@@ -34,6 +34,8 @@ class Router {
         let allPaths = try getAllPaths(osmNodeIndexes)
 
         let costMatrix = allPaths.map { row in row.map { $0.cost } }
+
+        print("Solving TSP")
         let permutation = solveTsp(costMatrix)
 
         var finalPath = [CLLocationCoordinate2D]()
