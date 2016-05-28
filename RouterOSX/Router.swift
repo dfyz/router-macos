@@ -30,14 +30,17 @@ class Router {
     }
 
     func route() throws -> RoutingResult {
-        let osmNodes = try getNearestOsmNodes()
-        let allPaths = try getAllPaths(osmNodes)
+        let osmNodeIndexes = try getNearestOsmNodes()
+        let allPaths = try getAllPaths(osmNodeIndexes)
 
         let costMatrix = allPaths.map { row in row.map { $0.cost } }
         let permutation = solveTsp(costMatrix)
 
         var finalPath = [CLLocationCoordinate2D]()
-        for i in 1..<permutation.count {
+        for i in 0..<permutation.count {
+            if i == 0 {
+                continue
+            }
             let from = permutation[i - 1]
             let to = permutation[i]
             finalPath.appendContentsOf(allPaths[from][to].path)
@@ -46,13 +49,16 @@ class Router {
         return RoutingResult(pointIndexes: permutation, path: finalPath)
     }
 
-    private func getAllPaths(osmNodes: [LazyOsmNode]) throws -> [[FoundPath]] {
-        let n = osmNodes.count
+    private func getAllPaths(osmNodeIndexes: [Int]) throws -> [[FoundPath]] {
+        let n = osmNodeIndexes.count
         return try (0..<n).map {
             from in
             return try (0..<n).map {
                 to in
-                guard let path = getPath(from, to: to) else {
+
+                print("\(from) -> \(to)")
+
+                guard let path = getPath(osmNodeIndexes[from], to: osmNodeIndexes[to]) else {
                     let fromName = self.points[from].name
                     let toName = self.points[to].name
                     throw RoutingError.Error("Failed to compute path between \(fromName) and \(toName)")
@@ -63,8 +69,6 @@ class Router {
     }
 
     private func getPath(from: Int, to: Int) -> FoundPath? {
-        print("\(from) -> \(to)")
-
         if from == to {
             return FoundPath(path: [], cost: 0.0)
         }
@@ -77,7 +81,7 @@ class Router {
         dist[from] = 0.0
 
         let startState = PathfindingState(index: from, cost: 0.0)
-        var heap = PriorityQueue<PathfindingState>(startingValues: [startState])
+        var heap = PriorityQueue<PathfindingState>(ascending: true, startingValues: [startState])
 
         let getNode = { idx in self.graph.nodes[idx]! }
 
@@ -118,21 +122,22 @@ class Router {
         return FoundPath(path: finalPath, cost: dist[to])
     }
 
-    private func getNearestOsmNodes() throws -> [LazyOsmNode] {
+    private func getNearestOsmNodes() throws -> [Int] {
         return try points.map {
             point in
-            guard let result = getNearestOsmNode(point) else {
+            guard let result = getNearestOsmNodeIndex(point) else {
                 throw RoutingError.Error("Failed to find an osm node for \(point.name)")
             }
             return result
         }
     }
 
-    private func getNearestOsmNode(point: NamedPoint) -> LazyOsmNode? {
+    private func getNearestOsmNodeIndex(point: NamedPoint) -> Int? {
         print(point.name)
-        var result: LazyOsmNode? = nil
+
+        var result: Int? = nil
         var minDistance = Double.infinity
-        for node in graph.nodes {
+        for (idx, node) in graph.nodes.enumerate() {
             if node.adj.count == 0 {
                 continue
             }
@@ -140,7 +145,7 @@ class Router {
             let newCost = getDistance(node, to: point)
             if newCost < minDistance {
                 minDistance = newCost
-                result = node
+                result = idx
             }
         }
         return result
