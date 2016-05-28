@@ -208,7 +208,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         if let polylineOverlay = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: polylineOverlay)
             renderer.strokeColor = NSColor.redColor()
-            renderer.lineWidth = 10
+            renderer.lineWidth = 3
             return renderer
         }
         return MKOverlayRenderer()

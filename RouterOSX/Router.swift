@@ -43,7 +43,14 @@ class Router {
             }
             let from = permutation[i - 1]
             let to = permutation[i]
+
+            let fromPoint = points[from]
+            finalPath.append(CLLocationCoordinate2D(latitude: fromPoint.lat, longitude: fromPoint.lon))
+
             finalPath.appendContentsOf(allPaths[from][to].path)
+
+            let toPoint = points[to]
+            finalPath.append(CLLocationCoordinate2D(latitude: toPoint.lat, longitude: toPoint.lon))
         }
 
         return RoutingResult(pointIndexes: permutation, path: finalPath)
