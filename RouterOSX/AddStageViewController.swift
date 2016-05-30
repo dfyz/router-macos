@@ -81,13 +81,13 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             maybeImportResult = try importer.doImport()
         } catch MapImportError.Error(let message) {
             dispatch_async(dispatch_get_main_queue()) {
-                self.setImportState(false)
                 if self.importInProgress {
                     let alert = NSAlert()
                     alert.addButtonWithTitle("OK")
                     alert.messageText = message
                     alert.runModal()
                 }
+                self.setImportState(false)
             }
         } catch {
             fatalError("Should never happen")

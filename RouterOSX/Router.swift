@@ -3,6 +3,7 @@ import Foundation
 import SwiftPriorityQueue
 
 enum RoutingError: ErrorType {
+    case AbortedByUser
     case Error(String)
 }
 
@@ -17,16 +18,20 @@ struct RoutingResult {
     let path: [CLLocationCoordinate2D]
 }
 
+typealias ProgressCallback = (String, Double?) -> Bool
+
 class Router {
     let points: [NamedPoint]
     let graph: OsmGraph.LazyAccess
+    let callback: ProgressCallback
 
-    init(points: [NamedPoint], binMapFileName: String) throws {
+    init(points: [NamedPoint], binMapFileName: String, callback: ProgressCallback) throws {
         self.points = points
         guard let mapData = NSData(contentsOfFile: binMapFileName) else {
             throw RoutingError.Error("Failed to load \(binMapFileName)")
         }
         graph = OsmGraph.LazyAccess(data: UnsafePointer(mapData.bytes))
+        self.callback = callback
     }
 
     func route() throws -> RoutingResult {
@@ -35,6 +40,9 @@ class Router {
 
         let costMatrix = allPaths.map { row in row.map { $0.cost } }
 
+        if !callback("Solving TSP", nil) {
+            throw RoutingError.AbortedByUser
+        }
         let permutation = solveTsp(costMatrix)
 
         var finalPath = [CLLocationCoordinate2D]()
@@ -64,11 +72,15 @@ class Router {
             return try (0..<n).map {
                 to in
 
-                print("\(from) -> \(to)")
+                let fromName = self.points[from].name
+                let toName = self.points[to].name
+
+                let progress = Double(from*n + to) / Double(n*n)
+                if !callback("Searching for a path from \(fromName) to \(toName)", progress) {
+                    throw RoutingError.AbortedByUser
+                }
 
                 guard let path = getPath(osmNodeIndexes[from], to: osmNodeIndexes[to]) else {
-                    let fromName = self.points[from].name
-                    let toName = self.points[to].name
                     throw RoutingError.Error("Failed to compute path between \(fromName) and \(toName)")
                 }
                 return path
@@ -131,8 +143,12 @@ class Router {
     }
 
     private func getNearestOsmNodes() throws -> [Int] {
-        return try points.map {
-            point in
+        return try points.enumerate().map {
+            (idx, point) in
+
+            if !callback("Preprocessing \(point.name)", Double(idx) / Double(points.count)) {
+                throw RoutingError.AbortedByUser
+            }
             guard let result = getNearestOsmNodeIndex(point) else {
                 throw RoutingError.Error("Failed to find an osm node for \(point.name)")
             }
@@ -141,8 +157,6 @@ class Router {
     }
 
     private func getNearestOsmNodeIndex(point: NamedPoint) -> Int? {
-        print(point.name)
-
         var result: Int? = nil
         var minDistance = Double.infinity
         for (idx, node) in graph.nodes.enumerate() {

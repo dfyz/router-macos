@@ -69,6 +69,12 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         NSEvent.removeMonitor(mapMonitor)
     }
 
+    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+        if let dest = segue.destinationController as? RoutingProgressViewController {
+            dest.parentController = self
+        }
+    }
+
     @IBAction func onGeocodingRequest(sender: AnyObject) {
         hideGeocodingResults()
 
@@ -150,25 +156,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     }
 
     func onRoute(sender: AnyObject) {
-        let points = stage.points.map { NamedPoint(name: $0.name, lat: $0.lat, lon: $0.lon) }
-        let binMapFileName = self.stage.binMapFileName
-
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            let routingResult: RoutingResult
-            do {
-                let router = try Router(points: points, binMapFileName: binMapFileName)
-                routingResult = try router.route()
-            } catch RoutingError.Error(let message) {
-                print(message)
-                return
-            } catch {
-                fatalError("Should never happen")
-            }
-
-            dispatch_async(dispatch_get_main_queue()) {
-                self.drawRoutingResult(routingResult)
-            }
-        }
+        performSegueWithIdentifier("ShowRoutingProgressSegue", sender: self)
     }
 
     func onMapRightClick(event: NSEvent) -> NSEvent? {
@@ -298,6 +286,21 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         }
     }
 
+    func drawRoutingResult(routingResult: RoutingResult) {
+        try! realm.write {
+            let newPoints = List<Point>()
+            for idx in routingResult.pointIndexes {
+                newPoints.append(stage.points[idx])
+            }
+            stage.points.removeAll()
+            stage.points.appendContentsOf(newPoints)
+        }
+
+        reloadPoints()
+
+        addPathOverlay(routingResult.path)
+    }
+
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         realm.refresh()
         return stage.points.count
@@ -393,21 +396,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             return nil
         }
         return stage.points[pointIndex]
-    }
-
-    private func drawRoutingResult(routingResult: RoutingResult) {
-        try! realm.write {
-            let newPoints = List<Point>()
-            for idx in routingResult.pointIndexes {
-                newPoints.append(stage.points[idx])
-            }
-            stage.points.removeAll()
-            stage.points.appendContentsOf(newPoints)
-        }
-
-        reloadPoints()
-
-        addPathOverlay(routingResult.path)
     }
 
     private func addPathOverlay(path: [CLLocationCoordinate2D]) {

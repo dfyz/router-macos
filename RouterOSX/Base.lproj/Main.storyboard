@@ -503,11 +503,84 @@ Gw
                         <outlet property="geocoderTextField" destination="t4N-2x-dmO" id="jPi-Wy-tRk"/>
                         <outlet property="mapView" destination="SHD-qP-Gg0" id="MRh-Pb-pXI"/>
                         <outlet property="pointTableView" destination="7zu-Qg-NjI" id="J1I-7U-22e"/>
+                        <segue destination="E6h-X3-h36" kind="sheet" identifier="ShowRoutingProgressSegue" id="08P-NM-FRz"/>
                     </connections>
                 </viewController>
                 <customObject id="9AZ-n8-mJ0" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1896" y="784"/>
+        </scene>
+        <!--Routing Progress Controller-->
+        <scene sceneID="Ana-pt-KVW">
+            <objects>
+                <viewController id="E6h-X3-h36" userLabel="Routing Progress Controller" customClass="RoutingProgressViewController" customModule="RouterOSX" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="BL4-1J-pF7">
+                        <rect key="frame" x="0.0" y="0.0" width="500" height="92"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qbc-J4-ASr">
+                                <rect key="frame" x="0.0" y="0.0" width="500" height="92"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8AO-vC-JB2">
+                                        <rect key="frame" x="8" y="65" width="62" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Routing..." id="Yi6-a3-XD6">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <progressIndicator wantsLayer="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="zWc-6B-s5f">
+                                        <rect key="frame" x="10" y="38" width="480" height="20"/>
+                                    </progressIndicator>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uA4-uH-0u2">
+                                        <rect key="frame" x="404" y="3" width="92" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="Yhg-TO-PXW"/>
+                                        </constraints>
+                                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9XU-M3-7jT">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="onCancel:" target="E6h-X3-h36" id="764-C9-rRQ"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <edgeInsets key="edgeInsets" left="10" right="10" top="10" bottom="10"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="uA4-uH-0u2" secondAttribute="trailing" constant="10" id="OUV-SD-7xP"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Qbc-J4-ASr" firstAttribute="top" secondItem="BL4-1J-pF7" secondAttribute="top" id="j3q-OA-0pm"/>
+                            <constraint firstAttribute="bottom" secondItem="Qbc-J4-ASr" secondAttribute="bottom" id="nck-Na-DTZ"/>
+                            <constraint firstAttribute="trailing" secondItem="Qbc-J4-ASr" secondAttribute="trailing" id="rsM-TP-WId"/>
+                            <constraint firstItem="Qbc-J4-ASr" firstAttribute="leading" secondItem="BL4-1J-pF7" secondAttribute="leading" id="tCC-jP-V8Y"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="uA4-uH-0u2" id="tOK-OD-XMp"/>
+                        <outlet property="progressBar" destination="zWc-6B-s5f" id="knE-U5-DRe"/>
+                        <outlet property="progressTextField" destination="8AO-vC-JB2" id="9MF-06-tey"/>
+                    </connections>
+                </viewController>
+                <customObject id="OVl-nN-G3x" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2831" y="506"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -527,7 +600,7 @@ Gw
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Tw5-Wz-JnH" viewBased="YES" id="Dpb-qs-u2R">
-                                                    <rect key="frame" x="0.0" y="0.0" width="680" height="0.0"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="680" height="207"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

@@ -4,16 +4,13 @@ typealias CostMatrix = [[Double]]
 
 func solveTsp(costMatrix: CostMatrix) -> [Int] {
     if costMatrix.count <= 2 {
-        print("Trivial")
         return Array(0..<costMatrix.count)
     }
 
     if costMatrix.count <= 10 {
-        print("Backtracking")
         return BacktrackingSolver(costMatrix: costMatrix).solve()
     }
 
-    print("Greedy")
     return GreedySolver(costMatrix: costMatrix).solve()
 }
 
