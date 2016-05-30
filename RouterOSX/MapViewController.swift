@@ -6,7 +6,7 @@ class PointAnnotation: MKPointAnnotation {
     var permanent = false
 }
 
-class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataSource, NSTableViewDelegate, MKMapViewDelegate {
+class MapViewController: NSViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var geocoderTextField: NSTextField!
     @IBOutlet weak var geocoderClearButton: NSButton!
@@ -208,65 +208,57 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         return event
     }
 
-    func control(
-        control: NSControl,
-        textView: NSTextView,
-        completions words: [String],
-        forPartialWordRange charRange: NSRange,
-        indexOfSelectedItem index: UnsafeMutablePointer<Int>
-    ) -> [String]
-    {
-        hideGeocodingResults()
-        return []
+    private func addPointToRealm(point: PointAnnotation) {
+        let permanentPoint = Point()
+        try! realm.write {
+            permanentPoint.name = point.title!
+            permanentPoint.lat = point.coordinate.latitude
+            permanentPoint.lon = point.coordinate.longitude
+            stage.points.append(permanentPoint)
+        }
+        pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
+
+        reloadPoints()
     }
 
-    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
-        if let osmOverlay = overlay as? MKTileOverlay {
-            return MKTileOverlayRenderer(tileOverlay: osmOverlay)
-
-        }
-        if let polylineOverlay = overlay as? MKPolyline {
-            let renderer = MKPolylineRenderer(polyline: polylineOverlay)
-            renderer.strokeColor = NSColor.redColor()
-            renderer.lineWidth = 3
-            return renderer
-        }
-        return MKOverlayRenderer()
+    private func hideGeocodingResults() {
+        self.geocodingResults = nil
+        self.geocoderClearButton.hidden = true
     }
 
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let point = annotation as? PointAnnotation else {
+    private func showGeocodingResults() {
+        self.geocodingResults = GeocodingResultTable(
+            mapView: self,
+            results: []
+        )
+        self.geocoderClearButton.hidden = false
+    }
+
+    private func reloadPoints() {
+        pointTableView.reloadData()
+    }
+
+    private func getSelectedPoint() -> Point? {
+        let pointIndex = pointTableView.selectedRow
+        if pointIndex < 0 {
             return nil
         }
-
-        let result = MKPinAnnotationView(annotation: point, reuseIdentifier: nil)
-        result.canShowCallout = true
-
-        if !point.permanent {
-            let button = NSButton()
-            button.bezelStyle = .SmallSquareBezelStyle
-            button.image = NSImage(named: NSImageNameAddTemplate)
-            button.target = self
-            button.action = #selector(makePointPermanent)
-            result.rightCalloutAccessoryView = button
-        }
-
-        return result
+        return stage.points[pointIndex]
     }
 
-    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
-        guard
-            let annotationView = view as? MKPinAnnotationView,
-            let point = annotationView.annotation as? PointAnnotation
-        else {
-            return
+    private func addPathOverlay(path: [CLLocationCoordinate2D]) {
+        if let prevPath = routeOverlay {
+            mapView.removeOverlay(prevPath)
+            routeOverlay = nil
         }
 
-        if !point.permanent {
-            mapView.removeAnnotation(point)
-        }
+        var path = path
+        routeOverlay = MKPolyline(coordinates: &path, count: path.count)
+        mapView.addOverlay(routeOverlay!, level: .AboveLabels)
     }
+}
 
+extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         realm.refresh()
         return stage.points.count
@@ -338,6 +330,55 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         reloadPoints()
         return true
     }
+}
+
+extension MapViewController: MKMapViewDelegate {
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        if let osmOverlay = overlay as? MKTileOverlay {
+            return MKTileOverlayRenderer(tileOverlay: osmOverlay)
+
+        }
+        if let polylineOverlay = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: polylineOverlay)
+            renderer.strokeColor = NSColor.redColor()
+            renderer.lineWidth = 3
+            return renderer
+        }
+        return MKOverlayRenderer()
+    }
+
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let point = annotation as? PointAnnotation else {
+            return nil
+        }
+
+        let result = MKPinAnnotationView(annotation: point, reuseIdentifier: nil)
+        result.canShowCallout = true
+
+        if !point.permanent {
+            let button = NSButton()
+            button.bezelStyle = .SmallSquareBezelStyle
+            button.image = NSImage(named: NSImageNameAddTemplate)
+            button.target = self
+            button.action = #selector(makePointPermanent)
+            result.rightCalloutAccessoryView = button
+        }
+
+        return result
+    }
+
+    func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
+        guard
+            let annotationView = view as? MKPinAnnotationView,
+            let point = annotationView.annotation as? PointAnnotation
+        else {
+            return
+        }
+
+        if !point.permanent {
+            mapView.removeAnnotation(point)
+        }
+    }
 
     @objc private func makePointPermanent(sender: NSButton?) {
         guard let btn = sender else {
@@ -359,54 +400,18 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
             currentView = currentView!.superview
         }
     }
+}
 
-    private func addPointToRealm(point: PointAnnotation) {
-        let permanentPoint = Point()
-        try! realm.write {
-            permanentPoint.name = point.title!
-            permanentPoint.lat = point.coordinate.latitude
-            permanentPoint.lon = point.coordinate.longitude
-            stage.points.append(permanentPoint)
-        }
-        pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
-
-        reloadPoints()
-    }
-
-
-    private func hideGeocodingResults() {
-        self.geocodingResults = nil
-        self.geocoderClearButton.hidden = true
-    }
-
-    private func showGeocodingResults() {
-        self.geocodingResults = GeocodingResultTable(
-            mapView: self,
-            results: []
-        )
-        self.geocoderClearButton.hidden = false
-    }
-
-    private func reloadPoints() {
-        pointTableView.reloadData()
-    }
-
-    private func getSelectedPoint() -> Point? {
-        let pointIndex = pointTableView.selectedRow
-        if pointIndex < 0 {
-            return nil
-        }
-        return stage.points[pointIndex]
-    }
-
-    private func addPathOverlay(path: [CLLocationCoordinate2D]) {
-        if let prevPath = routeOverlay {
-            mapView.removeOverlay(prevPath)
-            routeOverlay = nil
-        }
-
-        var path = path
-        routeOverlay = MKPolyline(coordinates: &path, count: path.count)
-        mapView.addOverlay(routeOverlay!, level: .AboveLabels)
+extension MapViewController: NSTextFieldDelegate {
+    func control(
+            control: NSControl,
+            textView: NSTextView,
+            completions words: [String],
+            forPartialWordRange charRange: NSRange,
+            indexOfSelectedItem index: UnsafeMutablePointer<Int>
+    ) -> [String]
+    {
+        hideGeocodingResults()
+        return []
     }
 }
