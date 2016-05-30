@@ -19,6 +19,38 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
     var pointToAnnotation = [HashablePoint: PointAnnotation]()
     var routeOverlay: MKOverlay?
 
+    func addPointToMap(name: String, lat: Double, lon: Double, permanent: Bool) {
+        let point = PointAnnotation()
+        let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        point.coordinate = coords
+        point.title = name
+        point.permanent = permanent
+        mapView.addAnnotation(point)
+
+        if !permanent {
+            mapView.selectAnnotation(point, animated: true)
+            mapView.setCenterCoordinate(coords, animated: true)
+            hideGeocodingResults()
+        } else {
+            pointToAnnotation[HashablePoint(lat: lat, lon: lon)] = point
+        }
+    }
+
+    func drawRoutingResult(routingResult: RoutingResult) {
+        try! realm.write {
+            let newPoints = List<Point>()
+            for idx in routingResult.pointIndexes {
+                newPoints.append(stage.points[idx])
+            }
+            stage.points.removeAll()
+            stage.points.appendContentsOf(newPoints)
+        }
+
+        reloadPoints()
+
+        addPathOverlay(routingResult.path)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -127,7 +159,7 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         reloadPoints()
     }
 
-    @IBAction func onDeleteItem(sender: AnyObject) {
+    func onDeleteItem(sender: AnyObject) {
         guard let point = getSelectedPoint() else {
             return
         }
@@ -235,72 +267,6 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         }
     }
 
-    func makePointPermanent(sender: NSButton?) {
-        guard let btn = sender else {
-            return
-        }
-
-        var currentView = btn.superview
-        while currentView != nil {
-            if let annotationView = currentView as? MKPinAnnotationView {
-                if let point = annotationView.annotation as? PointAnnotation {
-                    addPointToRealm(point)
-                    mapView.removeAnnotation(point)
-                    point.permanent = true
-                    mapView.addAnnotation(point)
-                    mapView.selectAnnotation(point, animated: false)
-                    break
-                }
-            }
-            currentView = currentView!.superview
-        }
-    }
-
-    func addPointToRealm(point: PointAnnotation) {
-        let permanentPoint = Point()
-        try! realm.write {
-            permanentPoint.name = point.title!
-            permanentPoint.lat = point.coordinate.latitude
-            permanentPoint.lon = point.coordinate.longitude
-            stage.points.append(permanentPoint)
-        }
-        pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
-
-        reloadPoints()
-    }
-
-    func addPointToMap(name: String, lat: Double, lon: Double, permanent: Bool) {
-        let point = PointAnnotation()
-        let coords = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-        point.coordinate = coords
-        point.title = name
-        point.permanent = permanent
-        mapView.addAnnotation(point)
-
-        if !permanent {
-            mapView.selectAnnotation(point, animated: true)
-            mapView.setCenterCoordinate(coords, animated: true)
-            hideGeocodingResults()
-        } else {
-            pointToAnnotation[HashablePoint(lat: lat, lon: lon)] = point
-        }
-    }
-
-    func drawRoutingResult(routingResult: RoutingResult) {
-        try! realm.write {
-            let newPoints = List<Point>()
-            for idx in routingResult.pointIndexes {
-                newPoints.append(stage.points[idx])
-            }
-            stage.points.removeAll()
-            stage.points.appendContentsOf(newPoints)
-        }
-
-        reloadPoints()
-
-        addPathOverlay(routingResult.path)
-    }
-
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         realm.refresh()
         return stage.points.count
@@ -372,6 +338,41 @@ class MapViewController: NSViewController, NSTextFieldDelegate, NSTableViewDataS
         reloadPoints()
         return true
     }
+
+    @objc private func makePointPermanent(sender: NSButton?) {
+        guard let btn = sender else {
+            return
+        }
+
+        var currentView = btn.superview
+        while currentView != nil {
+            if let annotationView = currentView as? MKPinAnnotationView {
+                if let point = annotationView.annotation as? PointAnnotation {
+                    addPointToRealm(point)
+                    mapView.removeAnnotation(point)
+                    point.permanent = true
+                    mapView.addAnnotation(point)
+                    mapView.selectAnnotation(point, animated: false)
+                    break
+                }
+            }
+            currentView = currentView!.superview
+        }
+    }
+
+    private func addPointToRealm(point: PointAnnotation) {
+        let permanentPoint = Point()
+        try! realm.write {
+            permanentPoint.name = point.title!
+            permanentPoint.lat = point.coordinate.latitude
+            permanentPoint.lon = point.coordinate.longitude
+            stage.points.append(permanentPoint)
+        }
+        pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
+
+        reloadPoints()
+    }
+
 
     private func hideGeocodingResults() {
         self.geocodingResults = nil
