@@ -46,22 +46,20 @@ class Router {
         let permutation = solveTsp(costMatrix)
 
         var finalPath = [CLLocationCoordinate2D]()
-        for i in 0..<permutation.count {
-            if i == 0 {
-                continue
+        if !permutation.isEmpty {
+            for i in 1 ..< permutation.count {
+                let from = permutation[i - 1]
+                let to = permutation[i]
+
+                let fromPoint = points[from]
+                finalPath.append(CLLocationCoordinate2D(latitude: fromPoint.lat, longitude: fromPoint.lon))
+
+                finalPath.appendContentsOf(allPaths[from][to].path)
+
+                let toPoint = points[to]
+                finalPath.append(CLLocationCoordinate2D(latitude: toPoint.lat, longitude: toPoint.lon))
             }
-            let from = permutation[i - 1]
-            let to = permutation[i]
-
-            let fromPoint = points[from]
-            finalPath.append(CLLocationCoordinate2D(latitude: fromPoint.lat, longitude: fromPoint.lon))
-
-            finalPath.appendContentsOf(allPaths[from][to].path)
-
-            let toPoint = points[to]
-            finalPath.append(CLLocationCoordinate2D(latitude: toPoint.lat, longitude: toPoint.lon))
         }
-
         return RoutingResult(pointIndexes: permutation, path: finalPath)
     }
 
