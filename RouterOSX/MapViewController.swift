@@ -352,8 +352,13 @@ extension MapViewController: MKMapViewDelegate {
             return nil
         }
 
-        let result = MKPinAnnotationView(annotation: point, reuseIdentifier: nil)
+        let result = BubbleAnnotationView(annotation: point, reuseIdentifier: nil)
         result.canShowCallout = true
+
+        let height = CGFloat(60.0)
+        let width = CGFloat(50.0)
+        result.setFrameSize(NSSize(width: width, height: height))
+        result.centerOffset = CGPoint(x: 0.0, y: -height / 2.0)
 
         if !point.permanent {
             let button = NSButton()
@@ -369,7 +374,7 @@ extension MapViewController: MKMapViewDelegate {
 
     func mapView(mapView: MKMapView, didDeselectAnnotationView view: MKAnnotationView) {
         guard
-            let annotationView = view as? MKPinAnnotationView,
+            let annotationView = view as? BubbleAnnotationView,
             let point = annotationView.annotation as? PointAnnotation
         else {
             return
@@ -387,7 +392,7 @@ extension MapViewController: MKMapViewDelegate {
 
         var currentView = btn.superview
         while currentView != nil {
-            if let annotationView = currentView as? MKPinAnnotationView {
+            if let annotationView = currentView as? BubbleAnnotationView {
                 if let point = annotationView.annotation as? PointAnnotation {
                     addPointToRealm(point)
                     mapView.removeAnnotation(point)
@@ -413,5 +418,30 @@ extension MapViewController: NSTextFieldDelegate {
     {
         hideGeocodingResults()
         return []
+    }
+}
+
+private class BubbleAnnotationView: MKAnnotationView {
+    override func drawRect(rect: NSRect) {
+        NSColor.whiteColor().setFill()
+        NSColor.redColor().setStroke()
+        let oval = NSBezierPath()
+        let padding = 3.0
+        let ovalRect = NSRect(
+            x: padding,
+            y: padding,
+            width: Double(frame.width) - 2*padding,
+            height: 0.5*Double(frame.height) - 2*padding
+        )
+        oval.appendBezierPathWithOvalInRect(ovalRect)
+        let ovalWidth = CGFloat(5)
+        oval.lineWidth = ovalWidth
+        oval.stroke()
+        oval.fill()
+
+        let lineFrom = CGPoint(x: frame.width / 2.0, y: ovalRect.height + ovalWidth)
+        let lineTo = CGPoint(x: lineFrom.x, y: frame.height)
+        NSBezierPath.setDefaultLineWidth(2.0)
+        NSBezierPath.strokeLineFromPoint(lineFrom, toPoint: lineTo)
     }
 }
