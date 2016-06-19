@@ -255,6 +255,16 @@ class MapViewController: NSViewController {
         var path = path
         routeOverlay = MKPolyline(coordinates: &path, count: path.count)
         mapView.addOverlay(routeOverlay!, level: .AboveLabels)
+
+        if path.isEmpty {
+            return
+        }
+
+        for i in 1..<path.count {
+            if let arrow = getArrowPolygon(path[i - 1], to: path[i]) {
+                mapView.addOverlay(arrow)
+            }
+        }
     }
 }
 
@@ -341,7 +351,14 @@ extension MapViewController: MKMapViewDelegate {
         if let polylineOverlay = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: polylineOverlay)
             renderer.strokeColor = NSColor.redColor()
-            renderer.lineWidth = 3
+            renderer.lineWidth = 10
+            return renderer
+        }
+        if let arrowOverlay = overlay as? MKPolygon {
+            let renderer = MKPolygonRenderer(polygon: arrowOverlay)
+            renderer.strokeColor = NSColor.whiteColor()
+            renderer.fillColor = NSColor.whiteColor()
+            renderer.lineJoin = .Miter
             return renderer
         }
         return MKOverlayRenderer()

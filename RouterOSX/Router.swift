@@ -170,12 +170,6 @@ class Router {
         }
         return result
     }
-
-    private func getDistance(from: WithCoordinates, to: WithCoordinates) -> Double {
-        let locationA = CLLocation(latitude: from.lat, longitude: from.lon)
-        let locationB = CLLocation(latitude: to.lat, longitude: to.lon)
-        return locationA.distanceFromLocation(locationB)
-    }
 }
 
 private struct PathfindingState: Comparable {
@@ -197,11 +191,6 @@ private struct FoundPath {
 }
 
 private typealias LazyOsmNode = OsmNode.LazyAccess
-
-private protocol WithCoordinates {
-    var lat: Double { get }
-    var lon: Double { get }
-}
 
 extension NamedPoint: WithCoordinates {}
 extension LazyOsmNode: WithCoordinates {}

@@ -12,6 +12,7 @@
 		2F03228193D6F1C378152876 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032F082632312DD1F346A5 /* Router.swift */; };
 		2F032435AFAFFC00C4068CBB /* GeocodingResultTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */; };
 		2F032754A59B3DEFFE153C2F /* RoutingProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032EA93B79FE0F66DF8A28 /* RoutingProgressViewController.swift */; };
+		2F0327E669443A07CF15548E /* GeoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032DC0525BE86F12C75555 /* GeoUtils.swift */; };
 		2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032A34195ED84789B44148 /* Geocoder.swift */; };
 		2F032AB938A2789C3F60E55B /* Tsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F03279E1FE5D43DB1A86E99 /* Tsp.swift */; };
 		4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F131CBB00E1001F582E /* AppDelegate.swift */; };
@@ -42,6 +43,7 @@
 		2F03216FA607244594E78D2D /* TableUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableUtils.swift; sourceTree = "<group>"; };
 		2F03279E1FE5D43DB1A86E99 /* Tsp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tsp.swift; sourceTree = "<group>"; };
 		2F032A34195ED84789B44148 /* Geocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geocoder.swift; sourceTree = "<group>"; };
+		2F032DC0525BE86F12C75555 /* GeoUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoUtils.swift; sourceTree = "<group>"; };
 		2F032EA93B79FE0F66DF8A28 /* RoutingProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoutingProgressViewController.swift; sourceTree = "<group>"; };
 		2F032F082632312DD1F346A5 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		4F273F101CBB00E1001F582E /* RouterOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RouterOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,6 +138,7 @@
 				2F0320FD81D9157769B1912E /* HashablePoint.swift */,
 				2F032F082632312DD1F346A5 /* Router.swift */,
 				2F03279E1FE5D43DB1A86E99 /* Tsp.swift */,
+				2F032DC0525BE86F12C75555 /* GeoUtils.swift */,
 			);
 			name = Backend;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				2F03228193D6F1C378152876 /* Router.swift in Sources */,
 				2F032AB938A2789C3F60E55B /* Tsp.swift in Sources */,
 				2F032754A59B3DEFFE153C2F /* RoutingProgressViewController.swift in Sources */,
+				2F0327E669443A07CF15548E /* GeoUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
