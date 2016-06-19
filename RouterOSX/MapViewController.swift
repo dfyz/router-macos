@@ -4,6 +4,7 @@ import RealmSwift
 
 class PointAnnotation: MKPointAnnotation {
     var permanent = false
+    var baloonTitle = ""
 }
 
 class MapViewController: NSViewController {
@@ -79,6 +80,8 @@ class MapViewController: NSViewController {
         for point in stage.points {
             addPointToMap(point.name, lat: point.lat, lon: point.lon, permanent: true)
         }
+
+        reloadPoints()
     }
 
     override func viewWillAppear() {
@@ -236,6 +239,14 @@ class MapViewController: NSViewController {
 
     private func reloadPoints() {
         pointTableView.reloadData()
+        for (idx, p) in stage.points.enumerate() {
+            let hp = HashablePoint(lat: p.lat, lon: p.lon)
+            if let annotation = pointToAnnotation[hp] {
+                mapView.removeAnnotation(annotation)
+                annotation.baloonTitle = getRowTextByIndex(idx)
+                mapView.addAnnotation(annotation)
+            }
+        }
     }
 
     private func getSelectedPoint() -> Point? {
@@ -244,6 +255,15 @@ class MapViewController: NSViewController {
             return nil
         }
         return stage.points[pointIndex]
+    }
+
+    private func getRowTextByIndex(index: Int) -> String {
+        if index == 0 {
+            return "🚩"
+        } else if index + 1 >= self.stage.points.count {
+            return "🏁"
+        }
+        return String(format: "%02d", index)
     }
 
     private func addPathOverlay(path: [CLLocationCoordinate2D]) {
@@ -255,6 +275,28 @@ class MapViewController: NSViewController {
         var path = path
         routeOverlay = MKPolyline(coordinates: &path, count: path.count)
         mapView.addOverlay(routeOverlay!, level: .AboveLabels)
+    }
+
+
+    @objc private func makePointPermanent(sender: NSButton?) {
+        guard let btn = sender else {
+            return
+        }
+
+        var currentView = btn.superview
+        while currentView != nil {
+            if let annotationView = currentView as? BubbleAnnotationView {
+                if let point = annotationView.annotation as? PointAnnotation {
+                    addPointToRealm(point)
+                    mapView.removeAnnotation(point)
+                    point.permanent = true
+                    mapView.addAnnotation(point)
+                    mapView.selectAnnotation(point, animated: false)
+                    break
+                }
+            }
+            currentView = currentView!.superview
+        }
     }
 }
 
@@ -271,12 +313,7 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
             let point = self.stage.points[row]
             switch columnIdentifier {
             case "PointNumberColumn":
-                if row == 0 {
-                    return "🚩"
-                } else if row + 1 >= self.stage.points.count {
-                    return "🏁"
-                }
-                return String(format: "%02d", row)
+                return self.getRowTextByIndex(row)
             case "PointNameColumn":
                 return "\(point.name)"
             default:
@@ -384,27 +421,6 @@ extension MapViewController: MKMapViewDelegate {
             mapView.removeAnnotation(point)
         }
     }
-
-    @objc private func makePointPermanent(sender: NSButton?) {
-        guard let btn = sender else {
-            return
-        }
-
-        var currentView = btn.superview
-        while currentView != nil {
-            if let annotationView = currentView as? BubbleAnnotationView {
-                if let point = annotationView.annotation as? PointAnnotation {
-                    addPointToRealm(point)
-                    mapView.removeAnnotation(point)
-                    point.permanent = true
-                    mapView.addAnnotation(point)
-                    mapView.selectAnnotation(point, animated: false)
-                    break
-                }
-            }
-            currentView = currentView!.superview
-        }
-    }
 }
 
 extension MapViewController: NSTextFieldDelegate {
@@ -426,12 +442,15 @@ private class BubbleAnnotationView: MKAnnotationView {
         NSColor.whiteColor().setFill()
         NSColor.redColor().setStroke()
         let oval = NSBezierPath()
-        let padding = 3.0
-        let ovalRect = NSRect(
-            x: padding,
-            y: padding,
-            width: Double(frame.width) - 2*padding,
-            height: 0.5*Double(frame.height) - 2*padding
+        let ovalRect = padRect(
+            NSRect(
+                x: 0.0,
+                y: 0.0,
+                width: Double(frame.width),
+                height: 0.6*Double(frame.height)
+            ),
+            widthPadding: 3.0,
+            heightPadding: 3.0
         )
         oval.appendBezierPathWithOvalInRect(ovalRect)
         let ovalWidth = CGFloat(5)
@@ -443,5 +462,29 @@ private class BubbleAnnotationView: MKAnnotationView {
         let lineTo = CGPoint(x: lineFrom.x, y: frame.height)
         NSBezierPath.setDefaultLineWidth(2.0)
         NSBezierPath.strokeLineFromPoint(lineFrom, toPoint: lineTo)
+
+        if let point = annotation as? PointAnnotation {
+            let attrs = [NSFontAttributeName: NSFont.boldSystemFontOfSize(24.0)]
+            let str = NSString(string: point.baloonTitle)
+            let strSize = str.sizeWithAttributes(attrs)
+
+            let getPadding = {
+                (ovalDim, strDim) in
+                max(CGFloat(0.0), (ovalDim - strDim) / CGFloat(2.0))
+            }
+            let widthPadding = getPadding(ovalRect.width, strSize.width)
+            let heightPadding = getPadding(ovalRect.height, strSize.height)
+            let strRect = padRect(ovalRect, widthPadding: widthPadding, heightPadding: heightPadding)
+            str.drawInRect(strRect, withAttributes: attrs)
+        }
+    }
+
+    private func padRect(rect: NSRect, widthPadding: CGFloat, heightPadding: CGFloat) -> NSRect {
+        return NSRect(
+            x: rect.origin.x + widthPadding,
+            y: rect.origin.y + heightPadding,
+            width: rect.width - 2*widthPadding,
+            height: rect.height - 2*heightPadding
+        )
     }
 }
