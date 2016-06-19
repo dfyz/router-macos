@@ -17,7 +17,7 @@ class MapViewController: NSViewController {
     var geocodingResults: GeocodingResultTable?
     var mapMonitor: AnyObject!
     var pointToAnnotation = [HashablePoint: PointAnnotation]()
-    var routeOverlays = [MKOverlay]()
+    var routeOverlay: MKOverlay?
 
     func addPointToMap(name: String, lat: Double, lon: Double, permanent: Bool) {
         let point = PointAnnotation()
@@ -247,27 +247,22 @@ class MapViewController: NSViewController {
     }
 
     private func addPathOverlay(path: [CLLocationCoordinate2D]) {
-        for o in routeOverlays {
-            mapView.removeOverlay(o)
-        }
-        routeOverlays.removeAll()
-
-        let addOverlay = {
-            (o: MKOverlay) in
-            self.mapView.addOverlay(o, level: .AboveLabels)
-            self.routeOverlays.append(o)
+        if let prevPath = routeOverlay {
+            mapView.removeOverlay(prevPath)
+            routeOverlay = nil
         }
 
         var path = path
-        addOverlay(MKPolyline(coordinates: &path, count: path.count))
+        routeOverlay = MKPolyline(coordinates: &path, count: path.count)
+        mapView.addOverlay(routeOverlay!, level: .AboveLabels)
 
         if path.isEmpty {
             return
         }
 
         for i in 1..<path.count {
-            for arrow in getArrowPolygons(path[i - 1], to: path[i]) {
-                addOverlay(arrow)
+            if let arrow = getArrowPolygon(path[i - 1], to: path[i]) {
+                mapView.addOverlay(arrow)
             }
         }
     }
@@ -356,13 +351,13 @@ extension MapViewController: MKMapViewDelegate {
         if let polylineOverlay = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: polylineOverlay)
             renderer.strokeColor = NSColor.redColor()
-            renderer.lineWidth = 2
+            renderer.lineWidth = 10
             return renderer
         }
         if let arrowOverlay = overlay as? MKPolygon {
             let renderer = MKPolygonRenderer(polygon: arrowOverlay)
-            renderer.strokeColor = NSColor.redColor()
-            renderer.fillColor = NSColor.redColor()
+            renderer.strokeColor = NSColor.whiteColor()
+            renderer.fillColor = NSColor.whiteColor()
             renderer.lineJoin = .Miter
             return renderer
         }
