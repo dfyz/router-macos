@@ -102,7 +102,7 @@ class MapImporter: NSObject, NSXMLParserDelegate {
         let sourceMapBasename = NSString(string: sourceMapFileName).lastPathComponent
         let binMapBasename = NSString(string: sourceMapBasename).stringByDeletingPathExtension + ".bin"
         var config = Realm.Configuration()
-        return (NSURL.fileURLWithPath(config.path!).URLByDeletingLastPathComponent?.URLByAppendingPathComponent(binMapBasename).path)!
+        return (config.fileURL!.URLByDeletingLastPathComponent?.URLByAppendingPathComponent(binMapBasename).path)!
     }
 
     private func saveToFile(resultFileName: String) {
