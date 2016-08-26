@@ -19,10 +19,10 @@ class MapImporter: NSObject, NSXMLParserDelegate {
     var input: NSInputStream!
     var fileSize: UInt64!
 
-    var globalIdToNode = [UInt32: OsmNode]()
-    var globalIdToIndex = [UInt32: Int]()
+    var globalIdToNode = [UInt64: OsmNode]()
+    var globalIdToIndex = [UInt64: UInt32]()
     var nodes = [OsmNode?]()
-    var currentNodes = [UInt32]()
+    var currentNodes = [UInt64]()
 
     var inWay = false
     var isHighway = false
@@ -37,15 +37,26 @@ class MapImporter: NSObject, NSXMLParserDelegate {
 
         switch elementName {
         case "node":
-            let globalId = UInt32(attributeDict["id"]!)!
-            let (lat, lon) = (Double(attributeDict["lat"]!)!, Double(attributeDict["lon"]!)!)
-            globalIdToNode[globalId] = OsmNode(lat: lat, lon: lon, adj: [])
+            if
+                let idAttr = attributeDict["id"],
+                let globalId = UInt64(idAttr),
+                let latAttr = attributeDict["lat"],
+                let lat = Double(latAttr),
+                let lonAttr = attributeDict["lon"],
+                let lon = Double(lonAttr)
+            {
+                globalIdToNode[globalId] = OsmNode(lat: lat, lon: lon, adj: [])
+            }
         case "way":
             inWay = true
             isHighway = false
         case "nd" where inWay:
-            let currentId = UInt32(attributeDict["ref"]!)!
-            currentNodes.append(currentId)
+            if
+                let refAttr = attributeDict["ref"],
+                let currentId = UInt64(refAttr)
+            {
+                currentNodes.append(currentId)
+            }
         case "tag" where inWay && attributeDict["k"] == "highway":
             isHighway = true
         default:
@@ -60,13 +71,12 @@ class MapImporter: NSObject, NSXMLParserDelegate {
 
         if isHighway && !currentNodes.isEmpty {
             for i in 1..<currentNodes.count {
-                let maybePrevIndex = idToIndex(currentNodes[i - 1])
-                let maybeCurrentIndex = idToIndex(currentNodes[i])
-                if maybePrevIndex != nil && maybeCurrentIndex != nil {
-                    let prevIndex = maybePrevIndex!
-                    let currentIndex = maybeCurrentIndex!
-                    nodes[prevIndex]!.adj.append(UInt32(currentIndex))
-                    nodes[currentIndex]!.adj.append(UInt32(prevIndex))
+                if
+                    let prevIndex = idToIndex(currentNodes[i - 1]),
+                    let currentIndex = idToIndex(currentNodes[i])
+                {
+                    nodes[Int(prevIndex)]!.adj.append(currentIndex)
+                    nodes[Int(currentIndex)]!.adj.append(prevIndex)
                 }
             }
         }
@@ -151,15 +161,16 @@ class MapImporter: NSObject, NSXMLParserDelegate {
         }
     }
 
-    private func idToIndex(id: UInt32) -> Int? {
-        var result = globalIdToIndex[id]
-        if result == nil {
-            if let node = globalIdToNode[id] {
-                result = nodes.count
-                globalIdToIndex[id] = result
-                nodes.append(node)
-            }
+    private func idToIndex(id: UInt64) -> UInt32? {
+        if let result = globalIdToIndex[id] {
+            return result
         }
+        guard let node = globalIdToNode[id] else {
+            return nil
+        }
+        let result = UInt32(nodes.count)
+        globalIdToIndex[id] = result
+        nodes.append(node)
         return result
     }
 }
