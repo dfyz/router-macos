@@ -38,8 +38,8 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         addColumns(innerTable)
 
         self.innerTable.headerView = nil
-        self.innerTable.setDataSource(self)
-        self.innerTable.setDelegate(self)
+        self.innerTable.dataSource = self
+        self.innerTable.delegate = self
         self.innerTable.reloadData()
 
         self.resultTable.documentView = self.innerTable

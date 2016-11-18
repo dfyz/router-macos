@@ -68,11 +68,11 @@ class MapViewController: NSViewController {
         osmOverlay.canReplaceMapContent = true
         mapView.addOverlay(osmOverlay)
 
-        self.mapMonitor = NSEvent.addLocalMonitorForEventsMatchingMask(.RightMouseUpMask, handler: onMapRightClick)
+        self.mapMonitor = NSEvent.addLocalMonitorForEventsMatchingMask(.RightMouseUp, handler: onMapRightClick)
         mapView.delegate = self
 
-        pointTableView.setDataSource(self)
-        pointTableView.setDelegate(self)
+        pointTableView.dataSource = self
+        pointTableView.delegate = self
         pointTableView.registerForDraggedTypes(["point.index"])
 
         hideGeocodingResults()
@@ -399,7 +399,7 @@ extension MapViewController: MKMapViewDelegate {
 
         if !point.permanent {
             let button = NSButton()
-            button.bezelStyle = .SmallSquareBezelStyle
+            button.bezelStyle = .SmallSquare
             button.image = NSImage(named: NSImageNameAddTemplate)
             button.target = self
             button.action = #selector(makePointPermanent)

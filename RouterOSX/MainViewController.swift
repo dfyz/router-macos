@@ -41,8 +41,8 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         realm = try! Realm()
         allStages = realm.objects(Stage).sorted("competitionName")
 
-        mainTableView.setDataSource(self)
-        mainTableView.setDelegate(self)
+        mainTableView.dataSource = self
+        mainTableView.delegate = self
     }
 
     override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
