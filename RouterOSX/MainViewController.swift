@@ -7,12 +7,12 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
     var realm: Realm!
     var allStages: Results<Stage>!
 
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         realm.refresh()
         return allStages.count
     }
 
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         return getTextViewForTableCell(tableView, tableColumn) {
             columnIdentifier in
 
@@ -39,13 +39,13 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 2)
 
         realm = try! Realm()
-        allStages = realm.objects(Stage).sorted("competitionName")
+        allStages = realm.objects(Stage.self).sorted(byProperty: "competitionName")
 
         mainTableView.dataSource = self
         mainTableView.delegate = self
     }
 
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         if let dest = segue.destinationController as? AddStageViewController {
             dest.parentController = self
         }
@@ -60,7 +60,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         mainTableView.reloadData()
     }
 
-    @IBAction func onStageNameEdited(sender: NSTextField) {
+    @IBAction func onStageNameEdited(_ sender: NSTextField) {
         guard let stage = getSelectedStage() else {
             return
         }
@@ -71,7 +71,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         reloadData()
     }
 
-    @IBAction func onCopyExistingStageClick(sender: AnyObject) {
+    @IBAction func onCopyExistingStageClick(_ sender: AnyObject) {
         guard let original = getSelectedStage() else {
             return
         }
@@ -87,17 +87,17 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         reloadData()
     }
 
-    @IBAction func onDeleteItem(sender: AnyObject) {
+    @IBAction func onDeleteItem(_ sender: AnyObject) {
         guard let stage = getSelectedStage() else {
             return
         }
 
         let alert = NSAlert()
-        alert.addButtonWithTitle("OK")
-        alert.addButtonWithTitle("Cancel")
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Cancel")
         alert.messageText = "Delete \(stage.competitionName)?"
 
-        alert.beginSheetModalForWindow(view.window!) {
+        alert.beginSheetModal(for: view.window!, completionHandler: {
             (response) -> Void in
             if response == NSAlertFirstButtonReturn {
                 try! self.realm.write {
@@ -105,17 +105,17 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
                 }
                 self.reloadData()
             }
-        }
+        }) 
     }
 
-    @IBAction func onStageDoubleClick(sender: AnyObject) {
+    @IBAction func onStageDoubleClick(_ sender: AnyObject) {
         if getSelectedStage() == nil {
             return
         }
-        performSegueWithIdentifier("ShowMapSegue", sender: self)
+        performSegue(withIdentifier: "ShowMapSegue", sender: self)
     }
 
-    private func getSelectedStage() -> Stage? {
+    fileprivate func getSelectedStage() -> Stage? {
         let stageIndex = mainTableView.selectedRow
         if stageIndex < 0 {
             return nil

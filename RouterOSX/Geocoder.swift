@@ -15,15 +15,15 @@ struct GeocodingFailure {
 }
 
 enum GeocodingResult {
-    case Error(GeocodingFailure)
-    case Ok(GeocodedPlace)
+    case error(GeocodingFailure)
+    case ok(GeocodedPlace)
 }
 
 class Geocoder {
     let place: String
-    let callback: [GeocodingResult] -> ()
+    let callback: ([GeocodingResult]) -> ()
 
-    init(place: String, callback: [GeocodingResult] -> ()) {
+    init(place: String, callback: @escaping ([GeocodingResult]) -> ()) {
         self.place = place
         self.callback = callback
     }
@@ -40,9 +40,8 @@ class Geocoder {
         }
     }
 
-    func geocodeYandex(place: String) {
+    func geocodeYandex(_ place: String) {
         let request = Alamofire.request(
-            .GET,
             "https://geocode-maps.yandex.ru/1.x/",
             parameters: ["geocode": place, "format": "json"]
         )
@@ -63,7 +62,7 @@ class Geocoder {
                 return nil
             }
 
-            let coords = coordsStr.componentsSeparatedByString(" ");
+            let coords = coordsStr.components(separatedBy: " ")
             return GeocodedPlace(
                 name: name,
                 provider: providerName,
@@ -75,9 +74,8 @@ class Geocoder {
         genericGeocode(request, providerName, extractPoints, convertPoint)
     }
 
-    func geocodeGoogle(place: String) {
+    func geocodeGoogle(_ place: String) {
         let request = Alamofire.request(
-            .GET,
             "https://maps.googleapis.com/maps/api/geocode/json",
             parameters: ["address": place]
         )
@@ -106,9 +104,8 @@ class Geocoder {
         genericGeocode(request, providerName, extractPoints, convertPoint)
     }
 
-    func geocodeOsm(place: String) {
+    func geocodeOsm(_ place: String) {
         let request = Alamofire.request(
-            .GET,
             "https://nominatim.openstreetmap.org/search",
             parameters: ["q": place, "format": "json"]
         )
@@ -142,36 +139,36 @@ class Geocoder {
     }
 
     func genericGeocode(
-            request: Request,
+            _ request: DataRequest,
             _ provider: String,
-            _ extractPoints: JSON -> JSON,
-            _ convertPoint: JSON -> GeocodedPlace?
+            _ extractPoints: @escaping (JSON) -> JSON,
+            _ convertPoint: @escaping (JSON) -> GeocodedPlace?
     ) {
         request.responseJSON {
             response in
 
             switch response.result {
-            case .Success:
+            case .success:
                 if let value = response.result.value {
                     let points = extractPoints(JSON(value))
                     var results = [GeocodingResult]()
                     for (_, p) in points {
                         if let result = convertPoint(p) {
-                            results.append(.Ok(result))
+                            results.append(.ok(result))
                         }
                     }
                     self.callback(results)
                 } else {
                     self.onFailure(provider, "Failed to decode JSON")
                 }
-            case .Failure(let error):
+            case .failure(let error):
                 self.onFailure(provider, error.localizedDescription)
             }
         }
     }
 
-    func onFailure(provider: String, _ error: String) {
+    func onFailure(_ provider: String, _ error: String) {
         let failure = GeocodingFailure(provider: provider, error: error)
-        self.callback([.Error(failure)])
+        self.callback([.error(failure)])
     }
 }

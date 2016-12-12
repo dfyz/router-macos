@@ -2,9 +2,9 @@ import Cocoa
 import Foundation
 
 func getTextViewForTableCell(
-        tableView: NSTableView,
+        _ tableView: NSTableView,
         _ tableColumn: NSTableColumn?,
-        _ getText: String -> String?) -> NSView?
+        _ getText: (String) -> String?) -> NSView?
 {
     guard let columnIdentifier = tableColumn?.identifier else {
         return nil
@@ -14,8 +14,8 @@ func getTextViewForTableCell(
         fatalError("Unknown column: \(columnIdentifier)")
     }
 
-    let cellIdentifier = columnIdentifier.stringByReplacingOccurrencesOfString("Column", withString: "Cell")
-    guard let cell = tableView.makeViewWithIdentifier(cellIdentifier, owner: nil) as? NSTableCellView else {
+    let cellIdentifier = columnIdentifier.replacingOccurrences(of: "Column", with: "Cell")
+    guard let cell = tableView.make(withIdentifier: cellIdentifier, owner: nil) as? NSTableCellView else {
         return nil
     }
     cell.textField?.stringValue = text

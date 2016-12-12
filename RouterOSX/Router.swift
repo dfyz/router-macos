@@ -2,9 +2,9 @@ import CoreLocation
 import Foundation
 import SwiftPriorityQueue
 
-enum RoutingError: ErrorType {
-    case AbortedByUser
-    case Error(String)
+enum RoutingError: Error {
+    case abortedByUser
+    case error(String)
 }
 
 struct NamedPoint {
@@ -22,15 +22,18 @@ typealias ProgressCallback = (String, Double?) -> Bool
 
 class Router {
     let points: [NamedPoint]
-    let graph: OsmGraph.LazyAccess
+    let graph: OsmGraph
     let callback: ProgressCallback
 
-    init(points: [NamedPoint], binMapFileName: String, callback: ProgressCallback) throws {
+    init(points: [NamedPoint], binMapFileName: String, callback: @escaping ProgressCallback) throws {
         self.points = points
-        guard let mapData = NSData(contentsOfFile: binMapFileName) else {
-            throw RoutingError.Error("Failed to load \(binMapFileName)")
+        guard let mapData = try? Data(contentsOf: URL(fileURLWithPath: binMapFileName)) else {
+            throw RoutingError.error("Failed to load \(binMapFileName)")
         }
-        graph = OsmGraph.LazyAccess(data: UnsafePointer(mapData.bytes))
+        guard let mappedGraph = OsmGraph.from(data: mapData) else {
+            throw RoutingError.error("Failed to map graph data from \(binMapFileName) to memory")
+        }
+        self.graph = mappedGraph
         self.callback = callback
     }
 
@@ -41,7 +44,7 @@ class Router {
         let costMatrix = allPaths.map { row in row.map { $0.cost } }
 
         if !callback("Solving TSP", nil) {
-            throw RoutingError.AbortedByUser
+            throw RoutingError.abortedByUser
         }
         let permutation = solveTsp(costMatrix)
 
@@ -54,7 +57,7 @@ class Router {
                 let fromPoint = points[from]
                 finalPath.append(CLLocationCoordinate2D(latitude: fromPoint.lat, longitude: fromPoint.lon))
 
-                finalPath.appendContentsOf(allPaths[from][to].path)
+                finalPath.append(contentsOf: allPaths[from][to].path)
 
                 let toPoint = points[to]
                 finalPath.append(CLLocationCoordinate2D(latitude: toPoint.lat, longitude: toPoint.lon))
@@ -63,7 +66,7 @@ class Router {
         return RoutingResult(pointIndexes: permutation, path: finalPath)
     }
 
-    private func getAllPaths(osmNodeIndexes: [Int]) throws -> [[FoundPath]] {
+    fileprivate func getAllPaths(_ osmNodeIndexes: [Int]) throws -> [[FoundPath]] {
         let n = osmNodeIndexes.count
         return try (0..<n).map {
             from in
@@ -75,26 +78,26 @@ class Router {
 
                 let progress = Double(from*n + to) / Double(n*n)
                 if !callback("Searching for a path from \(fromName) to \(toName)", progress) {
-                    throw RoutingError.AbortedByUser
+                    throw RoutingError.abortedByUser
                 }
 
                 guard let path = getPath(osmNodeIndexes[from], to: osmNodeIndexes[to]) else {
-                    throw RoutingError.Error("Failed to compute path between \(fromName) and \(toName)")
+                    throw RoutingError.error("Failed to compute path between \(fromName) and \(toName)")
                 }
                 return path
             }
         }
     }
 
-    private func getPath(from: Int, to: Int) -> FoundPath? {
+    fileprivate func getPath(_ from: Int, to: Int) -> FoundPath? {
         if from == to {
             return FoundPath(path: [], cost: 0.0)
         }
 
         let n = graph.nodes.count
 
-        var prevIndex = [Int?](count: n, repeatedValue: nil)
-        var dist = [Double](count: n, repeatedValue: Double.infinity)
+        var prevIndex = [Int?](repeating: nil, count: n)
+        var dist = [Double](repeating: Double.infinity, count: n)
 
         dist[from] = 0.0
 
@@ -130,7 +133,7 @@ class Router {
             indexes.append(prev)
             current = prev
         }
-        indexes = indexes.reverse()
+        indexes = indexes.reversed()
 
         let finalPath: [CLLocationCoordinate2D] = indexes.map {
             idx in
@@ -140,24 +143,28 @@ class Router {
         return FoundPath(path: finalPath, cost: dist[to])
     }
 
-    private func getNearestOsmNodes() throws -> [Int] {
-        return try points.enumerate().map {
+    fileprivate func getNearestOsmNodes() throws -> [Int] {
+        return try points.enumerated().map {
             (idx, point) in
 
             if !callback("Preprocessing \(point.name)", Double(idx) / Double(points.count)) {
-                throw RoutingError.AbortedByUser
+                throw RoutingError.abortedByUser
             }
             guard let result = getNearestOsmNodeIndex(point) else {
-                throw RoutingError.Error("Failed to find an osm node for \(point.name)")
+                throw RoutingError.error("Failed to find an osm node for \(point.name)")
             }
             return result
         }
     }
 
-    private func getNearestOsmNodeIndex(point: NamedPoint) -> Int? {
+    fileprivate func getNearestOsmNodeIndex(_ point: NamedPoint) -> Int? {
         var result: Int? = nil
         var minDistance = Double.infinity
-        for (idx, node) in graph.nodes.enumerate() {
+        for (idx, maybeNode) in graph.nodes.enumerated() {
+            guard let node = maybeNode else {
+                continue
+            }
+
             if node.adj.count == 0 {
                 continue
             }
@@ -171,10 +178,10 @@ class Router {
         return result
     }
 
-    private func getDistance(from: WithCoordinates, to: WithCoordinates) -> Double {
+    fileprivate func getDistance(_ from: WithCoordinates, to: WithCoordinates) -> Double {
         let locationA = CLLocation(latitude: from.lat, longitude: from.lon)
         let locationB = CLLocation(latitude: to.lat, longitude: to.lon)
-        return locationA.distanceFromLocation(locationB)
+        return locationA.distance(from: locationB)
     }
 }
 
@@ -196,7 +203,6 @@ private struct FoundPath {
     let cost: Double
 }
 
-private typealias LazyOsmNode = OsmNode.LazyAccess
 
 private protocol WithCoordinates {
     var lat: Double { get }
@@ -204,4 +210,4 @@ private protocol WithCoordinates {
 }
 
 extension NamedPoint: WithCoordinates {}
-extension LazyOsmNode: WithCoordinates {}
+extension OsmNode: WithCoordinates {}

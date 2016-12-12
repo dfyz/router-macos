@@ -10,12 +10,12 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     @IBOutlet weak var addButton: NSButton!
     @IBOutlet weak var progressStackView: NSStackView!
 
-    let fileManager = NSFileManager.defaultManager()
+    let fileManager = FileManager.default
     var parentController: MainViewController!
     var importInProgress: Bool = false
 
-    override func controlTextDidChange(obj: NSNotification) {
-        osmFileTextField.textColor = isGoodOsmFile() ? NSColor.blackColor() : NSColor.redColor()
+    override func controlTextDidChange(_ obj: Notification) {
+        osmFileTextField.textColor = isGoodOsmFile() ? NSColor.black : NSColor.red
     }
 
     override func viewDidLoad() {
@@ -25,25 +25,25 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         osmFileTextField.delegate = self
     }
 
-    @IBAction func onSelectOsmFileClick(sender: AnyObject) {
+    @IBAction func onSelectOsmFileClick(_ sender: AnyObject) {
         let openPanel = NSOpenPanel()
         openPanel.canChooseDirectories = false
         openPanel.canCreateDirectories = false
         openPanel.canChooseFiles = true
         openPanel.allowsMultipleSelection = false
         openPanel.allowedFileTypes = ["osm"]
-        openPanel.beginWithCompletionHandler {
+        openPanel.begin {
             (result) -> Void in
             if result != NSFileHandlingPanelOKButton {
                 return
             }
-            if let filePath = openPanel.URL?.path {
+            if let filePath = openPanel.url?.path {
                 self.osmFileTextField.stringValue = filePath
             }
         }
     }
 
-    @IBAction func onCancelClick(sender: AnyObject) {
+    @IBAction func onCancelClick(_ sender: AnyObject) {
         let canDismiss = !importInProgress
         setImportState(false)
         if canDismiss {
@@ -51,26 +51,26 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         }
     }
 
-    @IBAction func onAddStageClick(sender: AnyObject) {
+    @IBAction func onAddStageClick(_ sender: AnyObject) {
         if competitionNameTextField.stringValue.isEmpty || !isGoodOsmFile() {
             return
         }
 
         setImportState(true)
 
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global().async {
             self.createStage(self.competitionNameTextField.stringValue, self.osmFileTextField.stringValue)
         }
     }
 
-    private func createStage(competitionName: String, _ mapFileName: String) {
-        dispatch_async(dispatch_get_main_queue()) {
+    fileprivate func createStage(_ competitionName: String, _ mapFileName: String) {
+        DispatchQueue.main.async {
             self.conversionProgressBar.doubleValue = 0.0
         }
 
         let importer = MapImporter(sourceMapFileName: mapFileName) {
             progress -> Bool in
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.conversionProgressBar.doubleValue = progress
             }
             return self.importInProgress
@@ -79,11 +79,11 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         var maybeImportResult: ImportResult?
         do {
             maybeImportResult = try importer.doImport()
-        } catch MapImportError.Error(let message) {
-            dispatch_async(dispatch_get_main_queue()) {
+        } catch MapImportError.error(let message) {
+            DispatchQueue.main.async {
                 if self.importInProgress {
                     let alert = NSAlert()
-                    alert.addButtonWithTitle("OK")
+                    alert.addButton(withTitle: "OK")
                     alert.messageText = message
                     alert.runModal()
                 }
@@ -108,29 +108,29 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
 
                 realm.add(stage)
             }
-            dispatch_async(dispatch_get_main_queue(), dismiss)
+            DispatchQueue.main.async(execute: dismiss)
         }
     }
 
-    private func isGoodOsmFile() -> Bool {
+    fileprivate func isGoodOsmFile() -> Bool {
         let filePath = osmFileTextField.stringValue
         var isDirectory = ObjCBool(false)
-        let osmFileExists = fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory)
-        if !osmFileExists || isDirectory {
+        let osmFileExists = fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory)
+        if !osmFileExists || isDirectory.boolValue {
             return false
         }
         return filePath.hasSuffix(".osm")
     }
 
-    private func dismiss() {
+    fileprivate func dismiss() {
         self.parentController.reloadData()
-        self.dismissController(self)
+        self.dismiss(self)
     }
     
-    private func setImportState(inProgress: Bool) {
+    fileprivate func setImportState(_ inProgress: Bool) {
         self.importInProgress = inProgress
         let noImportInProgress = !importInProgress
-        self.progressStackView.hidden = noImportInProgress
+        self.progressStackView.isHidden = noImportInProgress
         
         for control in [
             self.addButton,
@@ -139,7 +139,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
             self.competitionNameTextField
         ]
         {
-            control.enabled = noImportInProgress
+            control?.isEnabled = noImportInProgress
         }
     }
 }

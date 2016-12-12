@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E4BF35C160C3693BDB66B06 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7170BEDC0DB72629B21ED825 /* Pods_RouterOSX.framework */; };
 		2F03200FF2D2BDF5F17F79C2 /* TableUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F03216FA607244594E78D2D /* TableUtils.swift */; };
 		2F0320F4F028F7F890B70F51 /* HashablePoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0320FD81D9157769B1912E /* HashablePoint.swift */; };
 		2F03228193D6F1C378152876 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032F082632312DD1F346A5 /* Router.swift */; };
@@ -22,21 +23,16 @@
 		4F96B72E1CBEF7D60032196E /* ImportMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B72D1CBEF7D60032196E /* ImportMap.swift */; };
 		4F96B7311CC03F4B0032196E /* FlatBuffersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7301CC03F4B0032196E /* FlatBuffersModel.swift */; };
 		4F96B7331CC03F570032196E /* FlatBuffersModel.fbs in Resources */ = {isa = PBXBuildFile; fileRef = 4F96B7321CC03F570032196E /* FlatBuffersModel.fbs */; };
-		4F96B75C1CC0503F0032196E /* FlatBufferBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7581CC0503F0032196E /* FlatBufferBuilder.swift */; };
-		4F96B75D1CC0503F0032196E /* FlatBufferReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7591CC0503F0032196E /* FlatBufferReader.swift */; };
-		4F96B75E1CC0503F0032196E /* FlatBuffers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B75A1CC0503F0032196E /* FlatBuffers.swift */; };
-		4F96B75F1CC0503F0032196E /* LazyVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B75B1CC0503F0032196E /* LazyVector.swift */; };
 		4F96B7641CC075800032196E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F96B7631CC075800032196E /* MapViewController.swift */; };
 		4FAE23621CDFDB8A00BCE3F2 /* yandex.ico in Resources */ = {isa = PBXBuildFile; fileRef = 4FAE23611CDFDB8A00BCE3F2 /* yandex.ico */; };
 		4FAE23661CDFDE0F00BCE3F2 /* google.ico in Resources */ = {isa = PBXBuildFile; fileRef = 4FAE23641CDFDE0F00BCE3F2 /* google.ico */; };
 		4FAE23671CDFDE0F00BCE3F2 /* osm.ico in Resources */ = {isa = PBXBuildFile; fileRef = 4FAE23651CDFDE0F00BCE3F2 /* osm.ico */; };
 		4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC1A0A81CBC3D3400986367 /* RealmModel.swift */; };
 		4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD2C3D21CC079D900849C58 /* MapKit.framework */; };
-		575B1021C154A7FD1FFF5FAA /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7419E4D466CA3FE88D63CE7C /* Pods_RouterOSX.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1DA82E0D1D78E93E2B898F40 /* Pods-RouterOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.release.xcconfig"; sourceTree = "<group>"; };
+		1D3FB28C43674B2D887E23BF /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
 		2F0320FD81D9157769B1912E /* HashablePoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashablePoint.swift; sourceTree = "<group>"; };
 		2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeocodingResultTable.swift; sourceTree = "<group>"; };
 		2F03216FA607244594E78D2D /* TableUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableUtils.swift; sourceTree = "<group>"; };
@@ -54,18 +50,14 @@
 		4F96B72D1CBEF7D60032196E /* ImportMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportMap.swift; sourceTree = "<group>"; };
 		4F96B7301CC03F4B0032196E /* FlatBuffersModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatBuffersModel.swift; sourceTree = "<group>"; };
 		4F96B7321CC03F570032196E /* FlatBuffersModel.fbs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FlatBuffersModel.fbs; sourceTree = "<group>"; };
-		4F96B7581CC0503F0032196E /* FlatBufferBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatBufferBuilder.swift; path = FlatBuffersSwift/FlatBufferBuilder.swift; sourceTree = "<group>"; };
-		4F96B7591CC0503F0032196E /* FlatBufferReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatBufferReader.swift; path = FlatBuffersSwift/FlatBufferReader.swift; sourceTree = "<group>"; };
-		4F96B75A1CC0503F0032196E /* FlatBuffers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlatBuffers.swift; path = FlatBuffersSwift/FlatBuffers.swift; sourceTree = "<group>"; };
-		4F96B75B1CC0503F0032196E /* LazyVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LazyVector.swift; path = FlatBuffersSwift/LazyVector.swift; sourceTree = "<group>"; };
 		4F96B7631CC075800032196E /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4FAE23611CDFDB8A00BCE3F2 /* yandex.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = yandex.ico; sourceTree = SOURCE_ROOT; };
 		4FAE23641CDFDE0F00BCE3F2 /* google.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = google.ico; sourceTree = SOURCE_ROOT; };
 		4FAE23651CDFDE0F00BCE3F2 /* osm.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = osm.ico; sourceTree = SOURCE_ROOT; };
 		4FC1A0A81CBC3D3400986367 /* RealmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmModel.swift; sourceTree = "<group>"; };
 		4FD2C3D21CC079D900849C58 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		7419E4D466CA3FE88D63CE7C /* Pods_RouterOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RouterOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E823F31572688B82411308F1 /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
+		7170BEDC0DB72629B21ED825 /* Pods_RouterOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RouterOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7FE85612A841CC12A3204A6 /* Pods-RouterOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,20 +66,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */,
-				575B1021C154A7FD1FFF5FAA /* Pods_RouterOSX.framework in Frameworks */,
+				2E4BF35C160C3693BDB66B06 /* Pods_RouterOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		34AFA6F431E6BF26508B0B3E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1D3FB28C43674B2D887E23BF /* Pods-RouterOSX.debug.xcconfig */,
+				B7FE85612A841CC12A3204A6 /* Pods-RouterOSX.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		4F273F071CBB00E1001F582E = {
 			isa = PBXGroup;
 			children = (
 				4F273F121CBB00E1001F582E /* RouterOSX */,
 				4F273F111CBB00E1001F582E /* Products */,
 				502D152B27A93E832B167D86 /* Frameworks */,
-				BC30BD9B415DC6C1853E5820 /* Pods */,
+				34AFA6F431E6BF26508B0B3E /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -103,7 +104,6 @@
 			isa = PBXGroup;
 			children = (
 				4FAE23631CDFDD5E00BCE3F2 /* Icons */,
-				4F96B7571CC0502D0032196E /* FlatBuffersSwift */,
 				4F96B72F1CBEF8BE0032196E /* Models */,
 				4F96B72C1CBEF7A60032196E /* Backend */,
 				4F8BDF861CBDA40B00EAF4D7 /* ViewControllers */,
@@ -150,17 +150,6 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
-		4F96B7571CC0502D0032196E /* FlatBuffersSwift */ = {
-			isa = PBXGroup;
-			children = (
-				4F96B7581CC0503F0032196E /* FlatBufferBuilder.swift */,
-				4F96B7591CC0503F0032196E /* FlatBufferReader.swift */,
-				4F96B75A1CC0503F0032196E /* FlatBuffers.swift */,
-				4F96B75B1CC0503F0032196E /* LazyVector.swift */,
-			);
-			name = FlatBuffersSwift;
-			sourceTree = "<group>";
-		};
 		4FAE23631CDFDD5E00BCE3F2 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -175,18 +164,9 @@
 			isa = PBXGroup;
 			children = (
 				4FD2C3D21CC079D900849C58 /* MapKit.framework */,
-				7419E4D466CA3FE88D63CE7C /* Pods_RouterOSX.framework */,
+				7170BEDC0DB72629B21ED825 /* Pods_RouterOSX.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		BC30BD9B415DC6C1853E5820 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				E823F31572688B82411308F1 /* Pods-RouterOSX.debug.xcconfig */,
-				1DA82E0D1D78E93E2B898F40 /* Pods-RouterOSX.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,12 +176,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4F273F1F1CBB00E1001F582E /* Build configuration list for PBXNativeTarget "RouterOSX" */;
 			buildPhases = (
-				360D313BBB24F0C2B0FC3656 /* [CP] Check Pods Manifest.lock */,
+				5A9100F84B489F4A73F6B83F /* [CP] Check Pods Manifest.lock */,
 				4F273F0C1CBB00E1001F582E /* Sources */,
 				4F273F0D1CBB00E1001F582E /* Frameworks */,
 				4F273F0E1CBB00E1001F582E /* Resources */,
-				8D38B1C22106FEDC26810397 /* [CP] Embed Pods Frameworks */,
-				E94E5AB7DAC9FEDF864A55C0 /* [CP] Copy Pods Resources */,
+				5CAB8438A5CF5E0A7D20C74E /* [CP] Embed Pods Frameworks */,
+				123ECF054D3BEAC658583059 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -263,37 +243,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		360D313BBB24F0C2B0FC3656 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		8D38B1C22106FEDC26810397 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E94E5AB7DAC9FEDF864A55C0 /* [CP] Copy Pods Resources */ = {
+		123ECF054D3BEAC658583059 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -308,6 +258,36 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		5A9100F84B489F4A73F6B83F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5CAB8438A5CF5E0A7D20C74E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -317,13 +297,9 @@
 			files = (
 				4F96B7641CC075800032196E /* MapViewController.swift in Sources */,
 				4FC1A0A91CBC3D3400986367 /* RealmModel.swift in Sources */,
-				4F96B75E1CC0503F0032196E /* FlatBuffers.swift in Sources */,
-				4F96B75F1CC0503F0032196E /* LazyVector.swift in Sources */,
 				4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */,
-				4F96B75C1CC0503F0032196E /* FlatBufferBuilder.swift in Sources */,
 				4F96B7311CC03F4B0032196E /* FlatBuffersModel.swift in Sources */,
 				4F96B72E1CBEF7D60032196E /* ImportMap.swift in Sources */,
-				4F96B75D1CC0503F0032196E /* FlatBufferReader.swift in Sources */,
 				4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */,
 				4F8BDF851CBDA38400EAF4D7 /* AddStageViewController.swift in Sources */,
 				2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */,
@@ -394,6 +370,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0.1;
 			};
 			name = Debug;
 		};
@@ -434,12 +411,13 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0.1;
 			};
 			name = Release;
 		};
 		4F273F201CBB00E1001F582E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E823F31572688B82411308F1 /* Pods-RouterOSX.debug.xcconfig */;
+			baseConfigurationReference = 1D3FB28C43674B2D887E23BF /* Pods-RouterOSX.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -448,13 +426,13 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		4F273F211CBB00E1001F582E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1DA82E0D1D78E93E2B898F40 /* Pods-RouterOSX.release.xcconfig */;
+			baseConfigurationReference = B7FE85612A841CC12A3204A6 /* Pods-RouterOSX.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -463,7 +441,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

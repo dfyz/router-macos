@@ -5,8 +5,8 @@ use_frameworks!
 
 target 'RouterOSX' do
     pod 'RealmSwift'
-    pod 'Alamofire', '3.5.0'
-    pod 'SwiftyJSON', '2.4.0'
+    pod 'Alamofire'
+    pod 'SwiftyJSON'
     pod 'SwiftPriorityQueue'
 end
 

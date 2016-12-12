@@ -15,58 +15,58 @@ class RoutingProgressViewController: NSViewController {
         let points = parentController.stage.points.map { NamedPoint(name: $0.name, lat: $0.lat, lon: $0.lon) }
         let binMapFileName = parentController.stage.binMapFileName
 
-        startRouting(points, binMapFileName)
+        startRouting(Array(points), binMapFileName)
     }
 
-    @IBAction func onCancel(sender: AnyObject) {
+    @IBAction func onCancel(_ sender: AnyObject) {
         shouldContinue = false
     }
 
-    private func startRouting(points: [NamedPoint], _ binMapFileName: String) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+    fileprivate func startRouting(_ points: [NamedPoint], _ binMapFileName: String) {
+        DispatchQueue.global().async {
             let routingResult: RoutingResultOrError
             do {
                 let router = try Router(points: points, binMapFileName: binMapFileName) {
                     (progressText, progressValue) -> Bool in
 
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.updateProgress(progressText, progressValue)
                     }
                     return self.shouldContinue
                 }
-                routingResult = .Ok(try router.route())
-            } catch RoutingError.AbortedByUser {
-                routingResult = .AbortedByUser
-            } catch RoutingError.Error(let message) {
-                routingResult = .Error(message)
+                routingResult = .ok(try router.route())
+            } catch RoutingError.abortedByUser {
+                routingResult = .abortedByUser
+            } catch RoutingError.error(let message) {
+                routingResult = .error(message)
             } catch {
                 fatalError("Should never happen")
             }
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.onRoutingCompleted(routingResult)
             }
         }
     }
 
-    private func updateProgress(progressText: String, _ progressValue: Double?) {
+    fileprivate func updateProgress(_ progressText: String, _ progressValue: Double?) {
         progressTextField.stringValue = progressText
         if let value = progressValue {
-            progressBar.indeterminate = false
+            progressBar.isIndeterminate = false
             progressBar.doubleValue = value * 100.0
         } else {
-            progressBar.indeterminate = true
+            progressBar.isIndeterminate = true
             progressBar.startAnimation(self)
         }
     }
 
-    private func onRoutingCompleted(routingResult: RoutingResultOrError) {
+    fileprivate func onRoutingCompleted(_ routingResult: RoutingResultOrError) {
         switch routingResult {
-        case .Ok(let result):
+        case .ok(let result):
             parentController.drawRoutingResult(result)
-        case .Error(let message):
+        case .error(let message):
             let alert = NSAlert()
-            alert.addButtonWithTitle("OK")
+            alert.addButton(withTitle: "OK")
             alert.messageText = message
             alert.runModal()
         default:
@@ -75,13 +75,13 @@ class RoutingProgressViewController: NSViewController {
         dismiss()
     }
 
-    private func dismiss() {
-        self.dismissController(self)
+    fileprivate func dismiss() {
+        self.dismiss(self)
     }
 }
 
 private enum RoutingResultOrError {
-    case Ok(RoutingResult)
-    case Error(String)
-    case AbortedByUser
+    case ok(RoutingResult)
+    case error(String)
+    case abortedByUser
 }

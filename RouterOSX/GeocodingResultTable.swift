@@ -2,11 +2,11 @@ import Foundation
 import Cocoa
 
 class NSTableViewWithActionOnEnter: NSTableView {
-    override func keyDown(event: NSEvent) {
+    override func keyDown(with event: NSEvent) {
         if event.keyCode == 0x24 {
             self.sendAction(self.action, to: self.target)
         } else {
-            super.keyDown(event)
+            super.keyDown(with: event)
         }
     }
 }
@@ -15,8 +15,8 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
     weak var mapView: MapViewController!
     let resultTable: NSScrollView
 
-    private var results: [GeocodingResult]
-    private let innerTable: NSTableView
+    fileprivate var results: [GeocodingResult]
+    fileprivate let innerTable: NSTableView
 
     init(mapView: MapViewController, results: [GeocodingResult]) {
         self.mapView = mapView
@@ -26,9 +26,9 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
 
         let resultHeight = CGFloat(300.0)
         let tableFrame = NSMakeRect(
-        displayBelow.frame.minX,
-                displayBelow.frame.minY - resultHeight,
-                displayBelow.frame.width,
+        (displayBelow?.frame.minX)!,
+                (displayBelow?.frame.minY)! - resultHeight,
+                (displayBelow?.frame.width)!,
                 resultHeight
         )
         self.resultTable = NSScrollView(frame: tableFrame)
@@ -49,14 +49,14 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         mapView.view.window?.contentView?.addSubview(self.resultTable)
 
         self.resultTable.autoresizesSubviews = true
-        self.resultTable.autoresizingMask = [.ViewWidthSizable, .ViewHeightSizable]
-        self.resultTable.topAnchor.constraintEqualToAnchor(displayBelow.bottomAnchor).active = true
-        self.resultTable.rightAnchor.constraintEqualToAnchor(displayBelow.rightAnchor).active = true
+        self.resultTable.autoresizingMask = [.viewWidthSizable, .viewHeightSizable]
+        self.resultTable.topAnchor.constraint(equalTo: (displayBelow?.bottomAnchor)!).isActive = true
+        self.resultTable.rightAnchor.constraint(equalTo: (displayBelow?.rightAnchor)!).isActive = true
 
         self.innerTable.sizeLastColumnToFit()
 
         self.innerTable.nextKeyView = displayBelow
-        displayBelow.nextKeyView = self.innerTable
+        displayBelow?.nextKeyView = self.innerTable
 
         self.innerTable.target = self
         self.innerTable.action = #selector(GeocodingResultTable.addPointToMap)
@@ -66,10 +66,10 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         self.resultTable.removeFromSuperview()
     }
 
-    func addPointToMap(sender: NSControl) {
+    func addPointToMap(_ sender: NSControl) {
         let placeIndex = self.innerTable.selectedRow
         if placeIndex >= 0 {
-            if case .Ok(let place) = self.results[placeIndex] {
+            if case .ok(let place) = self.results[placeIndex] {
                 mapView.addPointToMap(
                 mapView.geocoderTextField.stringValue,
                         lat: place.lat,
@@ -80,14 +80,14 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         }
     }
 
-    func addResults(results: [GeocodingResult]) {
+    func addResults(_ results: [GeocodingResult]) {
         var resultsByProvider = [String: [GeocodingResult]]()
         for result in self.results + results {
             var key = ""
             switch result {
-            case .Ok(let place):
+            case .ok(let place):
                 key = place.provider
-            case .Error(let failure):
+            case .error(let failure):
                 key = failure.provider
             }
             var currentResults = resultsByProvider[key] ?? []
@@ -101,9 +101,9 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         while added {
             added = false
             for key in keys {
-                if var currentResults = resultsByProvider[key] where !currentResults.isEmpty {
+                if var currentResults = resultsByProvider[key], !currentResults.isEmpty {
                     newResults.append(currentResults.first!)
-                    currentResults.removeAtIndex(0)
+                    currentResults.remove(at: 0)
                     resultsByProvider[key] = currentResults
                     added = true
                 }
@@ -114,7 +114,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         self.resultTable.becomeFirstResponder()
     }
 
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return results.count
     }
 
@@ -124,7 +124,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         let color: NSColor
     }
 
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let columnIdentifier = tableColumn?.identifier else {
             return nil
         }
@@ -138,33 +138,33 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         case "NameColumn":
             let textCell = NSTextField()
             textCell.drawsBackground = false
-            textCell.bezeled = false
-            textCell.editable = false
-            textCell.selectable = false
+            textCell.isBezeled = false
+            textCell.isEditable = false
+            textCell.isSelectable = false
             textCell.stringValue = result.text
             textCell.textColor = result.color
-            textCell.font = NSFont.controlContentFontOfSize(24.0)
+            textCell.font = NSFont.controlContentFont(ofSize: 24.0)
             return textCell
         default:
             fatalError("Unknown column " + columnIdentifier)
         }
     }
 
-    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         return CGFloat(30.0)
     }
 
-    private func getTableRowParams(result: GeocodingResult) -> TableRowParams {
+    fileprivate func getTableRowParams(_ result: GeocodingResult) -> TableRowParams {
         var provider = ""
         var text = ""
-        var color = NSColor.blackColor()
+        var color = NSColor.black
 
         switch result {
-        case .Error(let failure):
+        case .error(let failure):
             provider = failure.provider
             text = "Error: \(failure.error)"
-            color = NSColor.redColor()
-        case .Ok(let place):
+            color = NSColor.red
+        case .ok(let place):
             provider = place.provider
             text = place.name
         }
@@ -173,7 +173,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         return TableRowParams(image: image, text: text, color: color)
     }
 
-    private func addColumns(table: NSTableView) {
+    fileprivate func addColumns(_ table: NSTableView) {
         let imageColumn = NSTableColumn(identifier: "ImageColumn")
         imageColumn.width = 30
         table.addTableColumn(imageColumn)
