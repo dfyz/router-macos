@@ -217,7 +217,12 @@ class MapViewController: NSViewController {
             permanentPoint.name = point.title!
             permanentPoint.lat = point.coordinate.latitude
             permanentPoint.lon = point.coordinate.longitude
-            stage.points.append(permanentPoint)
+            if stage.points.count >= 2 {
+                // We have both start and finish, add new points in between.
+                stage.points.insert(permanentPoint, at: stage.points.count - 1)
+            } else {
+                stage.points.append(permanentPoint)
+            }
         }
         pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
 
