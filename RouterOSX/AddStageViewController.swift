@@ -131,14 +131,14 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         self.importInProgress = inProgress
         let noImportInProgress = !importInProgress
         self.progressStackView.isHidden = noImportInProgress
-        
-        for control in [
+
+        let controls: [NSControl?] = [
             self.addButton,
             self.osmSelectButton,
             self.osmFileTextField,
             self.competitionNameTextField
         ]
-        {
+        for control in controls {
             control?.isEnabled = noImportInProgress
         }
     }
