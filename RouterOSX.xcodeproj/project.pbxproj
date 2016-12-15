@@ -15,6 +15,7 @@
 		2F032754A59B3DEFFE153C2F /* RoutingProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032EA93B79FE0F66DF8A28 /* RoutingProgressViewController.swift */; };
 		2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032A34195ED84789B44148 /* Geocoder.swift */; };
 		2F032AB938A2789C3F60E55B /* Tsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F03279E1FE5D43DB1A86E99 /* Tsp.swift */; };
+		4F1279F81E03366800E5944B /* RouterOSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1279F71E03366800E5944B /* RouterOSXTests.swift */; };
 		4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F131CBB00E1001F582E /* AppDelegate.swift */; };
 		4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F151CBB00E1001F582E /* MainViewController.swift */; };
 		4F273F181CBB00E1001F582E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F273F171CBB00E1001F582E /* Assets.xcassets */; };
@@ -31,6 +32,16 @@
 		4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FD2C3D21CC079D900849C58 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4F1279FA1E03366800E5944B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4F273F081CBB00E1001F582E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4F273F0F1CBB00E1001F582E;
+			remoteInfo = RouterOSX;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		1D3FB28C43674B2D887E23BF /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
 		2F0320FD81D9157769B1912E /* HashablePoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashablePoint.swift; sourceTree = "<group>"; };
@@ -40,6 +51,9 @@
 		2F032A34195ED84789B44148 /* Geocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geocoder.swift; sourceTree = "<group>"; };
 		2F032EA93B79FE0F66DF8A28 /* RoutingProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoutingProgressViewController.swift; sourceTree = "<group>"; };
 		2F032F082632312DD1F346A5 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		4F1279F51E03366800E5944B /* RouterOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RouterOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F1279F71E03366800E5944B /* RouterOSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterOSXTests.swift; sourceTree = "<group>"; };
+		4F1279F91E03366800E5944B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4F273F101CBB00E1001F582E /* RouterOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RouterOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F273F131CBB00E1001F582E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4F273F151CBB00E1001F582E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -61,6 +75,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4F1279F21E03366800E5944B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4F273F0D1CBB00E1001F582E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -82,10 +103,20 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		4F1279F61E03366800E5944B /* RouterOSXTests */ = {
+			isa = PBXGroup;
+			children = (
+				4F1279F71E03366800E5944B /* RouterOSXTests.swift */,
+				4F1279F91E03366800E5944B /* Info.plist */,
+			);
+			path = RouterOSXTests;
+			sourceTree = "<group>";
+		};
 		4F273F071CBB00E1001F582E = {
 			isa = PBXGroup;
 			children = (
 				4F273F121CBB00E1001F582E /* RouterOSX */,
+				4F1279F61E03366800E5944B /* RouterOSXTests */,
 				4F273F111CBB00E1001F582E /* Products */,
 				502D152B27A93E832B167D86 /* Frameworks */,
 				34AFA6F431E6BF26508B0B3E /* Pods */,
@@ -96,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				4F273F101CBB00E1001F582E /* RouterOSX.app */,
+				4F1279F51E03366800E5944B /* RouterOSXTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -172,6 +204,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4F1279F41E03366800E5944B /* RouterOSXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F1279FE1E03366800E5944B /* Build configuration list for PBXNativeTarget "RouterOSXTests" */;
+			buildPhases = (
+				4F1279F11E03366800E5944B /* Sources */,
+				4F1279F21E03366800E5944B /* Frameworks */,
+				4F1279F31E03366800E5944B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4F1279FB1E03366800E5944B /* PBXTargetDependency */,
+			);
+			name = RouterOSXTests;
+			productName = RouterOSXTests;
+			productReference = 4F1279F51E03366800E5944B /* RouterOSXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		4F273F0F1CBB00E1001F582E /* RouterOSX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4F273F1F1CBB00E1001F582E /* Build configuration list for PBXNativeTarget "RouterOSX" */;
@@ -198,10 +248,15 @@
 		4F273F081CBB00E1001F582E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0810;
 				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Ivan Komarov";
 				TargetAttributes = {
+					4F1279F41E03366800E5944B = {
+						CreatedOnToolsVersion = 8.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 4F273F0F1CBB00E1001F582E;
+					};
 					4F273F0F1CBB00E1001F582E = {
 						CreatedOnToolsVersion = 7.3;
 						LastSwiftMigration = 0810;
@@ -222,11 +277,19 @@
 			projectRoot = "";
 			targets = (
 				4F273F0F1CBB00E1001F582E /* RouterOSX */,
+				4F1279F41E03366800E5944B /* RouterOSXTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4F1279F31E03366800E5944B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4F273F0E1CBB00E1001F582E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -291,6 +354,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4F1279F11E03366800E5944B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F1279F81E03366800E5944B /* RouterOSXTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4F273F0C1CBB00E1001F582E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -314,6 +385,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		4F1279FB1E03366800E5944B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4F273F0F1CBB00E1001F582E /* RouterOSX */;
+			targetProxy = 4F1279FA1E03366800E5944B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		4F273F191CBB00E1001F582E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -326,6 +405,41 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4F1279FC1E03366800E5944B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RouterOSXTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RouterOSX.app/Contents/MacOS/RouterOSX";
+			};
+			name = Debug;
+		};
+		4F1279FD1E03366800E5944B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = RouterOSXTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RouterOSX.app/Contents/MacOS/RouterOSX";
+			};
+			name = Release;
+		};
 		4F273F1D1CBB00E1001F582E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -448,6 +562,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4F1279FE1E03366800E5944B /* Build configuration list for PBXNativeTarget "RouterOSXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4F1279FC1E03366800E5944B /* Debug */,
+				4F1279FD1E03366800E5944B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		4F273F0B1CBB00E1001F582E /* Build configuration list for PBXProject "RouterOSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
