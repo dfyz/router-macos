@@ -79,7 +79,7 @@ private class GreedySolver {
 
     func solve() -> [Int] {
         var result = formPathCandidate()
-        for _ in 1..<10000 {
+        for _ in 1..<100000 {
             let candidate = formPathCandidate()
             if pathCost(costMatrix, path: candidate) < pathCost(costMatrix, path: result) {
                 result = candidate

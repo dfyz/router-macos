@@ -43,4 +43,19 @@ class RouterOSXTests: XCTestCase {
 
         XCTAssertLessThanOrEqual(totalDistance, 7064)
     }
+
+    func testTsp21() {
+        let expected: [Int] = [0, 17, 2, 10, 11, 14, 6, 20, 1, 4, 15, 5, 7, 8, 12, 19, 13, 16, 3, 18, 9, 21]
+        XCTAssertEqual(expected, solveTsp(tsp21))
+    }
+
+    func testTsp29() {
+        let expected: [Int] = [0, 2, 8, 3, 4, 1, 5, 10, 6, 7, 9, 17, 18, 14, 16, 19, 28, 21, 15, 12, 13, 11, 27, 25, 20, 26, 22, 23, 24, 29]
+        XCTAssertEqual(expected, solveTsp(tsp29))
+    }
+
+    func testTsp49() {
+        let expected: [Int] = [0, 3, 24, 19, 25, 23, 33, 39, 29, 36, 27, 22, 26, 20, 21, 14, 8, 15, 10, 13, 34, 12, 16, 7, 32, 9, 28, 43, 42, 41, 45, 38, 46, 30, 35, 40, 44, 37, 6, 2, 4, 5, 1, 31, 18, 47, 11, 17, 48]
+        XCTAssertEqual(expected, solveTsp(tsp49))
+    }
 }
