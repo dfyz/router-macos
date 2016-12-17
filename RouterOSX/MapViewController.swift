@@ -18,7 +18,8 @@ class MapViewController: NSViewController {
     var geocodingResults: GeocodingResultTable?
     var mapMonitor: AnyObject!
     var pointToAnnotation = [HashablePoint: PointAnnotation]()
-    var routeOverlay: MKOverlay?
+    var routeOverlays = [MKOverlay]()
+    var routingResult: RoutingResult?
 
     func addPointToMap(_ name: String, lat: Double, lon: Double, permanent: Bool) {
         let point = PointAnnotation()
@@ -38,10 +39,11 @@ class MapViewController: NSViewController {
     }
 
     func drawRoutingResult(_ routingResult: RoutingResult) {
+        self.routingResult = routingResult
         try! realm.write {
             let newPoints = List<Point>()
-            for idx in routingResult.pointIndexes {
-                newPoints.append(stage.points[idx])
+            for segment in routingResult.segments {
+                newPoints.append(stage.points[segment.startPointIndex])
             }
             stage.points.removeAll()
             stage.points.append(objectsIn: newPoints)
@@ -49,7 +51,7 @@ class MapViewController: NSViewController {
 
         reloadPoints()
 
-        addPathOverlay(routingResult.path)
+        addPathOverlays(routingResult.segments)
     }
 
     override func viewDidLoad() {
@@ -271,15 +273,18 @@ class MapViewController: NSViewController {
         return String(format: "%02d", index)
     }
 
-    fileprivate func addPathOverlay(_ path: [CLLocationCoordinate2D]) {
-        if let prevPath = routeOverlay {
+    fileprivate func addPathOverlays(_ segments: [RouteSegment]) {
+        for prevPath in routeOverlays {
             mapView.remove(prevPath)
-            routeOverlay = nil
         }
+        routeOverlays.removeAll()
 
-        var path = path
-        routeOverlay = MKPolyline(coordinates: &path, count: path.count)
-        mapView.add(routeOverlay!, level: .aboveLabels)
+        for seg in segments {
+            var path = seg.path
+            let routeOverlay = MKPolyline(coordinates: &path, count: path.count)
+            routeOverlays.append(routeOverlay)
+            mapView.add(routeOverlay, level: .aboveLabels)
+        }
     }
 
 
@@ -321,6 +326,12 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
                 return self.getRowTextByIndex(row)
             case "PointNameColumn":
                 return "\(point.name)"
+            case "DistanceColumn":
+                if let rr = routingResult, row < rr.segments.count {
+                    return toHumanReadableDistance(rr.segments[row].distance)
+                } else {
+                    return "??? m"
+                }
             default:
                 return nil
             }
@@ -492,4 +503,17 @@ private class BubbleAnnotationView: MKAnnotationView {
             height: rect.height - 2*heightPadding
         )
     }
+}
+
+fileprivate func toHumanReadableDistance(_ distance: Double) -> String {
+    var rounded = floor(distance)
+    var suffix = "m"
+    var spec = "%.0f"
+    let mInKm = 1000.0
+    if rounded >= mInKm {
+        rounded /= mInKm
+        suffix = "km"
+        spec = "%.1f"
+    }
+    return String(format: spec + " %@", rounded, suffix)
 }

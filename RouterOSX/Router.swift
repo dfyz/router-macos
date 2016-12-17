@@ -13,9 +13,14 @@ struct NamedPoint {
     let lon: Double
 }
 
-struct RoutingResult {
-    let pointIndexes: [Int]
+struct RouteSegment {
+    let startPointIndex: Int
     let path: [CLLocationCoordinate2D]
+    let distance: Double
+}
+
+struct RoutingResult {
+    let segments: [RouteSegment]
 }
 
 typealias ProgressCallback = (String, Double?) -> Bool
@@ -48,22 +53,31 @@ class Router {
         }
         let permutation = solveTsp(costMatrix)
 
-        var finalPath = [CLLocationCoordinate2D]()
+        var segments = [RouteSegment]()
+        var totalDistance = 0.0
         if !permutation.isEmpty {
             for i in 1 ..< permutation.count {
                 let from = permutation[i - 1]
                 let to = permutation[i]
 
-                let fromPoint = points[from]
-                finalPath.append(CLLocationCoordinate2D(latitude: fromPoint.lat, longitude: fromPoint.lon))
+                var path = [CLLocationCoordinate2D]()
 
-                finalPath.append(contentsOf: allPaths[from][to].path)
+                let fromPoint = points[from]
+                path.append(CLLocationCoordinate2D(latitude: fromPoint.lat, longitude: fromPoint.lon))
+
+                path.append(contentsOf: allPaths[from][to].path)
 
                 let toPoint = points[to]
-                finalPath.append(CLLocationCoordinate2D(latitude: toPoint.lat, longitude: toPoint.lon))
+                path.append(CLLocationCoordinate2D(latitude: toPoint.lat, longitude: toPoint.lon))
+
+                let distance = costMatrix[from][to]
+                totalDistance += distance
+                segments.append(RouteSegment(startPointIndex: from, path: path, distance: distance))
             }
+            segments.append(RouteSegment(startPointIndex: permutation.last!, path: [], distance: totalDistance))
         }
-        return RoutingResult(pointIndexes: permutation, path: finalPath)
+
+        return RoutingResult(segments: segments)
     }
 
     fileprivate func getAllPaths(_ osmNodeIndexes: [Int]) throws -> [[FoundPath]] {
