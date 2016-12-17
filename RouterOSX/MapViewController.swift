@@ -229,6 +229,7 @@ class MapViewController: NSViewController {
         pointToAnnotation[HashablePoint(lat: permanentPoint.lat, lon: permanentPoint.lon)] = point
 
         reloadPoints()
+        self.routingResult = nil
     }
 
     fileprivate func hideGeocodingResults() {
