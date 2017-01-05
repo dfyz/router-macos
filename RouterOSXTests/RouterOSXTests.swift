@@ -30,15 +30,20 @@ class RouterOSXTests: XCTestCase {
         }
         let result = try! router.route()
 
-        XCTAssertEqual([0, 6, 1, 9, 3, 5, 10, 7, 4, 2, 8, 11], result.pointIndexes)
+        XCTAssertEqual([0, 6, 1, 9, 3, 5, 10, 7, 4, 2, 8, 11], result.segments.map { x in x.startPointIndex })
 
         var totalDistance = 0.0
-        for i in 1..<result.path.count {
-            let a = result.path[i - 1]
-            let b = result.path[i]
-            let aa = CLLocation(latitude: a.latitude, longitude: a.longitude)
-            let bb = CLLocation(latitude: b.latitude, longitude: b.longitude)
-            totalDistance += aa.distance(from: bb)
+        for seg in result.segments {
+            if seg.path.isEmpty {
+                continue
+            }
+            for i in 1..<seg.path.count {
+                let a = seg.path[i - 1]
+                let b = seg.path[i]
+                let aa = CLLocation(latitude: a.latitude, longitude: a.longitude)
+                let bb = CLLocation(latitude: b.latitude, longitude: b.longitude)
+                totalDistance += aa.distance(from: bb)
+            }
         }
 
         XCTAssertLessThanOrEqual(totalDistance, 7064)
