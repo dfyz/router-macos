@@ -113,6 +113,13 @@ class MapViewController: NSViewController {
         }
     }
 
+    override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        if menuItem.action == #selector(onExportToGpx) {
+            return routingResult != nil
+        }
+        return true
+    }
+
     @IBAction func onGeocodingRequest(_ sender: AnyObject) {
         hideGeocodingResults()
 
@@ -321,9 +328,8 @@ class MapViewController: NSViewController {
                 break
             }
             let from = stage.points[seg.startPointIndex].name
-            let to = stage.points[rr.segments[i + 1].startPointIndex].name
             let rte = gpx.addChild(name: "rte")
-            rte.addChild(name: "name", value: "\(from) -> \(to)")
+            rte.addChild(name: "name", value: "\(from)")
             for point in seg.path {
                 rte.addChild(name: "rtept", attributes: [
                     "lat": "\(point.latitude)",
