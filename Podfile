@@ -8,5 +8,6 @@ target 'RouterOSX' do
     pod 'Alamofire'
     pod 'SwiftyJSON'
     pod 'SwiftPriorityQueue'
+    pod 'AEXML'
 end
 

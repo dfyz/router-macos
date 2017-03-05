@@ -12,7 +12,7 @@
 		2F03228193D6F1C378152876 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032F082632312DD1F346A5 /* Router.swift */; };
 		2F0322E046CA661A431C1379 /* TspData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032746195E712F9EC8FE7D /* TspData.swift */; };
 		2F0322E31C859096A3191395 /* mini_klin.bin in Resources */ = {isa = PBXBuildFile; fileRef = 2F0326541EEDAC79279A27EC /* mini_klin.bin */; };
-		2F0323A69449E4D391648AC6 /* Pods-RouterOSX.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F6CA1EA277BDB7BC595F998B /* Pods-RouterOSX.debug.xcconfig */; };
+		2F0323A69449E4D391648AC6 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		2F032435AFAFFC00C4068CBB /* GeocodingResultTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */; };
 		2F032505737F2964AB595F3D /* TspData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032746195E712F9EC8FE7D /* TspData.swift */; };
 		2F032754A59B3DEFFE153C2F /* RoutingProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032EA93B79FE0F66DF8A28 /* RoutingProgressViewController.swift */; };
@@ -21,8 +21,8 @@
 		2F032794D859EC92C8155EC5 /* mini_klin.bin in Resources */ = {isa = PBXBuildFile; fileRef = 2F0326541EEDAC79279A27EC /* mini_klin.bin */; };
 		2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032A34195ED84789B44148 /* Geocoder.swift */; };
 		2F032AB938A2789C3F60E55B /* Tsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F03279E1FE5D43DB1A86E99 /* Tsp.swift */; };
-		2F032BE1711ED0042FAE968E /* Pods-RouterOSX.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F6CA1EA277BDB7BC595F998B /* Pods-RouterOSX.debug.xcconfig */; };
-		2F032F45FC742EC5B71195C6 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4202ED3A7DADC34AA4B84C /* Pods_RouterOSX.framework */; };
+		2F032BE1711ED0042FAE968E /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		41D60BEB4C4C0839C93A9750 /* Pods_RouterOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4202ED3A7DADC34AA4B84C /* Pods_RouterOSX.framework */; };
 		4F1279F81E03366800E5944B /* RouterOSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1279F71E03366800E5944B /* RouterOSXTests.swift */; };
 		4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F131CBB00E1001F582E /* AppDelegate.swift */; };
 		4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F151CBB00E1001F582E /* MainViewController.swift */; };
@@ -81,8 +81,8 @@
 		4FAE23651CDFDE0F00BCE3F2 /* osm.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; path = osm.ico; sourceTree = SOURCE_ROOT; };
 		4FC1A0A81CBC3D3400986367 /* RealmModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmModel.swift; sourceTree = "<group>"; };
 		4FD2C3D21CC079D900849C58 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D31D8198E8476479C984B059 /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
 		F30D60C633F5ECF69D47BDDF /* Pods-RouterOSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.release.xcconfig"; sourceTree = "<group>"; };
-		F6CA1EA277BDB7BC595F998B /* Pods-RouterOSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RouterOSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RouterOSX/Pods-RouterOSX.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +90,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F032F45FC742EC5B71195C6 /* Pods_RouterOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +99,7 @@
 			files = (
 				4FD2C3D31CC079D900849C58 /* MapKit.framework in Frameworks */,
 				E2BE7E6AE84FE722F58A85EA /* Pods_RouterOSX.framework in Frameworks */,
+				41D60BEB4C4C0839C93A9750 /* Pods_RouterOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,8 +109,8 @@
 		3D307EDA71FD6C2F72F7651E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				F6CA1EA277BDB7BC595F998B /* Pods-RouterOSX.debug.xcconfig */,
 				F30D60C633F5ECF69D47BDDF /* Pods-RouterOSX.release.xcconfig */,
+				D31D8198E8476479C984B059 /* Pods-RouterOSX.debug.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -302,7 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F032767B7A3156F3DC1C2E7 /* Pods-RouterOSX.release.xcconfig in Resources */,
-				2F032BE1711ED0042FAE968E /* Pods-RouterOSX.debug.xcconfig in Resources */,
+				2F032BE1711ED0042FAE968E /* BuildFile in Resources */,
 				2F032794D859EC92C8155EC5 /* mini_klin.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -318,7 +318,7 @@
 				4FAE23661CDFDE0F00BCE3F2 /* google.ico in Resources */,
 				4F273F1B1CBB00E1001F582E /* Main.storyboard in Resources */,
 				2F0327715A4BB1FA4A625CBF /* Pods-RouterOSX.release.xcconfig in Resources */,
-				2F0323A69449E4D391648AC6 /* Pods-RouterOSX.debug.xcconfig in Resources */,
+				2F0323A69449E4D391648AC6 /* BuildFile in Resources */,
 				2F0322E31C859096A3191395 /* mini_klin.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,14 +429,16 @@
 /* Begin XCBuildConfiguration section */
 		4F1279FC1E03366800E5944B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6CA1EA277BDB7BC595F998B /* Pods-RouterOSX.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited) $BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Realm";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Realm",
+				);
 				INFOPLIST_FILE = RouterOSXTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -456,7 +458,10 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited) $BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Realm";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Realm",
+				);
 				INFOPLIST_FILE = RouterOSXTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -558,7 +563,7 @@
 		};
 		4F273F201CBB00E1001F582E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6CA1EA277BDB7BC595F998B /* Pods-RouterOSX.debug.xcconfig */;
+			baseConfigurationReference = D31D8198E8476479C984B059 /* Pods-RouterOSX.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;

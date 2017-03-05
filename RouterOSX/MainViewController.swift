@@ -39,7 +39,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         Realm.Configuration.defaultConfiguration = Realm.Configuration(schemaVersion: 2)
 
         realm = try! Realm()
-        allStages = realm.objects(Stage.self).sorted(byProperty: "competitionName")
+        allStages = realm.objects(Stage.self).sorted(byKeyPath: "competitionName")
 
         mainTableView.dataSource = self
         mainTableView.delegate = self

@@ -1,3 +1,4 @@
+import AEXML
 import Cocoa
 import MapKit
 import RealmSwift
@@ -196,6 +197,25 @@ class MapViewController: NSViewController {
         performSegue(withIdentifier: "ShowRoutingProgressSegue", sender: self)
     }
 
+    func onExportToGpx(_ sender: AnyObject) {
+        guard let rr = routingResult else {
+            return
+        }
+
+        let savePanel = NSSavePanel()
+        savePanel.canCreateDirectories = false
+        savePanel.allowedFileTypes = ["gpx"]
+        savePanel.begin {
+            (result) -> Void in
+            if result != NSFileHandlingPanelOKButton {
+                return
+            }
+            if let filePath = savePanel.url?.path {
+                self.saveRouteToGpx(rr: rr, filePath: filePath)
+            }
+        }
+    }
+
     func onMapRightClick(_ event: NSEvent) -> NSEvent? {
         if event.window == view.window {
             let locationInMapView = mapView.convert(event.locationInWindow, from: nil)
@@ -288,6 +308,38 @@ class MapViewController: NSViewController {
         }
     }
 
+    fileprivate func saveRouteToGpx(rr: RoutingResult, filePath: String) {
+        let doc = AEXMLDocument()
+        let gpx = doc.addChild(name: "gpx", attributes: [
+            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            "xmlns": "http://www.topografix.com/GPX/1/0",
+            "xsi:schemaLocation": "http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd",
+            "version": "1.0",
+        ])
+        for (i, seg) in rr.segments.enumerated() {
+            if i + 1 >= rr.segments.count {
+                break
+            }
+            let from = stage.points[seg.startPointIndex].name
+            let to = stage.points[rr.segments[i + 1].startPointIndex].name
+            let rte = gpx.addChild(name: "rte")
+            rte.addChild(name: "name", value: "\(from) -> \(to)")
+            for point in seg.path {
+                rte.addChild(name: "rtept", attributes: [
+                    "lat": "\(point.latitude)",
+                    "lon": "\(point.longitude)",
+                ])
+            }
+        }
+        do {
+            try doc.xml.write(toFile: filePath, atomically: true, encoding: String.Encoding.utf8)
+        } catch {
+            let alert = NSAlert()
+            alert.addButton(withTitle: "OK")
+            alert.messageText = "Failed to write GPX data to \(filePath)"
+            alert.runModal()
+        }
+    }
 
     @objc fileprivate func makePointPermanent(_ sender: NSButton?) {
         guard let btn = sender else {
