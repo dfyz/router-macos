@@ -327,7 +327,7 @@ class MapViewController: NSViewController {
             if i + 1 >= rr.segments.count {
                 break
             }
-            let from = stage.points[seg.startPointIndex].name
+            let from = stage.points[i].name
             let rte = gpx.addChild(name: "rte")
             rte.addChild(name: "name", value: "\(from)")
             for point in seg.path {
