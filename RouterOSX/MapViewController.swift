@@ -21,6 +21,7 @@ class MapViewController: NSViewController {
     var pointToAnnotation = [HashablePoint: PointAnnotation]()
     var routeOverlays = [MKOverlay]()
     var routingResult: RoutingResult?
+    var tileOverlay: MKOverlay?
 
     func addPointToMap(_ name: String, lat: Double, lon: Double, permanent: Bool) {
         let point = PointAnnotation()
@@ -66,10 +67,7 @@ class MapViewController: NSViewController {
 
         geocoderClearButton.wantsLayer = true
 
-        let osmTileTemplate = "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        let osmOverlay = MKTileOverlay(urlTemplate: osmTileTemplate)
-        osmOverlay.canReplaceMapContent = true
-        mapView.add(osmOverlay)
+        changeTileOverlay("OSM")
 
         self.mapMonitor = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp, handler: onMapRightClick) as AnyObject!
         mapView.delegate = self
@@ -223,6 +221,16 @@ class MapViewController: NSViewController {
         }
     }
 
+    func onChangeTileLayer(_ sender: NSMenuItem) {
+        changeTileOverlay(sender.title)
+        if let items = sender.parent?.submenu?.items {
+            for item in items {
+                item.state = NSOffState
+            }
+        }
+        sender.state = NSOnState
+    }
+
     func onMapRightClick(_ event: NSEvent) -> NSEvent? {
         if event.window == view.window {
             let locationInMapView = mapView.convert(event.locationInWindow, from: nil)
@@ -238,6 +246,31 @@ class MapViewController: NSViewController {
             }
         }
         return event
+    }
+
+    fileprivate func createTileOverlay(_ layer: String) -> MKTileOverlay? {
+        if layer == "OSM" {
+            let osmTileTemplate = "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
+            let osmOverlay = MKTileOverlay(urlTemplate: osmTileTemplate)
+            return osmOverlay
+        } else if layer == "Sputnik" {
+            let sputnikTileTemplate = "http://tiles.maps.sputnik.ru/{z}/{x}/{y}.png"
+            let sputnikOverlay = MKTileOverlay(urlTemplate: sputnikTileTemplate)
+            return sputnikOverlay
+        } else {
+            return nil
+        }
+    }
+
+    fileprivate func changeTileOverlay(_ layer: String) {
+        if let toAdd = createTileOverlay(layer) {
+            if let toRemove = self.tileOverlay {
+                mapView.remove(toRemove)
+            }
+            toAdd.canReplaceMapContent = true
+            mapView.add(toAdd)
+            self.tileOverlay = toAdd
+        }
     }
 
     fileprivate func addPointToRealm(_ point: PointAnnotation) {

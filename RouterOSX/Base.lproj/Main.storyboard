@@ -104,6 +104,25 @@
                                                 <action selector="onExportToGpx:" target="Ady-hI-5gd" id="gzl-Ma-rbp"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Tile layer" id="abV-61-nuh">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Tile layer" id="9TZ-cp-JGo">
+                                                <items>
+                                                    <menuItem title="OSM" state="on" id="klA-Yu-f5K">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="onChangeTileLayer:" target="Ady-hI-5gd" id="dpc-PS-SFO"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Sputnik" id="aL7-Gc-WSp">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="onChangeTileLayer:" target="Ady-hI-5gd" id="53s-ub-kjJ"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
