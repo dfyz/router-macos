@@ -467,7 +467,7 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
         }
         try! realm.write {
             if dropOperation == .on {
-                stage.points.swap(index1: sourceIndex, row)
+                stage.points.swapAt(sourceIndex, row)
             } else {
                 stage.points.move(from: sourceIndex, to: row < sourceIndex ? row : row - 1)
             }
