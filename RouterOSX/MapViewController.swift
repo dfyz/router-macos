@@ -249,17 +249,23 @@ class MapViewController: NSViewController {
     }
 
     fileprivate func createTileOverlay(_ layer: String) -> MKTileOverlay? {
-        if layer == "OSM" {
-            let osmTileTemplate = "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
-            let osmOverlay = MKTileOverlay(urlTemplate: osmTileTemplate)
-            return osmOverlay
-        } else if layer == "Sputnik" {
-            let sputnikTileTemplate = "http://tiles.maps.sputnik.ru/{z}/{x}/{y}.png"
-            let sputnikOverlay = MKTileOverlay(urlTemplate: sputnikTileTemplate)
-            return sputnikOverlay
-        } else {
+        let maybeHost: String?
+        switch layer {
+        case "OSM":
+            maybeHost = "tile.openstreetmap.org"
+        case "Sputnik":
+            maybeHost = "tiles.maps.sputnik.ru"
+        case "Local":
+            maybeHost = "localhost:8080"
+        default:
+            maybeHost = nil
+        }
+        guard let host = maybeHost else {
             return nil
         }
+        let overlay = MKTileOverlay(urlTemplate: "http://\(host)/{z}/{x}/{y}.png")
+        overlay.maximumZ = 18
+        return overlay
     }
 
     fileprivate func changeTileOverlay(_ layer: String) {
