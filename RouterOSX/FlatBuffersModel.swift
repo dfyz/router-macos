@@ -6,16 +6,16 @@ import Foundation
 public final class OsmNode {
 	public var lat : Float64 = 0
 	public var lon : Float64 = 0
-	public var adj : ContiguousArray<UInt32> = []
+	public var adj : [UInt32] = []
 	public init(){}
-	public init(lat: Float64, lon: Float64, adj: ContiguousArray<UInt32>){
+	public init(lat: Float64, lon: Float64, adj: [UInt32]){
 		self.lat = lat
 		self.lon = lon
 		self.adj = adj
 	}
 }
 public extension OsmNode {
-	fileprivate static func create(_ reader : FBReader, objectOffset : Offset?) -> OsmNode? {
+	fileprivate static func create(_ reader : FlatBuffersReader, objectOffset : Offset?) -> OsmNode? {
 		guard let objectOffset = objectOffset else {
 			return nil
 		}
@@ -29,25 +29,28 @@ public extension OsmNode {
 		}
 		_result.lat = reader.get(objectOffset: objectOffset, propertyIndex: 0, defaultValue: 0)
 		_result.lon = reader.get(objectOffset: objectOffset, propertyIndex: 1, defaultValue: 0)
-		let offset_adj : Offset? = reader.getOffset(objectOffset: objectOffset, propertyIndex: 2)
-		let length_adj = reader.getVectorLength(vectorOffset: offset_adj)
+		let offset_adj : Offset? = reader.offset(objectOffset: objectOffset, propertyIndex: 2)
+		let length_adj = reader.vectorElementCount(vectorOffset: offset_adj)
 		if(length_adj > 0){
 			var index = 0
 			_result.adj.reserveCapacity(length_adj)
 			while index < length_adj {
-				if let element : UInt32 = reader.getVectorScalarElement(vectorOffset: offset_adj, index: index) {
-                    _result.adj.append(element)
-                }
+				if let element : UInt32 = reader.vectorElementScalar(vectorOffset: offset_adj, index: index) {
+					_result.adj.append(element)
+				}
 				index += 1
 			}
 		}
 		return _result
 	}
 }
-public struct OsmNode_Direct<T : FBReader> : Hashable {
+public struct OsmNode_Direct<T : FlatBuffersReader> : Hashable, FlatBuffersDirectAccess {
 	fileprivate let reader : T
 	fileprivate let myOffset : Offset
-	fileprivate init(reader: T, myOffset: Offset){
+	public init?<R : FlatBuffersReader>(reader: R, myOffset: Offset?) {
+		guard let myOffset = myOffset, let reader = reader as? T else {
+			return nil
+		}
 		self.reader = reader
 		self.myOffset = myOffset
 	}
@@ -57,8 +60,9 @@ public struct OsmNode_Direct<T : FBReader> : Hashable {
 	public var lon : Float64 { 
 		get { return reader.get(objectOffset: myOffset, propertyIndex: 1, defaultValue: 0) }
 	}
-	public var adjCount : Int {
-		return reader.getVectorLength(vectorOffset: reader.getOffset(objectOffset: myOffset, propertyIndex: 2))
+	public var adj : FlatBuffersScalarVector<UInt32, T> {
+		let offsetList = reader.offset(objectOffset: myOffset, propertyIndex: 2)
+		return FlatBuffersScalarVector(reader: self.reader, myOffset: offsetList)
 	}
 	public var hashValue: Int { return Int(myOffset) }
 }
@@ -66,8 +70,8 @@ public func ==<T>(t1 : OsmNode_Direct<T>, t2 : OsmNode_Direct<T>) -> Bool {
 	return t1.reader.isEqual(other: t2.reader) && t1.myOffset == t2.myOffset
 }
 public extension OsmNode {
-	fileprivate func addToByteArray(_ builder : FBBuilder) throws -> Offset {
-		if builder.config.uniqueTables {
+	fileprivate func addToByteArray(_ builder : FlatBuffersBuilder) throws -> Offset {
+		if builder.options.uniqueTables {
 			if let myOffset = builder.cache[ObjectIdentifier(self)] {
 				return myOffset
 			}
@@ -77,33 +81,33 @@ public extension OsmNode {
 			try builder.startVector(count: adj.count, elementSize: MemoryLayout<UInt32>.stride)
 			var index = adj.count - 1
 			while(index >= 0){
-				builder.put(value: adj[index])
+				builder.insert(value: adj[index])
 				index -= 1
 			}
 			offset2 = builder.endVector()
 		}
-		try builder.openObject(numOfProperties: 3)
+		try builder.startObject(withPropertyCount: 3)
 		if adj.count > 0 {
-			try builder.addPropertyOffsetToOpenObject(propertyIndex: 2, offset: offset2)
+			try builder.insert(offset: offset2, toStartedObjectAt: 2)
 		}
-		try builder.addPropertyToOpenObject(propertyIndex: 1, value : lon, defaultValue : 0)
-		try builder.addPropertyToOpenObject(propertyIndex: 0, value : lat, defaultValue : 0)
-		let myOffset =  try builder.closeObject()
-		if builder.config.uniqueTables {
+		try builder.insert(value : lon, defaultValue : 0, toStartedObjectAt: 1)
+		try builder.insert(value : lat, defaultValue : 0, toStartedObjectAt: 0)
+		let myOffset =  try builder.endObject()
+		if builder.options.uniqueTables {
 			builder.cache[ObjectIdentifier(self)] = myOffset
 		}
 		return myOffset
 	}
 }
 public final class OsmGraph {
-	public var nodes : ContiguousArray<OsmNode?> = []
+	public var nodes : [OsmNode] = []
 	public init(){}
-	public init(nodes: ContiguousArray<OsmNode?>){
+	public init(nodes: [OsmNode]){
 		self.nodes = nodes
 	}
 }
 public extension OsmGraph {
-	fileprivate static func create(_ reader : FBReader, objectOffset : Offset?) -> OsmGraph? {
+	fileprivate static func create(_ reader : FlatBuffersReader, objectOffset : Offset?) -> OsmGraph? {
 		guard let objectOffset = objectOffset else {
 			return nil
 		}
@@ -115,14 +119,15 @@ public extension OsmGraph {
 		if let cache = reader.cache {
 			cache.objectPool[objectOffset] = _result
 		}
-		let offset_nodes : Offset? = reader.getOffset(objectOffset: objectOffset, propertyIndex: 0)
-		let length_nodes = reader.getVectorLength(vectorOffset: offset_nodes)
+		let offset_nodes : Offset? = reader.offset(objectOffset: objectOffset, propertyIndex: 0)
+		let length_nodes = reader.vectorElementCount(vectorOffset: offset_nodes)
 		if(length_nodes > 0){
 			var index = 0
 			_result.nodes.reserveCapacity(length_nodes)
 			while index < length_nodes {
-				let element = OsmNode.create(reader, objectOffset: reader.getVectorOffsetElement(vectorOffset: offset_nodes, index: index))
-				_result.nodes.append(element)
+				if let element = OsmNode.create(reader, objectOffset: reader.vectorElementOffset(vectorOffset: offset_nodes, index: index)) {
+					_result.nodes.append(element)
+				}
 				index += 1
 			}
 		}
@@ -130,32 +135,35 @@ public extension OsmGraph {
 	}
 }
 public extension OsmGraph {
-	public static func from(data : Data,  cache : FBReaderCache? = FBReaderCache()) -> OsmGraph? {
-		let reader = FBMemoryReader(data: data, cache: cache)
-		return from(reader: reader)
+	public static func makeOsmGraph(data : Data,  cache : FlatBuffersReaderCache? = FlatBuffersReaderCache()) -> OsmGraph? {
+		let reader = FlatBuffersMemoryReader(data: data, cache: cache)
+		return makeOsmGraph(reader: reader)
 	}
-	public static func from(reader : FBReader) -> OsmGraph? {
+	public static func makeOsmGraph(reader : FlatBuffersReader) -> OsmGraph? {
 		let objectOffset = reader.rootObjectOffset
 		return create(reader, objectOffset : objectOffset)
 	}
 }
 
 public extension OsmGraph {
-	public func encode(withBuilder builder : FBBuilder) throws -> Void {
+	public func encode(withBuilder builder : FlatBuffersBuilder) throws -> Void {
 		let offset = try addToByteArray(builder)
 		try builder.finish(offset: offset, fileIdentifier: nil)
 	}
-	public func toData(withConfig config : FBBuildConfig = FBBuildConfig()) throws -> Data {
-		let builder = FBBuilder(config: config)
+	public func makeData(withOptions options : FlatBuffersBuilderOptions = FlatBuffersBuilderOptions()) throws -> Data {
+		let builder = FlatBuffersBuilder(options: options)
 		try encode(withBuilder: builder)
-		return builder.data
+		return builder.makeData
 	}
 }
 
-public struct OsmGraph_Direct<T : FBReader> : Hashable {
+public struct OsmGraph_Direct<T : FlatBuffersReader> : Hashable, FlatBuffersDirectAccess {
 	fileprivate let reader : T
 	fileprivate let myOffset : Offset
-	fileprivate init(reader: T, myOffset: Offset){
+	public init?<R : FlatBuffersReader>(reader: R, myOffset: Offset?) {
+		guard let myOffset = myOffset, let reader = reader as? T else {
+			return nil
+		}
 		self.reader = reader
 		self.myOffset = myOffset
 	}
@@ -166,15 +174,9 @@ public struct OsmGraph_Direct<T : FBReader> : Hashable {
 		}
 		self.myOffset = offest
 	}
-	public var nodesCount : Int {
-		return reader.getVectorLength(vectorOffset: reader.getOffset(objectOffset: myOffset, propertyIndex: 0))
-	}
-	public func getNodesElement(atIndex index : Int) -> OsmNode_Direct<T>? {
-		let offsetList = reader.getOffset(objectOffset: myOffset, propertyIndex: 0)
-		if let ofs = reader.getVectorOffsetElement(vectorOffset: offsetList, index: index) {
-			return OsmNode_Direct<T>(reader: reader, myOffset: ofs)
-		}
-		return nil
+	public var nodes : FlatBuffersTableVector<OsmNode_Direct<T>, T> {
+		let offsetList = reader.offset(objectOffset: myOffset, propertyIndex: 0)
+		return FlatBuffersTableVector(reader: self.reader, myOffset: offsetList)
 	}
 	public var hashValue: Int { return Int(myOffset) }
 }
@@ -182,8 +184,8 @@ public func ==<T>(t1 : OsmGraph_Direct<T>, t2 : OsmGraph_Direct<T>) -> Bool {
 	return t1.reader.isEqual(other: t2.reader) && t1.myOffset == t2.myOffset
 }
 public extension OsmGraph {
-	fileprivate func addToByteArray(_ builder : FBBuilder) throws -> Offset {
-		if builder.config.uniqueTables {
+	fileprivate func addToByteArray(_ builder : FlatBuffersBuilder) throws -> Offset {
+		if builder.options.uniqueTables {
 			if let myOffset = builder.cache[ObjectIdentifier(self)] {
 				return myOffset
 			}
@@ -193,43 +195,62 @@ public extension OsmGraph {
 			var offsets = [Offset?](repeating: nil, count: nodes.count)
 			var index = nodes.count - 1
 			while(index >= 0){
-				offsets[index] = try nodes[index]?.addToByteArray(builder)
+				offsets[index] = try nodes[index].addToByteArray(builder)
 				index -= 1
 			}
 			try builder.startVector(count: nodes.count, elementSize: MemoryLayout<Offset>.stride)
 			index = nodes.count - 1
 			while(index >= 0){
-				try builder.putOffset(offset: offsets[index])
+				try builder.insert(offset: offsets[index])
 				index -= 1
 			}
 			offset0 = builder.endVector()
 		}
-		try builder.openObject(numOfProperties: 1)
+		try builder.startObject(withPropertyCount: 1)
 		if nodes.count > 0 {
-			try builder.addPropertyOffsetToOpenObject(propertyIndex: 0, offset: offset0)
+			try builder.insert(offset: offset0, toStartedObjectAt: 0)
 		}
-		let myOffset =  try builder.closeObject()
-		if builder.config.uniqueTables {
+		let myOffset =  try builder.endObject()
+		if builder.options.uniqueTables {
 			builder.cache[ObjectIdentifier(self)] = myOffset
 		}
 		return myOffset
 	}
 }
 // MARK: Reader
-public protocol FBReader {
-    func fromByteArray<T : Scalar>(position : Int) throws -> T
-    func buffer(position : Int, length : Int) throws -> UnsafeBufferPointer<UInt8>
-    var cache : FBReaderCache? {get}
-    func isEqual(other : FBReader) -> Bool
+public protocol FlatBuffersReader {
+    var cache : FlatBuffersReaderCache? {get}
+
+    /**
+     Access a scalar value directly from the underlying reader buffer.
+     
+     - parameters:
+         - offset: The offset to read from in the buffer
+     
+     - Returns: a scalar value at a given offset from the buffer.
+     */
+    func scalar<T : Scalar>(at offset: Int) throws -> T
+
+    /**
+     Access a subrange from the underlying reader buffer
+     
+     - parameters:
+     - offset: The offset to read from in the buffer
+     - length: The amount of data to include from the buffer
+     
+     - Returns: a direct pointer to a subrange from the underlying reader buffer.
+     */
+    func bytes(at offset : Int, length : Int) throws -> UnsafeBufferPointer<UInt8>
+    func isEqual(other : FlatBuffersReader) -> Bool
 }
 
 
-fileprivate enum FBReaderError : Error {
-    case OutOfBufferBounds
-    case CanNotSetProperty
+fileprivate enum FlatBuffersReaderError : Error {
+    case outOfBufferBounds     /// Trying to address outside of the bounds of the underlying buffer
+    case canNotSetProperty
 }
 
-public class FBReaderCache {
+public class FlatBuffersReaderCache {
     public var objectPool : [Offset : AnyObject] = [:]
     func reset(){
         objectPool.removeAll(keepingCapacity: true)
@@ -237,43 +258,60 @@ public class FBReaderCache {
     public init(){}
 }
 
-public extension FBReader {
-    
-    private func getPropertyOffset(objectOffset : Offset, propertyIndex : Int) -> Int {
+public extension FlatBuffersReader {
+    /**
+     Retrieve the offset of a property from the vtable.
+     
+     - parameters:
+         - objectOffset: The offset of the object
+         - propertyIndex: The property to extract
+     
+     - Returns: the object-local offset of a given property by looking it up in the vtable
+     */
+    private func propertyOffset(objectOffset : Offset, propertyIndex : Int) -> Int {
         guard propertyIndex >= 0 else {
             return 0
         }
         do {
             let offset = Int(objectOffset)
-            let localOffset : Int32 = try fromByteArray(position: offset)
+            let localOffset : Int32 = try scalar(at: offset)
             let vTableOffset : Int = offset - Int(localOffset)
-            let vTableLength : Int16 = try fromByteArray(position: vTableOffset)
-            let objectLength : Int16 = try fromByteArray(position: vTableOffset + 2)
+            let vTableLength : Int16 = try scalar(at: vTableOffset)
+            let objectLength : Int16 = try scalar(at: vTableOffset + 2)
             let positionInVTable = 4 + propertyIndex * 2
-            if(vTableLength<=Int16(positionInVTable)) {
+            if (vTableLength<=Int16(positionInVTable)) {
                 return 0
             }
             let propertyStart = vTableOffset + positionInVTable
-            let propertyOffset : Int16 = try fromByteArray(position: propertyStart)
-            if(objectLength<=propertyOffset) {
+            let propOffset : Int16 = try scalar(at: propertyStart)
+            if (objectLength<=propOffset) {
                 return 0
             }
-            return Int(propertyOffset)
+            return Int(propOffset)
         } catch {
             return 0 // Currently don't want to propagate the error
         }
     }
     
-    public func getOffset(objectOffset : Offset, propertyIndex : Int) -> Offset? {
+    /**
+     Retrieve the final offset of a property to be able to access it
+     
+     - parameters:
+         - objectOffset: The offset of the object
+         - propertyIndex: The property to extract
+     
+     - Returns: the final offset in the reader buffer to access a given property for a given object-offset
+     */
+    public func offset(objectOffset : Offset, propertyIndex : Int) -> Offset? {
         
-        let propertyOffset = getPropertyOffset(objectOffset: objectOffset, propertyIndex: propertyIndex)
-        if propertyOffset == 0 {
+        let propOffset = propertyOffset(objectOffset: objectOffset, propertyIndex: propertyIndex)
+        if propOffset == 0 {
             return nil
         }
         
-        let position = objectOffset + propertyOffset
+        let position = objectOffset.advanced(by: propOffset)
         do {
-            let localObjectOffset : Int32 = try fromByteArray(position: Int(position))
+            let localObjectOffset : Int32 = try scalar(at: Int(position))
             let offset = position + localObjectOffset
             
             if localObjectOffset == 0 {
@@ -286,212 +324,447 @@ public extension FBReader {
         
     }
     
-    public func getVectorLength(vectorOffset : Offset?) -> Int {
+    /**
+     Retrieve the count of elements in an embedded vector
+     
+     - parameters:
+         - vectorOffset: The offset of the vector in the buffer
+     
+     - Returns: the number of elements in the vector
+     */
+    public func vectorElementCount(vectorOffset : Offset?) -> Int {
         guard let vectorOffset = vectorOffset else {
             return 0
         }
         let vectorPosition = Int(vectorOffset)
         do {
-            let length2 : Int32 = try fromByteArray(position: vectorPosition)
+            let length2 : Int32 = try scalar(at: vectorPosition)
             return Int(length2)
         } catch {
             return 0
         }
     }
     
-    public func getVectorOffsetElement(vectorOffset : Offset?, index : Int) -> Offset? {
+    /**
+     Retrieve an element offset from a vector
+     
+     - parameters:
+         - vectorOffset: The offset of the vector in the buffer
+         - index: The index of the element we want the offset for
+     
+     - Returns: the offset in the buffer for a given vector element
+     */
+    public func vectorElementOffset(vectorOffset : Offset?, index : Int) -> Offset? {
         guard let vectorOffset = vectorOffset else {
             return nil
         }
         guard index >= 0 else{
             return nil
         }
-        guard index < getVectorLength(vectorOffset: vectorOffset) else {
+        guard index < vectorElementCount(vectorOffset: vectorOffset) else {
             return nil
         }
-        let valueStartPosition = Int(vectorOffset + MemoryLayout<Int32>.stride + (index * MemoryLayout<Int32>.stride))
+        let valueStartPosition = Int(vectorOffset.advanced(by: MemoryLayout<Int32>.stride + (index * MemoryLayout<Int32>.stride)))
         do {
-            let localOffset : Int32 = try fromByteArray(position: valueStartPosition)
+            let localOffset : Int32 = try scalar(at: valueStartPosition)
             if(localOffset == 0){
                 return nil
             }
-            return localOffset + valueStartPosition
+            return localOffset.advanced(by: valueStartPosition)
         } catch {
             return nil
         }
     }
     
-    public func getVectorScalarElement<T : Scalar>(vectorOffset : Offset?, index : Int) -> T? {
+    /**
+     Retrieve a scalar value from a vector
+     
+     - parameters:
+         - vectorOffset: The offset of the vector in the buffer
+         - index: The index of the element we want the offset for
+     
+     - Returns: a scalar value directly from a vector for a given index
+     */
+    public func vectorElementScalar<T : Scalar>(vectorOffset : Offset?, index : Int) -> T? {
         guard let vectorOffset = vectorOffset else {
             return nil
         }
         guard index >= 0 else{
             return nil
         }
-        guard index < getVectorLength(vectorOffset: vectorOffset) else {
+        guard index < vectorElementCount(vectorOffset: vectorOffset) else {
             return nil
         }
         
-        let valueStartPosition = Int(vectorOffset + MemoryLayout<Int32>.stride + (index * MemoryLayout<T>.stride))
+        let valueStartPosition = Int(vectorOffset.advanced(by: MemoryLayout<Int32>.stride + (index * MemoryLayout<T>.stride)))
         
         do {
-            return try fromByteArray(position: valueStartPosition) as T
+            return try scalar(at: valueStartPosition) as T
         } catch {
             return nil
         }
     }
-    
+
+    /**
+     Retrieve a scalar value or supply a default if unavailable
+     
+     - parameters:
+         - objectOffset: The offset of the object
+         - propertyIndex: The property to try to extract
+         - defaultValue: The default value to return if the property is not in the buffer
+     
+     - Returns: a scalar value directly from a vector for a given index
+     */
     public func get<T : Scalar>(objectOffset : Offset, propertyIndex : Int, defaultValue : T) -> T {
-        let propertyOffset = getPropertyOffset(objectOffset: objectOffset, propertyIndex: propertyIndex)
-        if propertyOffset == 0 {
+        let propOffset = propertyOffset(objectOffset: objectOffset, propertyIndex: propertyIndex)
+        if propOffset == 0 {
             return defaultValue
         }
-        let position = Int(objectOffset + propertyOffset)
+        let position = Int(objectOffset.advanced(by: propOffset))
         do {
-            return try fromByteArray(position: position)
+            return try scalar(at: position)
         } catch {
             return defaultValue
         }
     }
     
+    /**
+     Retrieve a scalar optional value (return nil if unavailable)
+     
+     - parameters:
+         - objectOffset: The offset of the object
+         - propertyIndex: The property to try to extract
+     
+     - Returns: a scalar value directly from a vector for a given index
+     */
     public func get<T : Scalar>(objectOffset : Offset, propertyIndex : Int) -> T? {
-        let propertyOffset = getPropertyOffset(objectOffset: objectOffset, propertyIndex: propertyIndex)
-        if propertyOffset == 0 {
+        let propOffset = propertyOffset(objectOffset: objectOffset, propertyIndex: propertyIndex)
+        if propOffset == 0 {
             return nil
         }
-        let position = Int(objectOffset + propertyOffset)
+        let position = Int(objectOffset.advanced(by: propOffset))
         do {
-            return try fromByteArray(position: position) as T
+            return try scalar(at: position) as T
         } catch {
             return nil
         }
     }
     
-    public func getStringBuffer(stringOffset : Offset?) -> UnsafeBufferPointer<UInt8>? {
+    /**
+     Retrieve a stringbuffer
+     
+     - parameters:
+         - stringOffset: The offset of the string
+     
+     - Returns:  a buffer pointer to the subrange of the reader buffer occupied by a string
+     */
+    public func stringBuffer(stringOffset : Offset?) -> UnsafeBufferPointer<UInt8>? {
         guard let stringOffset = stringOffset else {
             return nil
         }
         let stringPosition = Int(stringOffset)
         do {
-            let stringLength : Int32 = try fromByteArray(position: stringPosition)
+            let stringLength : Int32 = try scalar(at: stringPosition)
             let stringCharactersPosition = stringPosition + MemoryLayout<Int32>.stride
             
-            return try buffer(position: stringCharactersPosition, length: Int(stringLength))
+            return try bytes(at: stringCharactersPosition, length: Int(stringLength))
         } catch {
             return nil
         }
     }
     
+    /**
+     Retrieve the root object offset
+     
+     - Returns:  the offset for the root table object
+     */
     public var rootObjectOffset : Offset? {
         do {
-            return try fromByteArray(position: 0) as Offset
+            return try scalar(at: 0) as Offset
         } catch {
             return nil
         }
     }
 }
 
-public struct FBMemoryReader : FBReader {
+/// A FlatBuffers reader subclass that by default reads directly from a memory buffer, but also supports initialization from Data objects for convenience
+public final class FlatBuffersMemoryReader : FlatBuffersReader {
     
     private let count : Int
-    public let cache : FBReaderCache?
+    public let cache : FlatBuffersReaderCache?
     private let buffer : UnsafeRawPointer
+    private let originalBuffer : UnsafeMutableBufferPointer<UInt8>!
     
-    public init(buffer : UnsafeRawPointer, count : Int, cache : FBReaderCache? = FBReaderCache()) {
+    /**
+     Initializes the reader directly from a raw memory buffer.
+     
+     - parameters:
+         - buffer: A raw pointer to the underlying data to be parsed
+         - count: The size of the data buffer
+         - cache: An optional cache of reader objects for reuse
+     
+     - Returns: A FlatBuffers reader ready for use.
+     */
+    public init(buffer : UnsafeRawPointer, count : Int, cache : FlatBuffersReaderCache? = FlatBuffersReaderCache()) {
         self.buffer = buffer
         self.count = count
         self.cache = cache
+        self.originalBuffer = nil
     }
     
-    public init(data : Data, cache : FBReaderCache? = FBReaderCache()) {
+    /**
+     Initializes the reader from a Data object.
+     - parameters:
+         - data: A Data object holding the data to be parsed, the contents may be copied, for performance sensitive implementations, 
+                 the UnsafeRawsPointer initializer should be used.
+         - withoutCopy: set it to true if you want to avoid copying the buffer. This implies that you have to keep a reference to data object around.
+         - cache: An optional cache of reader objects for reuse
+     
+     - Returns: A FlatBuffers reader ready for use.
+     */
+    public init(data : Data, withoutCopy: Bool = false, cache : FlatBuffersReaderCache? = FlatBuffersReaderCache()) {
         self.count = data.count
         self.cache = cache
-        var pointer : UnsafePointer<UInt8>! = nil
-        data.withUnsafeBytes { (u8Ptr: UnsafePointer<UInt8>) in
-            pointer = u8Ptr
+        if withoutCopy {
+            var pointer : UnsafePointer<UInt8>! = nil
+            data.withUnsafeBytes { (u8Ptr: UnsafePointer<UInt8>) in
+                pointer = u8Ptr
+            }
+            self.buffer = UnsafeRawPointer(pointer)
+            self.originalBuffer = nil
+        } else {
+            let pointer : UnsafeMutablePointer<UInt8> = UnsafeMutablePointer.allocate(capacity: data.count)
+            self.originalBuffer = UnsafeMutableBufferPointer(start: pointer, count: data.count)
+            _ = data.copyBytes(to: originalBuffer)
+            self.buffer = UnsafeRawPointer(pointer)
         }
-        self.buffer = UnsafeRawPointer(pointer)
     }
     
-    public func fromByteArray<T : Scalar>(position : Int) throws -> T {
-        if position + MemoryLayout<T>.stride > count || position < 0 {
-            throw FBReaderError.OutOfBufferBounds
+    deinit {
+        if let originalBuffer = originalBuffer,
+            let pointer = originalBuffer.baseAddress {
+            pointer.deinitialize(count: count)
+        }
+    }
+    
+    public func scalar<T : Scalar>(at offset: Int) throws -> T {
+        if offset + MemoryLayout<T>.stride > count || offset < 0 {
+            throw FlatBuffersReaderError.outOfBufferBounds
         }
         
-        return buffer.load(fromByteOffset: position, as: T.self)
+        return buffer.load(fromByteOffset: offset, as: T.self)
     }
     
-    public func buffer(position : Int, length : Int) throws -> UnsafeBufferPointer<UInt8> {
-        if Int(position + length) > count {
-            throw FBReaderError.OutOfBufferBounds
+    public func bytes(at offset : Int, length : Int) throws -> UnsafeBufferPointer<UInt8> {
+        if Int(offset + length) > count {
+            throw FlatBuffersReaderError.outOfBufferBounds
         }
-        let pointer = buffer.advanced(by:position).bindMemory(to: UInt8.self, capacity: length)
+        let pointer = buffer.advanced(by:offset).bindMemory(to: UInt8.self, capacity: length)
         return UnsafeBufferPointer<UInt8>.init(start: pointer, count: Int(length))
     }
     
-    public func isEqual(other: FBReader) -> Bool{
-        guard let other = other as? FBMemoryReader else {
+    public func isEqual(other: FlatBuffersReader) -> Bool{
+        guard let other = other as? FlatBuffersMemoryReader else {
             return false
         }
         return self.buffer == other.buffer
     }
 }
 
-public struct FBFileReader : FBReader {
+/// A FlatBuffers reader subclass that reads directly from a file handle
+public final class FlatBuffersFileReader : FlatBuffersReader {
     
     private let fileSize : UInt64
     private let fileHandle : FileHandle
-    public let cache : FBReaderCache?
+    public let cache : FlatBuffersReaderCache?
     
-    public init(fileHandle : FileHandle, cache : FBReaderCache? = FBReaderCache()){
+    /**
+     Initializes the reader from a FileHandle object.
+
+     - parameters:
+         - fileHandle: A FileHandle object referencing the file we read from.
+         - cache: An optional cache of reader objects for reuse
+     
+     - Returns: A FlatBuffers reader ready for use.
+     */
+    public init(fileHandle : FileHandle, cache : FlatBuffersReaderCache? = FlatBuffersReaderCache()){
         self.fileHandle = fileHandle
         fileSize = fileHandle.seekToEndOfFile()
         
         self.cache = cache
     }
     
-    public func fromByteArray<T : Scalar>(position : Int) throws -> T {
-        let seekPosition = UInt64(position)
-        if seekPosition + UInt64(MemoryLayout<T>.stride) > fileSize {
-            throw FBReaderError.OutOfBufferBounds
+    private struct DataCacheKey : Hashable {
+        let offset : Int
+        let lenght : Int
+        
+        static func ==(a : DataCacheKey, b : DataCacheKey) -> Bool {
+            return a.offset == b.offset && a.lenght == b.lenght
         }
-        fileHandle.seek(toFileOffset: seekPosition)
-        let data = fileHandle.readData(ofLength:MemoryLayout<T>.stride)
-        let pointer = UnsafeMutablePointer<T>.allocate(capacity: MemoryLayout<T>.stride)
-        let t : UnsafeMutableBufferPointer<T> = UnsafeMutableBufferPointer(start: pointer, count: 1)
-        _ = data.copyBytes(to: t)
-        if let result = t.baseAddress?.pointee {
-            pointer.deinitialize()
-            return result
+        
+        var hashValue: Int {
+            return offset
         }
-        throw FBReaderError.OutOfBufferBounds
     }
     
-    public func buffer(position : Int, length : Int) throws -> UnsafeBufferPointer<UInt8> {
-        if UInt64(position + length) > fileSize {
-            throw FBReaderError.OutOfBufferBounds
-        }
-        fileHandle.seek(toFileOffset: UInt64(position))
-        let data = fileHandle.readData(ofLength:Int(length))
-        let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
-        let t : UnsafeMutableBufferPointer<UInt8> = UnsafeMutableBufferPointer(start: pointer, count: length)
-        _ = data.copyBytes(to: t)
-        pointer.deinitialize()
-        return UnsafeBufferPointer<UInt8>(start: t.baseAddress, count: length)
+    private var dataCache : [DataCacheKey:Data] = [:]
+    
+    public func clearDataCache(){
+        dataCache.removeAll(keepingCapacity: true)
     }
     
-    public func isEqual(other: FBReader) -> Bool{
-        guard let other = other as? FBFileReader else {
+    public func scalar<T : Scalar>(at offset: Int) throws -> T {
+        let seekPosition = UInt64(offset)
+        let length = MemoryLayout<T>.stride
+        if seekPosition + UInt64(length) > fileSize {
+            throw FlatBuffersReaderError.outOfBufferBounds
+        }
+        
+        let cacheKey = DataCacheKey(offset: offset, lenght: length)
+        
+        let data : Data
+        if let _data = dataCache[cacheKey] {
+            data = _data
+        } else {
+            fileHandle.seek(toFileOffset: UInt64(offset))
+            data = fileHandle.readData(ofLength:Int(length))
+            dataCache[cacheKey] = data
+        }
+        return data.withUnsafeBytes { (pointer) -> T in
+            return pointer.pointee
+        }
+    }
+    
+    public func bytes(at offset : Int, length : Int) throws -> UnsafeBufferPointer<UInt8> {
+        if UInt64(offset + length) > fileSize {
+            throw FlatBuffersReaderError.outOfBufferBounds
+        }
+        
+        let cacheKey = DataCacheKey(offset: offset, lenght: length)
+        
+        let data : Data
+        if let _data = dataCache[cacheKey] {
+            data = _data
+        } else {
+            fileHandle.seek(toFileOffset: UInt64(offset))
+            data = fileHandle.readData(ofLength:Int(length))
+            dataCache[cacheKey] = data
+        }
+        
+        var t : UnsafeBufferPointer<UInt8>! = nil
+        data.withUnsafeBytes{
+            t = UnsafeBufferPointer(start: $0, count: length)
+        }
+        
+        return t
+    }
+    
+    public func isEqual(other: FlatBuffersReader) -> Bool{
+        guard let other = other as? FlatBuffersFileReader else {
             return false
         }
         return self.fileHandle === other.fileHandle
     }
 }
 
-postfix operator § 
+postfix operator §
 
 public postfix func §(value: UnsafeBufferPointer<UInt8>) -> String? {
-    return String.init(bytesNoCopy: UnsafeMutablePointer<UInt8>(mutating: value.baseAddress!), length: value.count, encoding: String.Encoding.utf8, freeWhenDone: false)
+    guard let p = value.baseAddress else {
+        return nil
+    }
+    return String.init(bytesNoCopy: UnsafeMutablePointer<UInt8>(mutating: p), length: value.count, encoding: String.Encoding.utf8, freeWhenDone: false)
+}
+
+public protocol FlatBuffersDirectAccess {
+    init?<R : FlatBuffersReader>(reader: R, myOffset: Offset?)
+}
+public struct FlatBuffersTableVector<T: FlatBuffersDirectAccess, R : FlatBuffersReader> : Collection {
+    public let count : Int
+    
+    fileprivate let reader : R
+    fileprivate let myOffset : Offset?
+    
+    public init(reader: R, myOffset: Offset?){
+        self.reader = reader
+        self.myOffset = myOffset
+        self.count = reader.vectorElementCount(vectorOffset: myOffset)
+    }
+    
+    public var startIndex: Int {
+        return 0
+    }
+    
+    public var endIndex: Int {
+        return count
+    }
+    
+    public func index(after i: Int) -> Int {
+        return i+1
+    }
+    
+    public subscript(i : Int) -> T? {
+        let offset = reader.vectorElementOffset(vectorOffset: myOffset, index: i)
+        return T(reader: reader, myOffset: offset)
+    }
+}
+
+public struct FlatBuffersScalarVector<T: Scalar, R : FlatBuffersReader> : Collection {
+    public let count : Int
+    
+    fileprivate let reader : R
+    fileprivate let myOffset : Offset?
+    public init(reader: R, myOffset: Offset?){
+        self.reader = reader
+        self.myOffset = myOffset
+        self.count = reader.vectorElementCount(vectorOffset: myOffset)
+    }
+    
+    public var startIndex: Int {
+        return 0
+    }
+    
+    public var endIndex: Int {
+        return count
+    }
+    
+    public func index(after i: Int) -> Int {
+        return i+1
+    }
+    
+    public subscript(i : Int) -> T? {
+        return reader.vectorElementScalar(vectorOffset: myOffset, index: i)
+    }
+}
+
+public struct FlatBuffersStringVector<R : FlatBuffersReader> : Collection {
+    public let count : Int
+    
+    fileprivate let reader : R
+    fileprivate let myOffset : Offset?
+    
+    public init(reader: R, myOffset: Offset?){
+        self.reader = reader
+        self.myOffset = myOffset
+        self.count = reader.vectorElementCount(vectorOffset: myOffset)
+    }
+    
+    public var startIndex: Int {
+        return 0
+    }
+    
+    public var endIndex: Int {
+        return count
+    }
+    
+    public func index(after i: Int) -> Int {
+        return i+1
+    }
+    
+    public subscript(i : Int) -> UnsafeBufferPointer<UInt8>? {
+        let offset = reader.vectorElementOffset(vectorOffset: myOffset, index: i)
+        return reader.stringBuffer(stringOffset: offset)
+    }
 }
 // MARK: Builder
 public typealias Offset = Int32
@@ -512,7 +785,8 @@ extension UInt : Scalar {}
 extension Float32 : Scalar {}
 extension Float64 : Scalar {}
 
-public struct FBBuildConfig {
+/// Various options for the builder
+public struct FlatBuffersBuilderOptions {
     public let initialCapacity : Int
     public let uniqueStrings : Bool
     public let uniqueTables : Bool
@@ -529,20 +803,20 @@ public struct FBBuildConfig {
     }
 }
 
-public enum FBBuildError : Error {
-    case ObjectIsNotClosed
-    case NoOpenObject
-    case PropertyIndexIsInvalid
-    case OffsetIsTooBig
-    case CursorIsInvalid
-    case BadFileIdentifier
-    case UnsupportedType
+public enum FlatBuffersBuildError : Error {
+    case objectIsNotClosed
+    case noOpenObject
+    case propertyIndexIsInvalid
+    case offsetIsTooBig
+    case cursorIsInvalid
+    case badFileIdentifier
+    case unsupportedType
 }
 
-public final class FBBuilder {
+/// A FlatBuffers builder that supports the generation of flatbuffers 'wire' format from an object graph
+public final class FlatBuffersBuilder {
     
-    private var _config : FBBuildConfig
-    public var config : FBBuildConfig { return _config }
+    public var options : FlatBuffersBuilderOptions
     private var capacity : Int
     private var _data : UnsafeMutableRawPointer
     private var minalign = 1;
@@ -559,18 +833,41 @@ public final class FBBuilder {
     public var cache : [ObjectIdentifier : Offset] = [:]
     public var inProgress : Set<ObjectIdentifier> = []
     public var deferedBindings : ContiguousArray<(object:Any, cursor:Int)> = []
-    
-    public init(config : FBBuildConfig = FBBuildConfig()) {
-        self._config = config
-        self.capacity = config.initialCapacity
+
+    /**
+     Initializes the builder
+     
+     - parameters:
+         - options: The options to use for this builder.
+     
+     - Returns: A FlatBuffers builder ready for use.
+     */
+    public init(options _options : FlatBuffersBuilderOptions = FlatBuffersBuilderOptions()) {
+        self.options = _options
+        self.capacity = self.options.initialCapacity
         _data = UnsafeMutableRawPointer.allocate(bytes: capacity, alignedTo: minalign)
     }
     
-    public var data : Data {
+    /**
+     Allocates and returns a Data object initialized from the builder backing store
+     
+     - Returns: A Data object initilized with the data from the builder backing store
+     */
+    public var makeData : Data {
         return Data(bytes:_data.advanced(by:leftCursor), count: cursor)
     }
     
-    private func increaseCapacity(size : Int){
+    /**
+     Reserve enough space to store at a minimum size more data and resize the 
+     underlying buffer if needed. 
+     
+     The data should be consumed by the builder immediately after reservation.
+     
+     - parameters:
+         - size: The additional size that will be consumed by the builder 
+                 immedieatly after the call
+     */
+    private func reserveAdditionalCapacity(size : Int){
         guard leftCursor <= size else {
             return
         }
@@ -586,17 +883,30 @@ public final class FBBuilder {
         _data = newData
     }
     
+    /**
+     Perform alignment for a value of a given size by performing padding in advance
+     of actually putting the value to the buffer.
+     
+     - parameters:
+         - size: xxx
+         - additionalBytes: xxx
+     */
     private func align(size : Int, additionalBytes : Int){
         if size > minalign {
             minalign = size
         }
         let alignSize = ((~(cursor + additionalBytes)) + 1) & (size - 1)
-        increaseCapacity(size: alignSize)
+        reserveAdditionalCapacity(size: alignSize)
         cursor += alignSize
-        
     }
     
-    public func put<T : Scalar>(value : T){
+    /**
+     Add a scalar value to the buffer
+     
+     - parameters:
+         - value: The value to add to the buffer
+     */
+    public func insert<T : Scalar>(value : T){
         let c = MemoryLayout.stride(ofValue: value)
         if c > 8 {
             align(size: 8, additionalBytes: c)
@@ -604,105 +914,158 @@ public final class FBBuilder {
             align(size: c, additionalBytes: 0)
         }
         
-        increaseCapacity(size: c)
+        reserveAdditionalCapacity(size: c)
         
         _data.storeBytes(of: value, toByteOffset: leftCursor-c, as: T.self)
         cursor += c
     }
     
+    /**
+     Make offset relative and add it to the buffer
+     
+     - parameters:
+         - offset: The offset to transform and add to the buffer
+     */
     @discardableResult
-    public func putOffset(offset : Offset?) throws -> Int { // make offset relative and put it into byte buffer
+    public func insert(offset : Offset?) throws -> Int {
         guard let offset = offset else {
-            put(value: Offset(0))
+            insert(value: Offset(0))
             return cursor
         }
         guard offset <= Int32(cursor) else {
-            throw FBBuildError.OffsetIsTooBig
+            throw FlatBuffersBuildError.offsetIsTooBig
         }
         
         if offset == Int32(0) {
-            put(value: Offset(0))
+            insert(value: Offset(0))
             return cursor
         }
         align(size: 4, additionalBytes: 0)
-        let _offset = Int32(cursor) - offset + MemoryLayout<Int32>.stride;
-        put(value: _offset)
+        let _offset = (Int32(cursor) - offset).advanced(by: MemoryLayout<Int32>.stride)
+        insert(value: _offset)
         return cursor
     }
-    
-    public func replaceOffset(offset : Offset, atCursor jumpCursor: Int) throws{
+  
+    /**
+     Update an offset in place
+     
+     - parameters:
+         - offset: The new offset to transform and add to the buffer
+         - atCursor: The position to put the new offset to
+     */
+    public func update(offset : Offset, atCursor jumpCursor: Int) throws{
         guard offset <= Int32(cursor) else {
-            throw FBBuildError.OffsetIsTooBig
+            throw FlatBuffersBuildError.offsetIsTooBig
         }
         guard jumpCursor <= cursor else {
-            throw FBBuildError.CursorIsInvalid
+            throw FlatBuffersBuildError.cursorIsInvalid
         }
         let _offset = Int32(jumpCursor) - offset;
         
         _data.storeBytes(of: _offset, toByteOffset: capacity - jumpCursor, as: Int32.self)
     }
-    
-    private func put<T : Scalar>(value : T, at index : Int) {
+ 
+    /**
+     Update a scalar in place
+     
+     - parameters:
+         - value: The new value 
+         - index: The position to modify
+     */
+    private func update<T : Scalar>(value : T, at index : Int) {
         _data.storeBytes(of: value, toByteOffset: index + leftCursor, as: T.self)
     }
     
-    public func openObject(numOfProperties : Int) throws {
+    /**
+     Start an object construction sequence
+     
+     - parameters:
+         - withPropertyCount: The number of properties we will update
+     */
+    public func startObject(withPropertyCount : Int) throws {
         guard objectStart == -1 && vectorNumElems == -1 else {
-            throw FBBuildError.ObjectIsNotClosed
+            throw FlatBuffersBuildError.objectIsNotClosed
         }
         currentVTable.removeAll(keepingCapacity: true)
-        currentVTable.reserveCapacity(numOfProperties)
-        for _ in 0..<numOfProperties {
+        currentVTable.reserveCapacity(withPropertyCount)
+        for _ in 0..<withPropertyCount {
             currentVTable.append(0)
         }
         objectStart = Int32(cursor)
     }
     
+    /**
+     Add an offset into the buffer for the currently open object
+     
+     - parameters:
+         - propertyIndex: The index of the property to update
+         - offset: The offsetnumber of properties we will update
+
+     - Returns: The current cursor position (Note: What is the use case of the return value?)
+     */
     @discardableResult
-    public func addPropertyOffsetToOpenObject(propertyIndex : Int, offset : Offset) throws -> Int{
+    public func insert(offset : Offset, toStartedObjectAt propertyIndex : Int) throws -> Int{
         guard objectStart > -1 else {
-            throw FBBuildError.NoOpenObject
+            throw FlatBuffersBuildError.noOpenObject
         }
         guard propertyIndex >= 0 && propertyIndex < currentVTable.count else {
-            throw FBBuildError.PropertyIndexIsInvalid
+            throw FlatBuffersBuildError.propertyIndexIsInvalid
         }
-        _ = try putOffset(offset: offset)
+        _ = try insert(offset: offset)
         currentVTable[propertyIndex] = Int32(cursor)
         return cursor
     }
-    
-    public func addPropertyToOpenObject<T : Scalar>(propertyIndex : Int, value : T, defaultValue : T) throws {
+ 
+    /**
+     Add a scalar into the buffer for the currently open object
+     
+     - parameters:
+         - propertyIndex: The index of the property to update
+         - value: The value to append
+         - defaultValue: If configured to skip default values, a value 
+        matching this default value will not be written to the buffer.
+     */
+    public func insert<T : Scalar>(value : T, defaultValue : T, toStartedObjectAt propertyIndex : Int) throws {
         guard objectStart > -1 else {
-            throw FBBuildError.NoOpenObject
+            throw FlatBuffersBuildError.noOpenObject
         }
         guard propertyIndex >= 0 && propertyIndex < currentVTable.count else {
-            throw FBBuildError.PropertyIndexIsInvalid
+            throw FlatBuffersBuildError.propertyIndexIsInvalid
         }
         
-        if(config.forceDefaults == false && value == defaultValue) {
+        if(options.forceDefaults == false && value == defaultValue) {
             return
         }
         
-        put(value: value)
+        insert(value: value)
         currentVTable[propertyIndex] = Int32(cursor)
     }
     
-    public func addCurrentOffsetAsPropertyToOpenObject(propertyIndex : Int) throws {
+    /**
+     Add the current cursor position into the buffer for the currently open object
+     
+     - parameters:
+         - propertyIndex: The index of the property to update
+     */
+    public func insertCurrentOffsetAsProperty(toStartedObjectAt propertyIndex : Int) throws {
         guard objectStart > -1 else {
-            throw FBBuildError.NoOpenObject
+            throw FlatBuffersBuildError.noOpenObject
         }
         guard propertyIndex >= 0 && propertyIndex < currentVTable.count else {
-            throw FBBuildError.PropertyIndexIsInvalid
+            throw FlatBuffersBuildError.propertyIndexIsInvalid
         }
         currentVTable[propertyIndex] = Int32(cursor)
     }
-    
-    public func closeObject() throws -> Offset {
+  
+    /**
+     Close the current open object.
+     */
+    public func endObject() throws -> Offset {
         guard objectStart > -1 else {
-            throw FBBuildError.NoOpenObject
+            throw FlatBuffersBuildError.noOpenObject
         }
         align(size: 4, additionalBytes: 0)
-        increaseCapacity(size: 4)
+        reserveAdditionalCapacity(size: 4)
         cursor += 4 // Will be set to vtable offset afterwards
         
         let vtableloc = cursor
@@ -712,21 +1075,21 @@ public final class FBBuilder {
         while(index>=0) {
             // Offset relative to the start of the table.
             let off = Int16(currentVTable[index] != 0 ? Int32(vtableloc) - currentVTable[index] : 0);
-            put(value: off);
+            insert(value: off);
             index -= 1
         }
         
         let numberOfstandardFields = 2
         
-        put(value: Int16(Int32(vtableloc) - objectStart)); // standard field 1: lenght of the object data
-        put(value: Int16((currentVTable.count + numberOfstandardFields) * MemoryLayout<Int16>.stride)); // standard field 2: length of vtable and standard fields them selves
+        insert(value: Int16(Int32(vtableloc) - objectStart)); // standard field 1: lenght of the object data
+        insert(value: Int16((currentVTable.count + numberOfstandardFields) * MemoryLayout<Int16>.stride)); // standard field 2: length of vtable and standard fields them selves
         
         // search if we already have same vtable
         let vtableDataLength = cursor - vtableloc
         
         var foundVTableOffset = vtableDataLength
         
-        if config.uniqueVTables{
+        if options.uniqueVTables{
             for otherVTableOffset in vTableOffsets {
                 let start = cursor - Int(otherVTableOffset)
                 var found = true
@@ -753,64 +1116,83 @@ public final class FBBuilder {
         
         let indexLocation = cursor - vtableloc
         
-        put(value: Int32(foundVTableOffset), at: indexLocation)
+        update(value: Int32(foundVTableOffset), at: indexLocation)
         
         objectStart = -1
         
         return Offset(vtableloc)
     }
     
+    /**
+     Start a vector update operation
+     
+     - parameters:
+         - count: The number of elements in the vector
+         - elementSize: The size of the vector elements
+     */
     public func startVector(count : Int, elementSize : Int) throws{
         align(size: 4, additionalBytes: count * elementSize)
         guard objectStart == -1 && vectorNumElems == -1 else {
-            throw FBBuildError.ObjectIsNotClosed
+            throw FlatBuffersBuildError.objectIsNotClosed
         }
         vectorNumElems = Int32(count)
     }
     
+    /**
+     Finish vector update operation
+     */
     public func endVector() -> Offset {
-        put(value: vectorNumElems)
+        insert(value: vectorNumElems)
         vectorNumElems = -1
         return Int32(cursor)
     }
     
     private var stringCache : [String:Offset] = [:]
-    public func createString(value : String?) throws -> Offset {
+ 
+    /**
+     Add a string to the buffer
+     
+     - parameters:
+         - value: The string to add to the buffer
+
+     - Returns: The current cursor position (Note: What is the use case of the return value?)
+    */
+    public func insert(value : String?) throws -> Offset {
         guard objectStart == -1 && vectorNumElems == -1 else {
-            throw FBBuildError.ObjectIsNotClosed
+            throw FlatBuffersBuildError.objectIsNotClosed
         }
         guard let value = value else {
             return 0
         }
         
-        if config.uniqueStrings{
+        if options.uniqueStrings{
             if let o = stringCache[value]{
                 return o
             }
         }
         // TODO: Performance Test
-        if config.nullTerminatedUTF8 {
+        if options.nullTerminatedUTF8 {
             let utf8View = value.utf8CString
             let length = utf8View.count
             align(size: 4, additionalBytes: length)
-            increaseCapacity(size: length)
+            reserveAdditionalCapacity(size: length)
             for c in utf8View.lazy.reversed() {
-                put(value: c)
+                insert(value: c)
             }
-            put(value: Int32(length - 1))
+            insert(value: Int32(length - 1))
         } else {
             let utf8View = value.utf8
             let length = utf8View.count
             align(size: 4, additionalBytes: length)
-            increaseCapacity(size: length)
+            reserveAdditionalCapacity(size: length)
             for c in utf8View.lazy.reversed() {
-                put(value: c)
+                insert(value: c)
             }
-            put(value: Int32(length))
+            insert(value: Int32(length))
         }
         
         let o = Offset(cursor)
-        if config.uniqueStrings {
+        if options.uniqueStrings {
             stringCache[value] = o
         }
         return o
@@ -818,10 +1200,10 @@ public final class FBBuilder {
     
     public func finish(offset : Offset, fileIdentifier : String?) throws -> Void {
         guard offset <= Int32(cursor) else {
-            throw FBBuildError.OffsetIsTooBig
+            throw FlatBuffersBuildError.offsetIsTooBig
         }
         guard objectStart == -1 && vectorNumElems == -1 else {
-            throw FBBuildError.ObjectIsNotClosed
+            throw FlatBuffersBuildError.objectIsNotClosed
         }
         var prefixLength = 4
         if let fileIdentifier = fileIdentifier {
@@ -830,10 +1212,10 @@ public final class FBBuilder {
             let utf8View = fileIdentifier.utf8
             let count = utf8View.count
             guard count == 4 else {
-                throw FBBuildError.BadFileIdentifier
+                throw FlatBuffersBuildError.badFileIdentifier
             }
             for c in utf8View.lazy.reversed() {
-                put(value: c)
+                insert(value: c)
             }
         } else {
             align(size: minalign, additionalBytes: prefixLength)
@@ -841,6 +1223,6 @@ public final class FBBuilder {
         
         let v = (Int32(cursor + 4) - offset)
         
-        put(value: v)
+        insert(value: v)
     }
 }

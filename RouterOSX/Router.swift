@@ -35,7 +35,7 @@ class Router {
         guard let mapData = try? Data(contentsOf: URL(fileURLWithPath: binMapFileName)) else {
             throw RoutingError.error("Failed to load \(binMapFileName)")
         }
-        guard let mappedGraph = OsmGraph.from(data: mapData) else {
+        guard let mappedGraph = OsmGraph.makeOsmGraph(data: mapData) else {
             throw RoutingError.error("Failed to map graph data from \(binMapFileName) to memory")
         }
         self.graph = mappedGraph
@@ -118,7 +118,7 @@ class Router {
         let startState = PathfindingState(index: from, cost: 0.0)
         var heap = PriorityQueue<PathfindingState>(ascending: true, startingValues: [startState])
 
-        let getNode = { idx in self.graph.nodes[idx]! }
+        let getNode = { (idx: Int) in self.graph.nodes[idx] }
 
         while let current = heap.pop() {
             if current.index == to {
@@ -174,11 +174,7 @@ class Router {
     fileprivate func getNearestOsmNodeIndex(_ point: NamedPoint) -> Int? {
         var result: Int? = nil
         var minDistance = Double.infinity
-        for (idx, maybeNode) in graph.nodes.enumerated() {
-            guard let node = maybeNode else {
-                continue
-            }
-
+        for (idx, node) in graph.nodes.enumerated() {
             if node.adj.count == 0 {
                 continue
             }

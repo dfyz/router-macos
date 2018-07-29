@@ -21,7 +21,7 @@ class MapImporter: NSObject, XMLParserDelegate {
 
     var globalIdToNode = [UInt64: OsmNode]()
     var globalIdToIndex = [UInt64: UInt32]()
-    var nodes = ContiguousArray<OsmNode?>()
+    var nodes = [OsmNode]()
     var currentNodes = [UInt64]()
 
     var inWay = false
@@ -75,8 +75,8 @@ class MapImporter: NSObject, XMLParserDelegate {
                     let prevIndex = idToIndex(currentNodes[i - 1]),
                     let currentIndex = idToIndex(currentNodes[i])
                 {
-                    nodes[Int(prevIndex)]!.adj.append(currentIndex)
-                    nodes[Int(currentIndex)]!.adj.append(prevIndex)
+                    nodes[Int(prevIndex)].adj.append(currentIndex)
+                    nodes[Int(currentIndex)].adj.append(prevIndex)
                 }
             }
         }
@@ -121,7 +121,7 @@ class MapImporter: NSObject, XMLParserDelegate {
 
     fileprivate func saveToFile(_ resultFileName: String) throws {
         let graph = OsmGraph(nodes: nodes)
-        let graphData = try graph.toData()
+        let graphData = try graph.makeData()
         try graphData.write(to: URL(fileURLWithPath: resultFileName), options: [.atomic])
     }
 
@@ -132,7 +132,7 @@ class MapImporter: NSObject, XMLParserDelegate {
         var maxLon = -Double.infinity
 
         for maybeNode in nodes {
-            let node = maybeNode!
+            let node = maybeNode
             minLat = min(minLat, node.lat)
             maxLat = max(maxLat, node.lat)
             minLon = min(minLon, node.lon)
