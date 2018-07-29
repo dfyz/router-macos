@@ -17,7 +17,7 @@ DEPENDENCIES:
   - SwiftyJSON
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - AEXML
     - Alamofire
     - Realm
@@ -33,6 +33,6 @@ SPEC CHECKSUMS:
   SwiftPriorityQueue: 2ce5768829a9ef84d8b8fec5e73546d72ee3d8f6
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 
-PODFILE CHECKSUM: 175fa570d15e01dcff043f58ace57f194c6ce3d4
+PODFILE CHECKSUM: 0485155c8751752eba512a0253ce41929bb6aba6
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
