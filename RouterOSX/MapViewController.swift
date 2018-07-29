@@ -69,7 +69,7 @@ class MapViewController: NSViewController {
 
         changeTileOverlay("OSM")
 
-        self.mapMonitor = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp, handler: onMapRightClick) as AnyObject!
+        self.mapMonitor = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp, handler: onMapRightClick) as AnyObject?
         mapView.delegate = self
 
         pointTableView.dataSource = self

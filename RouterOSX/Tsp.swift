@@ -95,7 +95,7 @@ private class GreedySolver {
         while i >= 1 {
             let j = Int(arc4random_uniform(UInt32(i + 1)))
             if i != j {
-                swap(&result[i], &result[j])
+                result.swapAt(i, j)
             }
             i -= 1
         }
