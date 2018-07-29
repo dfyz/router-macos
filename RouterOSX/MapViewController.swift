@@ -22,6 +22,7 @@ class MapViewController: NSViewController {
     var routeOverlays = [MKOverlay]()
     var routingResult: RoutingResult?
     var tileOverlay: MKOverlay?
+    var tileOverlayName: String?
 
     func addPointToMap(_ name: String, lat: Double, lon: Double, permanent: Bool) {
         let point = PointAnnotation()
@@ -114,6 +115,10 @@ class MapViewController: NSViewController {
     override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         if menuItem.action == #selector(onExportToGpx) {
             return routingResult != nil
+        }
+        if menuItem.action == #selector(onChangeTileLayer) {
+            let isCurrentLayer = menuItem.title == self.tileOverlayName
+            menuItem.state = isCurrentLayer ? NSControl.StateValue.on : NSControl.StateValue.off
         }
         return true
     }
@@ -223,12 +228,6 @@ class MapViewController: NSViewController {
 
     @objc func onChangeTileLayer(_ sender: NSMenuItem) {
         changeTileOverlay(sender.title)
-        if let items = sender.parent?.submenu?.items {
-            for item in items {
-                item.state = NSControl.StateValue.off
-            }
-        }
-        sender.state = NSControl.StateValue.on
     }
 
     func onMapRightClick(_ event: NSEvent) -> NSEvent? {
@@ -276,6 +275,7 @@ class MapViewController: NSViewController {
             toAdd.canReplaceMapContent = true
             mapView.add(toAdd)
             self.tileOverlay = toAdd
+            self.tileOverlayName = layer
         }
     }
 
