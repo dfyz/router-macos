@@ -99,7 +99,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
 
         alert.beginSheetModal(for: view.window!, completionHandler: {
             (response) -> Void in
-            if response == NSAlertFirstButtonReturn {
+            if response == NSApplication.ModalResponse.alertFirstButtonReturn {
                 try! self.realm.write {
                     self.realm.delete(stage)
                 }
@@ -112,7 +112,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         if getSelectedStage() == nil {
             return
         }
-        performSegue(withIdentifier: "ShowMapSegue", sender: self)
+        performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "ShowMapSegue"), sender: self)
     }
 
     fileprivate func getSelectedStage() -> Stage? {

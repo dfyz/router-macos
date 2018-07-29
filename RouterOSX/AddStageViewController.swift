@@ -34,7 +34,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
         openPanel.allowedFileTypes = ["osm"]
         openPanel.begin {
             (result) -> Void in
-            if result != NSFileHandlingPanelOKButton {
+            if result.rawValue != NSFileHandlingPanelOKButton {
                 return
             }
             if let filePath = openPanel.url?.path {

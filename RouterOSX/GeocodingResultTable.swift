@@ -49,7 +49,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         mapView.view.window?.contentView?.addSubview(self.resultTable)
 
         self.resultTable.autoresizesSubviews = true
-        self.resultTable.autoresizingMask = [.viewWidthSizable, .viewHeightSizable]
+        self.resultTable.autoresizingMask = [NSView.AutoresizingMask.width, NSView.AutoresizingMask.height]
         self.resultTable.topAnchor.constraint(equalTo: (displayBelow?.bottomAnchor)!).isActive = true
         self.resultTable.rightAnchor.constraint(equalTo: (displayBelow?.rightAnchor)!).isActive = true
 
@@ -66,7 +66,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         self.resultTable.removeFromSuperview()
     }
 
-    func addPointToMap(_ sender: NSControl) {
+    @objc func addPointToMap(_ sender: NSControl) {
         let placeIndex = self.innerTable.selectedRow
         if placeIndex >= 0 {
             if case .ok(let place) = self.results[placeIndex] {
@@ -130,7 +130,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
         }
 
         let result = getTableRowParams(results[row])
-        switch columnIdentifier {
+        switch columnIdentifier.rawValue {
         case "ImageColumn":
             let imageCell = NSImageView()
             imageCell.image = result.image
@@ -146,7 +146,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             textCell.font = NSFont.controlContentFont(ofSize: 24.0)
             return textCell
         default:
-            fatalError("Unknown column " + columnIdentifier)
+            fatalError("Unknown column " + columnIdentifier.rawValue)
         }
     }
 
@@ -169,16 +169,16 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             text = place.name
         }
 
-        let image = NSImage(named: "\(provider).ico")
+        let image = NSImage(named: NSImage.Name(rawValue: "\(provider).ico"))
         return TableRowParams(image: image, text: text, color: color)
     }
 
     fileprivate func addColumns(_ table: NSTableView) {
-        let imageColumn = NSTableColumn(identifier: "ImageColumn")
+        let imageColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(rawValue: "ImageColumn"))
         imageColumn.width = 30
         table.addTableColumn(imageColumn)
 
-        let nameColumn = NSTableColumn(identifier: "NameColumn")
+        let nameColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(rawValue: "NameColumn"))
         table.addTableColumn(nameColumn)
     }
 }

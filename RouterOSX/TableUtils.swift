@@ -10,12 +10,12 @@ func getTextViewForTableCell(
         return nil
     }
 
-    guard let text = getText(columnIdentifier) else {
+    guard let text = getText(columnIdentifier.rawValue) else {
         fatalError("Unknown column: \(columnIdentifier)")
     }
 
-    let cellIdentifier = columnIdentifier.replacingOccurrences(of: "Column", with: "Cell")
-    guard let cell = tableView.make(withIdentifier: cellIdentifier, owner: nil) as? NSTableCellView else {
+    let cellIdentifier = NSUserInterfaceItemIdentifier(columnIdentifier.rawValue.replacingOccurrences(of: "Column", with: "Cell"))
+    guard let cell = tableView.makeView(withIdentifier: cellIdentifier, owner: nil) as? NSTableCellView else {
         return nil
     }
     cell.textField?.stringValue = text

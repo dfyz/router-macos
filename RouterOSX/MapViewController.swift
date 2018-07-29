@@ -69,12 +69,12 @@ class MapViewController: NSViewController {
 
         changeTileOverlay("OSM")
 
-        self.mapMonitor = NSEvent.addLocalMonitorForEvents(matching: .rightMouseUp, handler: onMapRightClick) as AnyObject?
+        self.mapMonitor = NSEvent.addLocalMonitorForEvents(matching: NSEvent.EventTypeMask.rightMouseUp, handler: onMapRightClick) as AnyObject?
         mapView.delegate = self
 
         pointTableView.dataSource = self
         pointTableView.delegate = self
-        pointTableView.register(forDraggedTypes: ["point.index"])
+        pointTableView.registerForDraggedTypes([NSPasteboard.PasteboardType(rawValue: "point.index")])
 
         hideGeocodingResults()
 
@@ -94,7 +94,7 @@ class MapViewController: NSViewController {
 
         view.window?.title = "\(stage.competitionName) — \(stage.stageNumber)"
 
-        if let screenFrame = NSScreen.main()?.visibleFrame {
+        if let screenFrame = NSScreen.main?.visibleFrame {
             view.window?.setFrame(screenFrame, display: true)
         }
 
@@ -186,7 +186,7 @@ class MapViewController: NSViewController {
         reloadPoints()
     }
 
-    func onGetOverview(_ sender: AnyObject) {
+    @objc func onGetOverview(_ sender: AnyObject) {
         if !pointToAnnotation.isEmpty {
             mapView.showAnnotations(mapView.annotations, animated: true)
             return
@@ -198,11 +198,11 @@ class MapViewController: NSViewController {
         mapView.setRegion(region, animated: true)
     }
 
-    func onRoute(_ sender: AnyObject) {
-        performSegue(withIdentifier: "ShowRoutingProgressSegue", sender: self)
+    @objc func onRoute(_ sender: AnyObject) {
+        performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "ShowRoutingProgressSegue"), sender: self)
     }
 
-    func onExportToGpx(_ sender: AnyObject) {
+    @objc func onExportToGpx(_ sender: AnyObject) {
         guard let rr = routingResult else {
             return
         }
@@ -212,7 +212,7 @@ class MapViewController: NSViewController {
         savePanel.allowedFileTypes = ["gpx"]
         savePanel.begin {
             (result) -> Void in
-            if result != NSFileHandlingPanelOKButton {
+            if result.rawValue != NSFileHandlingPanelOKButton {
                 return
             }
             if let filePath = savePanel.url?.path {
@@ -221,14 +221,14 @@ class MapViewController: NSViewController {
         }
     }
 
-    func onChangeTileLayer(_ sender: NSMenuItem) {
+    @objc func onChangeTileLayer(_ sender: NSMenuItem) {
         changeTileOverlay(sender.title)
         if let items = sender.parent?.submenu?.items {
             for item in items {
-                item.state = NSOffState
+                item.state = NSControl.StateValue.off
             }
         }
-        sender.state = NSOnState
+        sender.state = NSControl.StateValue.on
     }
 
     func onMapRightClick(_ event: NSEvent) -> NSEvent? {
@@ -448,7 +448,7 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
         guard pointTableView.selectedRow >= 0 else {
             return false
         }
-        pboard.setString(String(pointTableView.selectedRow), forType: "point.index")
+        pboard.setString(String(pointTableView.selectedRow), forType: NSPasteboard.PasteboardType(rawValue: "point.index"))
         return true
     }
 
@@ -456,7 +456,7 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
             _ tableView: NSTableView,
             validateDrop info: NSDraggingInfo,
             proposedRow row: Int,
-            proposedDropOperation dropOperation: NSTableViewDropOperation
+            proposedDropOperation dropOperation: NSTableView.DropOperation
     ) -> NSDragOperation {
         return .move
     }
@@ -465,9 +465,9 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
             _ tableView: NSTableView,
             acceptDrop info: NSDraggingInfo,
             row: Int,
-            dropOperation: NSTableViewDropOperation
+            dropOperation: NSTableView.DropOperation
     ) -> Bool {
-        let sourceIndex = Int(info.draggingPasteboard().string(forType: "point.index")!)!
+        let sourceIndex = Int(info.draggingPasteboard().string(forType: NSPasteboard.PasteboardType(rawValue: "point.index"))!)!
         if sourceIndex == row {
             return false
         }
@@ -514,7 +514,7 @@ extension MapViewController: MKMapViewDelegate {
         if !point.permanent {
             let button = NSButton()
             button.bezelStyle = .smallSquare
-            button.image = NSImage(named: NSImageNameAddTemplate)
+            button.image = NSImage(named: NSImage.Name.addTemplate)
             button.target = self
             button.action = #selector(makePointPermanent)
             result.rightCalloutAccessoryView = button
@@ -574,11 +574,11 @@ private class BubbleAnnotationView: MKAnnotationView {
 
         let lineFrom = CGPoint(x: frame.width / 2.0, y: ovalRect.height + ovalWidth)
         let lineTo = CGPoint(x: lineFrom.x, y: frame.height)
-        NSBezierPath.setDefaultLineWidth(2.0)
+        NSBezierPath.defaultLineWidth = 2.0
         NSBezierPath.strokeLine(from: lineFrom, to: lineTo)
 
         if let point = annotation as? PointAnnotation {
-            let attrs = [NSFontAttributeName: NSFont.boldSystemFont(ofSize: 24.0)]
+            let attrs = [NSAttributedStringKey.font: NSFont.boldSystemFont(ofSize: 24.0)]
             let str = NSString(string: point.baloonTitle)
             let strSize = str.size(withAttributes: attrs)
 
