@@ -157,7 +157,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
     fileprivate func getTableRowParams(_ result: GeocodingResult) -> TableRowParams {
         var provider = ""
         var text = ""
-        var color = NSColor.black
+        var color = NSColor.labelColor
 
         switch result {
         case .error(let failure):

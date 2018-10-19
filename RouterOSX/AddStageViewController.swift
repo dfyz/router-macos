@@ -15,7 +15,7 @@ class AddStageViewController: NSViewController, NSTextFieldDelegate {
     var importInProgress: Bool = false
 
     func controlTextDidChange(_ obj: Notification) {
-        osmFileTextField.textColor = isGoodOsmFile() ? NSColor.black : NSColor.red
+        osmFileTextField.textColor = isGoodOsmFile() ? NSColor.labelColor : NSColor.red
     }
 
     override func viewDidLoad() {
