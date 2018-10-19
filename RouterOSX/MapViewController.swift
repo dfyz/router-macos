@@ -514,7 +514,9 @@ extension MapViewController: MKMapViewDelegate {
         if !point.permanent {
             let button = NSButton()
             button.bezelStyle = .smallSquare
-            button.image = NSImage(named: NSImage.Name.addTemplate)
+            let addImage = NSImage(named: NSImage.Name.addTemplate)!
+            button.image = addImage
+            button.frame = NSRect(x: 0, y: 0, width: addImage.size.width, height: addImage.size.height)
             button.target = self
             button.action = #selector(makePointPermanent)
             result.rightCalloutAccessoryView = button
