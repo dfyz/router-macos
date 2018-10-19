@@ -175,7 +175,7 @@ class MapViewController: NSViewController {
         reloadPoints()
     }
 
-    func onDeleteItem(_ sender: AnyObject) {
+    @objc func onDeleteItem(_ sender: AnyObject) {
         guard let point = getSelectedPoint() else {
             return
         }
