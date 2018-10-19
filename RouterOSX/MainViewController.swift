@@ -112,7 +112,7 @@ class MainViewController: NSViewController, NSTableViewDataSource, NSTableViewDe
         if getSelectedStage() == nil {
             return
         }
-        performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "ShowMapSegue"), sender: self)
+        performSegue(withIdentifier: "ShowMapSegue", sender: self)
     }
 
     fileprivate func getSelectedStage() -> Stage? {

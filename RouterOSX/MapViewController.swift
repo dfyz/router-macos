@@ -112,7 +112,7 @@ class MapViewController: NSViewController {
         }
     }
 
-    override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         if menuItem.action == #selector(onExportToGpx) {
             return routingResult != nil
         }
@@ -204,7 +204,7 @@ class MapViewController: NSViewController {
     }
 
     @objc func onRoute(_ sender: AnyObject) {
-        performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "ShowRoutingProgressSegue"), sender: self)
+        performSegue(withIdentifier: "ShowRoutingProgressSegue", sender: self)
     }
 
     @objc func onExportToGpx(_ sender: AnyObject) {
@@ -234,8 +234,8 @@ class MapViewController: NSViewController {
         if event.window == view.window {
             let locationInMapView = mapView.convert(event.locationInWindow, from: nil)
             let clickedCoords = mapView.convert(locationInMapView, toCoordinateFrom: mapView)
-            let clickedPoint = MKMapPointForCoordinate(clickedCoords)
-            if MKMapRectContainsPoint(mapView.visibleMapRect, clickedPoint) {
+            let clickedPoint = MKMapPoint.init(clickedCoords)
+            if mapView.visibleMapRect.contains(clickedPoint) {
                 addPointToMap(
                     "HERE BE DRAGONS",
                     lat: clickedCoords.latitude,
@@ -270,10 +270,10 @@ class MapViewController: NSViewController {
     fileprivate func changeTileOverlay(_ layer: String) {
         if let toAdd = createTileOverlay(layer) {
             if let toRemove = self.tileOverlay {
-                mapView.remove(toRemove)
+                mapView.removeOverlay(toRemove)
             }
             toAdd.canReplaceMapContent = true
-            mapView.add(toAdd)
+            mapView.addOverlay(toAdd)
             self.tileOverlay = toAdd
             self.tileOverlayName = layer
         }
@@ -342,7 +342,7 @@ class MapViewController: NSViewController {
 
     fileprivate func addPathOverlays(_ segments: [RouteSegment]) {
         for prevPath in routeOverlays {
-            mapView.remove(prevPath)
+            mapView.removeOverlay(prevPath)
         }
         routeOverlays.removeAll()
 
@@ -350,7 +350,7 @@ class MapViewController: NSViewController {
             var path = seg.path
             let routeOverlay = MKPolyline(coordinates: &path, count: path.count)
             routeOverlays.append(routeOverlay)
-            mapView.add(routeOverlay, level: .aboveLabels)
+            mapView.addOverlay(routeOverlay, level: .aboveLabels)
         }
     }
 
@@ -467,7 +467,7 @@ extension MapViewController: NSTableViewDataSource, NSTableViewDelegate {
             row: Int,
             dropOperation: NSTableView.DropOperation
     ) -> Bool {
-        let sourceIndex = Int(info.draggingPasteboard().string(forType: NSPasteboard.PasteboardType(rawValue: "point.index"))!)!
+        let sourceIndex = Int(info.draggingPasteboard.string(forType: NSPasteboard.PasteboardType(rawValue: "point.index"))!)!
         if sourceIndex == row {
             return false
         }
@@ -514,7 +514,7 @@ extension MapViewController: MKMapViewDelegate {
         if !point.permanent {
             let button = NSButton()
             button.bezelStyle = .smallSquare
-            let addImage = NSImage(named: NSImage.Name.addTemplate)!
+            let addImage = NSImage(named: NSImage.addTemplateName)!
             button.image = addImage
             button.frame = NSRect(x: 0, y: 0, width: addImage.size.width, height: addImage.size.height)
             button.target = self
@@ -580,7 +580,7 @@ private class BubbleAnnotationView: MKAnnotationView {
         NSBezierPath.strokeLine(from: lineFrom, to: lineTo)
 
         if let point = annotation as? PointAnnotation {
-            let attrs = [NSAttributedStringKey.font: NSFont.boldSystemFont(ofSize: 24.0)]
+            let attrs = [NSAttributedString.Key.font: NSFont.boldSystemFont(ofSize: 24.0)]
             let str = NSString(string: point.baloonTitle)
             let strSize = str.size(withAttributes: attrs)
 

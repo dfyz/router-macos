@@ -12,16 +12,16 @@
 		2F03228193D6F1C378152876 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032F082632312DD1F346A5 /* Router.swift */; };
 		2F0322E046CA661A431C1379 /* TspData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032746195E712F9EC8FE7D /* TspData.swift */; };
 		2F0322E31C859096A3191395 /* mini_klin.bin in Resources */ = {isa = PBXBuildFile; fileRef = 2F0326541EEDAC79279A27EC /* mini_klin.bin */; };
-		2F0323A69449E4D391648AC6 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		2F0323A69449E4D391648AC6 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		2F032435AFAFFC00C4068CBB /* GeocodingResultTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F0320FF1F7CA198004D5C08 /* GeocodingResultTable.swift */; };
 		2F032505737F2964AB595F3D /* TspData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032746195E712F9EC8FE7D /* TspData.swift */; };
 		2F032754A59B3DEFFE153C2F /* RoutingProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032EA93B79FE0F66DF8A28 /* RoutingProgressViewController.swift */; };
-		2F032767B7A3156F3DC1C2E7 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
-		2F0327715A4BB1FA4A625CBF /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		2F032767B7A3156F3DC1C2E7 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		2F0327715A4BB1FA4A625CBF /* (null) in Resources */ = {isa = PBXBuildFile; };
 		2F032794D859EC92C8155EC5 /* mini_klin.bin in Resources */ = {isa = PBXBuildFile; fileRef = 2F0326541EEDAC79279A27EC /* mini_klin.bin */; };
 		2F03297CE3CE49EDA4748780 /* Geocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F032A34195ED84789B44148 /* Geocoder.swift */; };
 		2F032AB938A2789C3F60E55B /* Tsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F03279E1FE5D43DB1A86E99 /* Tsp.swift */; };
-		2F032BE1711ED0042FAE968E /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		2F032BE1711ED0042FAE968E /* (null) in Resources */ = {isa = PBXBuildFile; };
 		4F1279F81E03366800E5944B /* RouterOSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F1279F71E03366800E5944B /* RouterOSXTests.swift */; };
 		4F273F141CBB00E1001F582E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F131CBB00E1001F582E /* AppDelegate.swift */; };
 		4F273F161CBB00E1001F582E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F273F151CBB00E1001F582E /* MainViewController.swift */; };
@@ -265,13 +265,13 @@
 				TargetAttributes = {
 					4F1279F41E03366800E5944B = {
 						CreatedOnToolsVersion = 8.1;
-						LastSwiftMigration = 0940;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 4F273F0F1CBB00E1001F582E;
 					};
 					4F273F0F1CBB00E1001F582E = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0940;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -299,8 +299,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F032767B7A3156F3DC1C2E7 /* BuildFile in Resources */,
-				2F032BE1711ED0042FAE968E /* BuildFile in Resources */,
+				2F032767B7A3156F3DC1C2E7 /* (null) in Resources */,
+				2F032BE1711ED0042FAE968E /* (null) in Resources */,
 				2F032794D859EC92C8155EC5 /* mini_klin.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -315,8 +315,8 @@
 				4FAE23671CDFDE0F00BCE3F2 /* osm.ico in Resources */,
 				4FAE23661CDFDE0F00BCE3F2 /* google.ico in Resources */,
 				4F273F1B1CBB00E1001F582E /* Main.storyboard in Resources */,
-				2F0327715A4BB1FA4A625CBF /* BuildFile in Resources */,
-				2F0323A69449E4D391648AC6 /* BuildFile in Resources */,
+				2F0327715A4BB1FA4A625CBF /* (null) in Resources */,
+				2F0323A69449E4D391648AC6 /* (null) in Resources */,
 				2F0322E31C859096A3191395 /* mini_klin.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,7 +444,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RouterOSX.app/Contents/MacOS/RouterOSX";
 			};
 			name = Debug;
@@ -466,7 +466,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSXTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RouterOSX.app/Contents/MacOS/RouterOSX";
 			};
 			name = Release;
@@ -588,7 +588,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -603,7 +603,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Dfyz.RouterOSX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

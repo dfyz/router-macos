@@ -169,7 +169,7 @@ class GeocodingResultTable: NSObject, NSTableViewDataSource, NSTableViewDelegate
             text = place.name
         }
 
-        let image = NSImage(named: NSImage.Name(rawValue: "\(provider).ico"))
+        let image = NSImage(named: "\(provider).ico")
         return TableRowParams(image: image, text: text, color: color)
     }
 
