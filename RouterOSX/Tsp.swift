@@ -124,7 +124,7 @@ private class GreedySolver {
                 while start + length <= result.count {
                     let end = start + length
                     if shouldReverseSegment(result, start: start, end: end) {
-                        result.replaceSubrange(start..<end, with: result[start..<end].reversed())
+                        result[start..<end].reverse()
                         reversed = true
                     }
                     start += 1
