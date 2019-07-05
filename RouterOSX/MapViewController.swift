@@ -249,6 +249,7 @@ class MapViewController: NSViewController {
 
     fileprivate func createTileOverlay(_ layer: String) -> MKTileOverlay? {
         let maybeHost: String?
+        var useRetina = false;
         var tileSize = CGSize(width: 256, height: 256)
         switch layer {
         case "OSM":
@@ -258,13 +259,15 @@ class MapViewController: NSViewController {
         case "Local":
             maybeHost = "localhost:8080"
             tileSize = CGSize(width: 512, height: 512)
+            useRetina = true
         default:
             maybeHost = nil
         }
         guard let host = maybeHost else {
             return nil
         }
-        let overlay = MKTileOverlay(urlTemplate: "http://\(host)/{z}/{x}/{y}@{scale}x.png")
+        let urlSuffix = useRetina ? "@{scale}x" : ""
+        let overlay = MKTileOverlay(urlTemplate: "http://\(host)/{z}/{x}/{y}\(urlSuffix).png")
         overlay.maximumZ = 18
         overlay.tileSize = tileSize
         return overlay
