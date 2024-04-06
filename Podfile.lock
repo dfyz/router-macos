@@ -1,13 +1,13 @@
 PODS:
-  - AEXML (4.3.0)
-  - Alamofire (4.7.3)
-  - Realm (3.7.5):
-    - Realm/Headers (= 3.7.5)
-  - Realm/Headers (3.7.5)
-  - RealmSwift (3.7.5):
-    - Realm (= 3.7.5)
-  - SwiftPriorityQueue (1.2.1)
-  - SwiftyJSON (4.1.0)
+  - AEXML (4.7.0)
+  - Alamofire (5.9.1)
+  - Realm (10.49.1):
+    - Realm/Headers (= 10.49.1)
+  - Realm/Headers (10.49.1)
+  - RealmSwift (10.49.1):
+    - Realm (= 10.49.1)
+  - SwiftPriorityQueue (1.4.0)
+  - SwiftyJSON (5.0.1)
 
 DEPENDENCIES:
   - AEXML
@@ -17,7 +17,7 @@ DEPENDENCIES:
   - SwiftyJSON
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - AEXML
     - Alamofire
     - Realm
@@ -26,13 +26,13 @@ SPEC REPOS:
     - SwiftyJSON
 
 SPEC CHECKSUMS:
-  AEXML: bae92c01e0da64132fd72f748721cda07466032b
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Realm: c286caf4dbf346ce24aad49ca76c7ce622d4a082
-  RealmSwift: 2a9281e37d6de55f66f76254d49d28aeb1b729e4
-  SwiftPriorityQueue: 2ce5768829a9ef84d8b8fec5e73546d72ee3d8f6
-  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
+  AEXML: 5ff2a4695529348cda96b8b872cf73212ad050d7
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
+  Realm: 1fab4a224fd7a294eca142a0efe8b54546290fbf
+  RealmSwift: 7c3a9c001161eb01b96b171ad965a9c498b962b0
+  SwiftPriorityQueue: ba43d692d8431f8aa869108b182ddc38bebeaa4f
+  SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
 
-PODFILE CHECKSUM: 6833dd296774129ea2abf453a6cbd312efcfa32e
+PODFILE CHECKSUM: cac48462a32192081228a05b6918d02b8be06f19
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.15.2

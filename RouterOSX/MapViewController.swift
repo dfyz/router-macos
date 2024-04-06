@@ -72,6 +72,9 @@ class MapViewController: NSViewController {
 
         self.mapMonitor = NSEvent.addLocalMonitorForEvents(matching: NSEvent.EventTypeMask.rightMouseUp, handler: onMapRightClick) as AnyObject?
         mapView.delegate = self
+        let underlay = MKTileOverlay()
+        underlay.canReplaceMapContent = true
+        mapView.insertOverlay(underlay, at: 0, level: MKOverlayLevel.aboveLabels)
 
         pointTableView.dataSource = self
         pointTableView.delegate = self

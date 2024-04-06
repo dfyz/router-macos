@@ -41,7 +41,7 @@ class Geocoder {
     }
 
     func geocodeYandex(_ place: String) {
-        let request = Alamofire.request(
+        let request = AF.request(
             "https://geocode-maps.yandex.ru/1.x/",
             parameters: ["geocode": place, "format": "json"]
         )
@@ -75,7 +75,7 @@ class Geocoder {
     }
 
     func geocodeGoogle(_ place: String) {
-        let request = Alamofire.request(
+        let request = AF.request(
             "https://maps.googleapis.com/maps/api/geocode/json",
             parameters: ["address": place]
         )
@@ -105,7 +105,7 @@ class Geocoder {
     }
 
     func geocodeOsm(_ place: String) {
-        let request = Alamofire.request(
+        let request = AF.request(
             "https://nominatim.openstreetmap.org/search",
             parameters: ["q": place, "format": "json"]
         )
@@ -149,7 +149,7 @@ class Geocoder {
 
             switch response.result {
             case .success:
-                if let value = response.result.value {
+                if let value = response.value {
                     let points = extractPoints(JSON(value))
                     var results = [GeocodingResult]()
                     for (_, p) in points {

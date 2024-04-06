@@ -115,7 +115,7 @@ class MapImporter: NSObject, XMLParserDelegate {
     fileprivate func getBinMapFileName(_ sourceMapFileName: String) -> String {
         let sourceMapBasename = NSString(string: sourceMapFileName).lastPathComponent
         let binMapBasename = NSString(string: sourceMapBasename).deletingPathExtension + ".bin"
-        var config = Realm.Configuration()
+        let config = Realm.Configuration()
         return config.fileURL!.deletingLastPathComponent().appendingPathComponent(binMapBasename).path
     }
 
